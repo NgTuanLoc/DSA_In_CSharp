@@ -1,9 +1,13 @@
+using System.Diagnostics;
+
 namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 {
     public class SelectionSortStrategy : ISortStrategy
     {
         public List<int> GetSortList(List<int> data)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             int n = data.Count;
 
             for (int i = 0; i < n - 1; i++)
@@ -20,6 +24,9 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
                 data[i] = data[minIndex];
                 data[minIndex] = temp;
             }
+            stopWatch.Stop();
+            TimeSpan elapsedTime = stopWatch.Elapsed;
+            Console.WriteLine($"[SELECTION SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
             return data;
         }
     }

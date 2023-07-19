@@ -1,9 +1,13 @@
+using System.Diagnostics;
+
 namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 {
     public class BubbleSortStrategy : ISortStrategy
     {
         public List<int> GetSortList(List<int> data)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var n = data.Count;
             for (int i = 0; i < n - 1; i++)
             {
@@ -17,6 +21,9 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
                     }
                 }
             }
+            stopWatch.Stop();
+            TimeSpan elapsedTime = stopWatch.Elapsed;
+            Console.WriteLine($"[BUBBLE SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
             return data;
         }
     }

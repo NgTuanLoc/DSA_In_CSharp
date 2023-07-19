@@ -10,7 +10,7 @@ namespace DSA.Algorithm.SortAlgorithm
         public SortContext()
         {
             _sortStrategy = new BubbleSortStrategy();
-            _data = SortHelper.GenerateRandomArray(10000, 0, 1000);
+            _data = SortHelper.GenerateRandomArray(10, 0, 1000);
         }
         public void SetSortStrategy(ISortStrategy sortStrategy)
         {

@@ -9,29 +9,59 @@ namespace DSA.Algorithm.SortAlgorithm
         {
             Console.Clear();
 
+            var bubbleSortStrategy = new BubbleSortStrategy();
             var selectionSortStrategy = new SelectionSortStrategy();
             var insertionSortStrategy = new InsertionSortStrategy();
             var radixSortStrategy = new RadixSortStrategy();
+            var mergeSortStrategy = new MergeSortStrategy();
 
             var sortContext = new SortContext();
 
-            sortContext.PrintList();
+            int choice = 5;
 
-
-            SortHelper.PrintList(sortContext.Sort(), "BUBBLE SORT");
-
-            sortContext.SetSortStrategy(selectionSortStrategy);
-
-
-            SortHelper.PrintList(sortContext.Sort(), "SELECTION SORT");
-
-            sortContext.SetSortStrategy(insertionSortStrategy);
-
-            SortHelper.PrintList(sortContext.Sort(), "INSERTION SORT");
             // SortHelper.PrintList(sortedList, "QUICK SORT");
             // SortHelper.PrintList(sortedList, "MERGE SORT");
-            sortContext.SetSortStrategy(radixSortStrategy);
-            SortHelper.PrintList(sortContext.Sort(), "RADIX SORT");
+
+            switch (choice)
+            {
+                case 1:
+                    sortContext.SetSortStrategy(bubbleSortStrategy);
+                    SortHelper.PrintList(sortContext.Sort(), "BUBBLE SORT");
+                    break;
+                case 2:
+                    sortContext.SetSortStrategy(selectionSortStrategy);
+                    SortHelper.PrintList(sortContext.Sort(), "SELECTION SORT");
+                    break;
+                case 3:
+                    sortContext.SetSortStrategy(insertionSortStrategy);
+                    SortHelper.PrintList(sortContext.Sort(), "INSERTION SORT");
+                    break;
+                case 4:
+                    sortContext.SetSortStrategy(radixSortStrategy);
+                    SortHelper.PrintList(sortContext.Sort(), "RADIX SORT");
+                    break;
+                case 5:
+                    sortContext.SetSortStrategy(mergeSortStrategy);
+                    SortHelper.PrintList(sortContext.Sort(), "MERGE SORT");
+                    break;
+                case 6:
+                    break;
+                default:
+                    sortContext.SetSortStrategy(bubbleSortStrategy);
+                    sortContext.Sort();
+
+                    sortContext.SetSortStrategy(selectionSortStrategy);
+                    sortContext.Sort();
+
+                    sortContext.SetSortStrategy(insertionSortStrategy);
+                    sortContext.Sort();
+
+                    sortContext.SetSortStrategy(radixSortStrategy);
+                    sortContext.Sort();
+                    sortContext.SetSortStrategy(mergeSortStrategy);
+                    sortContext.Sort();
+                    break;
+            }
         }
     }
 }

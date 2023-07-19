@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 {
     public class InsertionSortStrategy : ISortStrategy
@@ -5,6 +7,9 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
         public List<int> GetSortList(List<int> data)
         {
             var n = data.Count;
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             for (int i = 1; i < n; i++)
             {
                 int key = data[i];
@@ -18,6 +23,9 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 
                 data[j + 1] = key;
             }
+            stopWatch.Stop();
+            TimeSpan elapsedTime = stopWatch.Elapsed;
+            Console.WriteLine($"[INSERTION SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
             return data;
         }
     }

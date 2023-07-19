@@ -1,4 +1,5 @@
-using DSA.Algorithm.Helpers;
+
+using System.Diagnostics;
 
 namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 {
@@ -6,15 +7,12 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
     {
         public List<int> GetSortList(List<int> data)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var maxDigitCount = MostDigit(data);
             for (int i = 0; i < maxDigitCount; i++)
             {
-                var digitBucket = new List<List<int>>();
-                for (int k = 0; k < 10; k++)
-                {
-                    digitBucket.Add(new List<int>());
-                }
-                Console.WriteLine(i);
+                var digitBucket = GenerateListOfNEmptyList(10);
 
                 for (int j = 0; j < data.Count; j++)
                 {
@@ -24,6 +22,9 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 
                 data = digitBucket.SelectMany(list => list).ToList();
             }
+            stopWatch.Stop();
+            TimeSpan elapsedTime = stopWatch.Elapsed;
+            Console.WriteLine($"[RADIX SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
             return data;
         }
         private int GetDigit(int num, int place)
@@ -43,6 +44,16 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
                 if (max < DigitCount(num)) max = DigitCount(num);
             }
             return max;
+        }
+        private List<List<int>> GenerateListOfNEmptyList(int n)
+        {
+            var list = new List<List<int>>();
+
+            for (int k = 0; k < 10; k++)
+            {
+                list.Add(new List<int>());
+            }
+            return list;
         }
     }
 }
