@@ -52,7 +52,7 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
 
             if (j < list2.Count)
             {
-                var restOfDataList = list1.GetRange(i, list1.Count - i);
+                var restOfDataList = list2.GetRange(j, list2.Count - j);
                 list = list.Concat(restOfDataList).ToList();
             }
             return list;

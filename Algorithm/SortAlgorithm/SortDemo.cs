@@ -14,13 +14,11 @@ namespace DSA.Algorithm.SortAlgorithm
             var insertionSortStrategy = new InsertionSortStrategy();
             var radixSortStrategy = new RadixSortStrategy();
             var mergeSortStrategy = new MergeSortStrategy();
+            var quickSortStrategy = new QuickSortStrategy();
 
             var sortContext = new SortContext();
 
             int choice = 5;
-
-            // SortHelper.PrintList(sortedList, "QUICK SORT");
-            // SortHelper.PrintList(sortedList, "MERGE SORT");
 
             switch (choice)
             {
@@ -45,6 +43,8 @@ namespace DSA.Algorithm.SortAlgorithm
                     SortHelper.PrintList(sortContext.Sort(), "MERGE SORT");
                     break;
                 case 6:
+                    sortContext.SetSortStrategy(quickSortStrategy);
+                    SortHelper.PrintList(sortContext.Sort(), "QUICK SORT");
                     break;
                 default:
                     sortContext.SetSortStrategy(bubbleSortStrategy);
@@ -58,7 +58,11 @@ namespace DSA.Algorithm.SortAlgorithm
 
                     sortContext.SetSortStrategy(radixSortStrategy);
                     sortContext.Sort();
+
                     sortContext.SetSortStrategy(mergeSortStrategy);
+                    sortContext.Sort();
+
+                    sortContext.SetSortStrategy(quickSortStrategy);
                     sortContext.Sort();
                     break;
             }

@@ -13,14 +13,23 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
             for (int i = 0; i < maxDigitCount; i++)
             {
                 var digitBucket = GenerateListOfNEmptyList(10);
-
+                var negativeBucket = GenerateListOfNEmptyList(9);
                 for (int j = 0; j < data.Count; j++)
                 {
                     var digit = GetDigit(data[j], i);
-                    digitBucket[digit].Add(data[j]);
+
+                    if (data[j] >= 0)
+                    {
+                        digitBucket[digit].Add(data[j]);
+                    }
+                    else
+                    {
+                        negativeBucket[Math.Abs(9 - digit)].Add(data[j]);
+                    }
                 }
 
-                data = digitBucket.SelectMany(list => list).ToList();
+                data = negativeBucket.SelectMany(list => list).ToList();
+                data = data.Concat(digitBucket.SelectMany(list => list).ToList()).ToList();
             }
             stopWatch.Stop();
             TimeSpan elapsedTime = stopWatch.Elapsed;
