@@ -1,9 +1,11 @@
 ﻿// using DSA.Algorithm.SortAlgorithm;
+using DSA.Algorithm.Helpers;
 using DSA_In_CSharp.Algorithm;
 using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
 
 // SortDemo.Run();
 
+// ================== Linked List ==================
 // Push
 // Console.Clear();
 
@@ -43,5 +45,9 @@ tree.Insert(2);
 tree.Insert(7);
 tree.Insert(11);
 tree.Insert(16);
-
 Console.WriteLine(tree.Find(17));
+
+// SortHelper.PrintList(tree.BFS());
+SortHelper.PrintList(tree.DFSPreOrder(), "DFS (PreOrder)");
+SortHelper.PrintList(tree.DFSPostOrder(), "DFS (PostOrder)");
+SortHelper.PrintList(tree.DFSInOrder(), "DFS (InOrder)");

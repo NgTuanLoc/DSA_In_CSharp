@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace DSA_In_CSharp.Algorithm
 {
     public class Node
@@ -77,6 +79,71 @@ namespace DSA_In_CSharp.Algorithm
             }
 
             return found;
+        }
+        public List<int> BFS()
+        {
+            var data = new List<int>();
+            var node = _root;
+            if (node == null) return data;
+
+            var queue = new Queue<Node>();
+            queue.Enqueue(node);
+
+            while (queue.Count != 0)
+            {
+                var tempNode = queue.Dequeue();
+                data.Add(tempNode.value);
+                if (tempNode.left != null) queue.Enqueue(tempNode.left);
+                if (tempNode.right != null) queue.Enqueue(tempNode.right);
+            }
+
+            return data;
+        }
+        public List<int> DFSPreOrder()
+        {
+            var data = new List<int>();
+            var currentNode = _root;
+            if (currentNode == null) return data;
+
+            TraversePreOrder(data, currentNode);
+
+            return data;
+        }
+        public List<int> DFSPostOrder()
+        {
+            var data = new List<int>();
+            var currentNode = _root;
+            if (currentNode == null) return data;
+
+            TraversePostOrder(data, currentNode);
+            return data;
+        }
+        public List<int> DFSInOrder()
+        {
+            var data = new List<int>();
+            var currentNode = _root;
+            if (currentNode == null) return data;
+
+            TraverseInOrder(data, currentNode);
+            return data;
+        }
+        private void TraversePreOrder(List<int> data, Node node)
+        {
+            data.Add(node.value);
+            if (node.left != null) TraversePreOrder(data, node.left);
+            if (node.right != null) TraversePreOrder(data, node.right);
+        }
+        private void TraversePostOrder(List<int> data, Node node)
+        {
+            if (node.left != null) TraversePostOrder(data, node.left);
+            if (node.right != null) TraversePostOrder(data, node.right);
+            data.Add(node.value);
+        }
+        private void TraverseInOrder(List<int> data, Node node)
+        {
+            if (node.left != null) TraverseInOrder(data, node.left);
+            data.Add(node.value);
+            if (node.right != null) TraverseInOrder(data, node.right);
         }
     }
 }
