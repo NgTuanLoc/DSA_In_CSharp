@@ -18,7 +18,7 @@ namespace DSA.Algorithm.SortAlgorithm
 
             var sortContext = new SortContext();
 
-            int choice = 5;
+            int choice = 0;
 
             switch (choice)
             {
