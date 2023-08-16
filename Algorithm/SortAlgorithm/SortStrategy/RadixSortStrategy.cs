@@ -36,16 +36,16 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
             Console.WriteLine($"[RADIX SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
             return data;
         }
-        private int GetDigit(int num, int place)
+        private static int GetDigit(int num, int place)
         {
             return (int)Math.Floor(Math.Abs(num) / Math.Pow(10, place)) % 10;
         }
-        private int DigitCount(int num)
+        private static int DigitCount(int num)
         {
             if (num == 0) return 1;
             return (int)Math.Floor(Math.Log10(Math.Abs(num))) + 1;
         }
-        private int MostDigit(List<int> numList)
+        private static int MostDigit(List<int> numList)
         {
             int max = 0;
             foreach (var num in numList)
@@ -54,7 +54,7 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
             }
             return max;
         }
-        private List<List<int>> GenerateListOfNEmptyList(int n)
+        private static List<List<int>> GenerateListOfNEmptyList(int n)
         {
             var list = new List<List<int>>();
 

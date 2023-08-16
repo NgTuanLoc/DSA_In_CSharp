@@ -23,7 +23,7 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
                 QuickSort(list, pivotIndex + 1, right);
             }
         }
-        private int Pivot(List<int> list, int start, int end)
+        private static int Pivot(List<int> list, int start, int end)
         {
             var pivot = list[start];
             var swapIndex = start;
@@ -39,7 +39,7 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
             Swap(list, start, swapIndex);
             return swapIndex;
         }
-        private void Swap(List<int> data, int i, int j)
+        private static void Swap(List<int> data, int i, int j)
         {
             int temp = data[i];
             data[i] = data[j];

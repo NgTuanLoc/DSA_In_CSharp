@@ -4,14 +4,14 @@ namespace DSA_In_CSharp.Algorithm
 {
     public class Node
     {
-        public int value { get; set; }
-        public Node? left { get; set; }
-        public Node? right { get; set; }
+        public int Value { get; set; }
+        public Node? Left { get; set; }
+        public Node? Right { get; set; }
         public Node(int n)
         {
-            value = n;
-            left = null;
-            right = null;
+            Value = n;
+            Left = null;
+            Right = null;
         }
     }
 
@@ -35,25 +35,25 @@ namespace DSA_In_CSharp.Algorithm
             {
                 while (true)
                 {
-                    if (value == currentNode.value) return;
+                    if (value == currentNode.Value) return;
 
-                    if (value < currentNode.value)
+                    if (value < currentNode.Value)
                     {
-                        if (currentNode.left == null)
+                        if (currentNode.Left == null)
                         {
-                            currentNode.left = newNode;
+                            currentNode.Left = newNode;
                             return;
                         }
-                        currentNode = currentNode.left;
+                        currentNode = currentNode.Left;
                     }
                     else
                     {
-                        if (currentNode.right == null)
+                        if (currentNode.Right == null)
                         {
-                            currentNode.right = newNode;
+                            currentNode.Right = newNode;
                             return;
                         }
-                        currentNode = currentNode.right;
+                        currentNode = currentNode.Right;
                     }
                 }
             }
@@ -67,14 +67,14 @@ namespace DSA_In_CSharp.Algorithm
 
             while (currentNode != null)
             {
-                if (value == currentNode.value) return true;
-                if (value < currentNode.value)
+                if (value == currentNode.Value) return true;
+                if (value < currentNode.Value)
                 {
-                    currentNode = currentNode.left;
+                    currentNode = currentNode.Left;
                 }
                 else
                 {
-                    currentNode = currentNode.right;
+                    currentNode = currentNode.Right;
                 }
             }
 
@@ -92,9 +92,9 @@ namespace DSA_In_CSharp.Algorithm
             while (queue.Count != 0)
             {
                 var tempNode = queue.Dequeue();
-                data.Add(tempNode.value);
-                if (tempNode.left != null) queue.Enqueue(tempNode.left);
-                if (tempNode.right != null) queue.Enqueue(tempNode.right);
+                data.Add(tempNode.Value);
+                if (tempNode.Left != null) queue.Enqueue(tempNode.Left);
+                if (tempNode.Right != null) queue.Enqueue(tempNode.Right);
             }
 
             return data;
@@ -129,21 +129,21 @@ namespace DSA_In_CSharp.Algorithm
         }
         private void TraversePreOrder(List<int> data, Node node)
         {
-            data.Add(node.value);
-            if (node.left != null) TraversePreOrder(data, node.left);
-            if (node.right != null) TraversePreOrder(data, node.right);
+            data.Add(node.Value);
+            if (node.Left != null) TraversePreOrder(data, node.Left);
+            if (node.Right != null) TraversePreOrder(data, node.Right);
         }
         private void TraversePostOrder(List<int> data, Node node)
         {
-            if (node.left != null) TraversePostOrder(data, node.left);
-            if (node.right != null) TraversePostOrder(data, node.right);
-            data.Add(node.value);
+            if (node.Left != null) TraversePostOrder(data, node.Left);
+            if (node.Right != null) TraversePostOrder(data, node.Right);
+            data.Add(node.Value);
         }
         private void TraverseInOrder(List<int> data, Node node)
         {
-            if (node.left != null) TraverseInOrder(data, node.left);
-            data.Add(node.value);
-            if (node.right != null) TraverseInOrder(data, node.right);
+            if (node.Left != null) TraverseInOrder(data, node.Left);
+            data.Add(node.Value);
+            if (node.Right != null) TraverseInOrder(data, node.Right);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace DSA.Algorithm.SortAlgorithm
     public class SortContext
     {
         private ISortStrategy _sortStrategy;
-        private List<int> _data;
+        private readonly List<int> _data;
         public SortContext()
         {
             _sortStrategy = new BubbleSortStrategy();

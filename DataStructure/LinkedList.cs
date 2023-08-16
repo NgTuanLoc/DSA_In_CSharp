@@ -2,12 +2,12 @@ namespace DSA_In_CSharp.DataStructure
 {
     public class Node
     {
-        public int value { get; set; }
-        public Node? next { get; set; }
+        public int Value { get; set; }
+        public Node? Next { get; set; }
         public Node(int data)
         {
-            value = data;
-            next = null;
+            Value = data;
+            Next = null;
         }
     }
     public class LinkedList
@@ -30,8 +30,8 @@ namespace DSA_In_CSharp.DataStructure
 
             if (_tail != null)
             {
-                _tail.next = new Node(value);
-                _tail = _tail.next;
+                _tail.Next = new Node(value);
+                _tail = _tail.Next;
             }
         }
         public Node? Pop()
@@ -45,18 +45,18 @@ namespace DSA_In_CSharp.DataStructure
             var node = _head;
             while (node != null)
             {
-                if (node.next == null)
+                if (node.Next == null)
                 {
                     _head = null;
                     _tail = null;
                 }
-                if (node.next == _tail)
+                if (node.Next == _tail)
                 {
                     _tail = node;
-                    _tail.next = null;
+                    _tail.Next = null;
                     break;
                 }
-                node = node.next;
+                node = node.Next;
             }
             return _tail;
         }
@@ -69,19 +69,19 @@ namespace DSA_In_CSharp.DataStructure
                 if (position == 0)
                 {
                     var tempNode = new Node(value);
-                    tempNode.next = _head;
+                    tempNode.Next = _head;
                     _head = tempNode;
                     break;
                 }
                 if (position - 1 == count)
                 {
-                    var tempNode = node.next;
-                    node.next = new Node(value);
-                    node.next.next = tempNode;
+                    var tempNode = node.Next;
+                    node.Next = new Node(value);
+                    node.Next.Next = tempNode;
                     break;
                 }
                 count++;
-                node = node.next;
+                node = node.Next;
             }
         }
         public void Remove(int position)
@@ -99,19 +99,19 @@ namespace DSA_In_CSharp.DataStructure
             {
                 if (position == 0)
                 {
-                    var tempNode = _head.next;
+                    var tempNode = _head.Next;
                     _head = tempNode;
                     break;
                 }
 
                 if (position - 1 == count)
                 {
-                    var removeNode = node.next;
-                    node.next = removeNode?.next;
+                    var removeNode = node.Next;
+                    node.Next = removeNode?.Next;
                     break;
                 }
                 count++;
-                node = node.next;
+                node = node.Next;
             }
         }
         private int GetLinkedListLength()
@@ -121,7 +121,7 @@ namespace DSA_In_CSharp.DataStructure
             while (node != null)
             {
                 count++;
-                node = node.next;
+                node = node.Next;
             }
 
             return count;
@@ -131,8 +131,8 @@ namespace DSA_In_CSharp.DataStructure
             var node = _head;
             while (node != null)
             {
-                Console.WriteLine(node.value);
-                node = node.next;
+                Console.WriteLine(node.Value);
+                node = node.Next;
             }
             Console.WriteLine("=====================");
         }
