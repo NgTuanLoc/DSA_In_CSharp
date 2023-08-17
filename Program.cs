@@ -69,6 +69,19 @@ Console.Clear();
 
 // ================== HashTable ==================
 var hashTable = new HashTable();
-Console.WriteLine(hashTable.Hash("Pink", 100));
-Console.WriteLine(hashTable.Hash("pkjdsfgkjfkhgin", 100));
-Console.WriteLine(hashTable.Hash("pkjdsfgkjfhgink", 100));
+// Console.WriteLine(HashTable.Hash("Pink", 100));
+// Console.WriteLine(HashTable.Hash("apple", 100));
+// Console.WriteLine(HashTable.Hash("paple", 100));
+
+hashTable.Set("a", "gdfgfd1");
+hashTable.Set("a", "gdfgffddgd1");
+
+var result = hashTable.Get("a");
+
+foreach (var item in result)
+{
+    if (item != "")
+    {
+        Console.WriteLine(item);
+    }
+}
