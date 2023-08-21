@@ -4,6 +4,7 @@ using DSA.Algorithm.Helpers;
 using DSA.DataStructure;
 using DSA_In_CSharp.Algorithm;
 using DSA_In_CSharp.Algorithm.SearchAlgorithm;
+using DSA_In_CSharp.DynamicProgramming;
 using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
 Console.Clear();
 
@@ -68,20 +69,33 @@ Console.Clear();
 // SortHelper.PrintList(tree.DFSInOrder(), "DFS (InOrder)");
 
 // ================== HashTable ==================
-var hashTable = new HashTable();
-// Console.WriteLine(HashTable.Hash("Pink", 100));
-// Console.WriteLine(HashTable.Hash("apple", 100));
-// Console.WriteLine(HashTable.Hash("paple", 100));
+// var hashTable = new HashTable();
+// // Console.WriteLine(HashTable.Hash("Pink", 100));
+// // Console.WriteLine(HashTable.Hash("apple", 100));
+// // Console.WriteLine(HashTable.Hash("paple", 100));
 
-hashTable.Set("a", "gdfgfd1");
-hashTable.Set("a", "gdfgffddgd1");
+// hashTable.Set("a", "gdfgfd1");
+// hashTable.Set("a", "gdfgffddgd1");
 
-var result = hashTable.Get("a");
+// var result = hashTable.Get("a");
 
-foreach (var item in result)
+// foreach (var item in result)
+// {
+//     if (item != "")
+//     {
+//         Console.WriteLine(item);
+//     }
+// }
+
+// ================== Dynamic Programming ==================
+int n = 10;
+var memo = new int[n + 1];
+
+for (int i = 0; i < n + 1; i++)
 {
-    if (item != "")
-    {
-        Console.WriteLine(item);
-    }
+    memo[i] = -1;
 }
+
+var fibonacci = new DynamicFibonacciSequence(memo);
+
+Console.WriteLine(fibonacci.Fibonacci(n));

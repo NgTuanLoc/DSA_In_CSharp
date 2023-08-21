@@ -11,7 +11,7 @@ namespace DSA.DataStructure
         public HashTable(int size = 100)
         {
             _size = size;
-            _keyMap = new List<string>[size];
+            _keyMap = new List<string>[_size];
         }
         public void Set(string key, string value)
         {
