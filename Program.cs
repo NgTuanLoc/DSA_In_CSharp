@@ -87,16 +87,33 @@ using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
 //     }
 // }
 
-// ================== Dynamic Programming ==================
-int n = 10;
-var memo = new int[n + 1];
+// ================== Heap ==================
+// 41, 39, 33, 18, 27, 12
+// Insert: 55
+var heap = new Heap();
+heap.Insert(41);
+heap.Insert(39);
+heap.Insert(33);
+heap.Insert(18);
+heap.Insert(27);
+heap.Insert(12);
+heap.Insert(55);
 
-for (int i = 0; i < n + 1; i++)
+foreach (var item in heap._data)
 {
-    memo[i] = -1;
+    Console.WriteLine(item);
 }
 
-var fibonacci = new DynamicFibonacciSequence(memo);
+// ================== Dynamic Programming ==================
+// int n = 10;
+// var memo = new int[n + 1];
 
-Console.WriteLine(fibonacci.FibonacciMemorization(n));
-Console.WriteLine(fibonacci.FibonacciTabulation(n));
+// for (int i = 0; i < n + 1; i++)
+// {
+//     memo[i] = -1;
+// }
+
+// var fibonacci = new DynamicFibonacciSequence(memo);
+
+// Console.WriteLine(fibonacci.FibonacciMemorization(n));
+// Console.WriteLine(fibonacci.FibonacciTabulation(n));
