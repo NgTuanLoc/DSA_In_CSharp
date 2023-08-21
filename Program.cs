@@ -6,7 +6,7 @@ using DSA_In_CSharp.Algorithm;
 using DSA_In_CSharp.Algorithm.SearchAlgorithm;
 using DSA_In_CSharp.DynamicProgramming;
 using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
-Console.Clear();
+// Console.Clear();
 
 // SortDemo.Run();
 
@@ -98,4 +98,5 @@ for (int i = 0; i < n + 1; i++)
 
 var fibonacci = new DynamicFibonacciSequence(memo);
 
-Console.WriteLine(fibonacci.Fibonacci(n));
+Console.WriteLine(fibonacci.FibonacciMemorization(n));
+Console.WriteLine(fibonacci.FibonacciTabulation(n));
