@@ -20,9 +20,7 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
                         minIndex = j;
                     }
                 }
-                int temp = data[i];
-                data[i] = data[minIndex];
-                data[minIndex] = temp;
+                (data[minIndex], data[i]) = (data[i], data[minIndex]);
             }
             stopWatch.Stop();
             TimeSpan elapsedTime = stopWatch.Elapsed;

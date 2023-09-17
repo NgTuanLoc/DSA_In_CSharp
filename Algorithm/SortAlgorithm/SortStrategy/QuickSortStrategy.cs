@@ -41,9 +41,7 @@ namespace DSA.Algorithm.SortAlgorithm.SortStrategy
         }
         private static void Swap(List<int> data, int i, int j)
         {
-            int temp = data[i];
-            data[i] = data[j];
-            data[j] = temp;
+            (data[j], data[i]) = (data[i], data[j]);
         }
     }
 }
