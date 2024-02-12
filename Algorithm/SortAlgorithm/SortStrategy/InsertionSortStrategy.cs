@@ -1,32 +1,30 @@
 using System.Diagnostics;
 
-namespace DSA.Algorithm.SortAlgorithm.SortStrategy
+namespace DSA.Algorithm.SortAlgorithm.SortStrategy;
+public class InsertionSortStrategy : ISortStrategy
 {
-    public class InsertionSortStrategy : ISortStrategy
+    public List<int> GetSortList(List<int> data)
     {
-        public List<int> GetSortList(List<int> data)
+        var n = data.Count;
+        var stopWatch = new Stopwatch();
+        stopWatch.Start();
+
+        for (int i = 1; i < n; i++)
         {
-            var n = data.Count;
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            int key = data[i];
+            int j = i - 1;
 
-            for (int i = 1; i < n; i++)
+            while (j >= 0 && data[j] > key)
             {
-                int key = data[i];
-                int j = i - 1;
-
-                while (j >= 0 && data[j] > key)
-                {
-                    data[j + 1] = data[j];
-                    j--;
-                }
-
-                data[j + 1] = key;
+                data[j + 1] = data[j];
+                j--;
             }
-            stopWatch.Stop();
-            TimeSpan elapsedTime = stopWatch.Elapsed;
-            Console.WriteLine($"[INSERTION SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
-            return data;
+
+            data[j + 1] = key;
         }
+        stopWatch.Stop();
+        TimeSpan elapsedTime = stopWatch.Elapsed;
+        Console.WriteLine($"[INSERTION SORT] Elapsed Time: {elapsedTime.TotalMicroseconds}");
+        return data;
     }
 }

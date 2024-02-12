@@ -1,49 +1,49 @@
-namespace DSA.DataStructure
+namespace DSA.DataStructure;
+interface IHashTable
 {
-    interface IHashTable
-    {
+    void Set(string key, string value);
+    List<string> Get(string key);
+}
 
+public class HashTable : IHashTable
+{
+    private readonly int _size;
+    private readonly List<string>[] _keyMap;
+    public HashTable(int size = 100)
+    {
+        _size = size;
+        _keyMap = new List<string>[_size];
     }
-    public class HashTable
+    public void Set(string key, string value)
     {
-        private readonly int _size;
-        private readonly List<string>[] _keyMap;
-        public HashTable(int size = 100)
+        var index = Hash(key);
+        if (_keyMap[index] == null)
         {
-            _size = size;
-            _keyMap = new List<string>[_size];
+            _keyMap[index] = new List<string>();
         }
-        public void Set(string key, string value)
+        _keyMap[index].Add(value);
+    }
+    public List<string> Get(string key)
+    {
+        var value = new List<string>();
+        var index = Hash(key);
+        if (_keyMap[index] != null)
         {
-            var index = Hash(key);
-            if (_keyMap[index] == null)
-            {
-                _keyMap[index] = new List<string>();
-            }
-            _keyMap[index].Add(value);
+            value = _keyMap[index];
         }
-        public List<string> Get(string key)
+        return value;
+    }
+    public static int Hash(string key, int size = 100)
+    {
+        var total = 0;
+        var salt = 31;
+        for (var i = 0; i < Math.Min(key.Length, 100); i++)
         {
-            var value = new List<string>();
-            var index = Hash(key);
-            if (_keyMap[index] != null)
-            {
-                value = _keyMap[index];
-            }
-            return value;
+            ushort unicodeValue = Convert.ToUInt16(key[i]);
+            total = (total * salt + unicodeValue) % size;
         }
-        public static int Hash(string key, int size = 100)
-        {
-            var total = 0;
-            var salt = 31;
-            for (var i = 0; i < Math.Min(key.Length, 100); i++)
-            {
-                ushort unicodeValue = Convert.ToUInt16(key[i]);
-                total = (total * salt + unicodeValue) % size;
-            }
 
-            return total;
-        }
+        return total;
     }
 }
 

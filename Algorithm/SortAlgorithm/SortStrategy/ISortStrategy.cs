@@ -1,7 +1,5 @@
-namespace DSA.Algorithm.SortAlgorithm.SortStrategy
+namespace DSA.Algorithm.SortAlgorithm.SortStrategy;
+public interface ISortStrategy
 {
-    public interface ISortStrategy
-    {
-        List<int> GetSortList(List<int> data);
-    }
+    List<int> GetSortList(List<int> data);
 }

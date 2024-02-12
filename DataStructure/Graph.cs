@@ -1,7 +1,5 @@
-namespace DSA.DataStructure
+namespace DSA.DataStructure;
+public class Graph
 {
-    public class Graph
-    {
 
-    }
 }
