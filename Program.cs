@@ -2,11 +2,12 @@
 using System.Diagnostics;
 using DSA.Algorithm.Helpers;
 using DSA.DataStructure;
+using DSA.LeetCode.ArrayAndString;
 using DSA_In_CSharp.Algorithm;
 using DSA_In_CSharp.Algorithm.SearchAlgorithm;
 using DSA_In_CSharp.DynamicProgramming;
 using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
-// Console.Clear();
+Console.Clear();
 
 // SortDemo.Run();
 
@@ -90,14 +91,14 @@ using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
 // ================== Heap ==================
 // 41, 39, 33, 18, 27, 12
 // Insert: 55
-var heap = new Heap();
-heap.Insert(41);
-heap.Insert(39);
-heap.Insert(33);
-heap.Insert(18);
-heap.Insert(27);
-heap.Insert(12);
-heap.Insert(55);
+// var heap = new Heap();
+// heap.Insert(41);
+// heap.Insert(39);
+// heap.Insert(33);
+// heap.Insert(18);
+// heap.Insert(27);
+// heap.Insert(12);
+// heap.Insert(55);
 // heap.Insert(100);
 // heap.Insert(19);
 // heap.Insert(36);
@@ -108,10 +109,10 @@ heap.Insert(55);
 // heap.Insert(2);
 // heap.Insert(7);
 
-foreach (var item in heap._data)
-{
-    Console.WriteLine(item);
-}
+// foreach (var item in heap._data)
+// {
+//     Console.WriteLine(item);
+// }
 
 // ================== Dynamic Programming ==================
 // int n = 10;
@@ -126,3 +127,7 @@ foreach (var item in heap._data)
 
 // Console.WriteLine(fibonacci.FibonacciMemorization(n));
 // Console.WriteLine(fibonacci.FibonacciTabulation(n));
+
+
+// !LEET CODE
+ArrayAndStringExample.Run();
