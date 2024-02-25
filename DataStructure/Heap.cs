@@ -20,6 +20,8 @@ public class Heap
             int parentIndex = (int)Math.Floor((double)(index - 1) / 2);
             int parentItem = _data[parentIndex];
             if (parentItem >= insertedItem) break;
+
+            // swap parent to target when parent is smaller target
             _data[parentIndex] = insertedItem;
             _data[index] = parentItem;
             index = parentIndex;

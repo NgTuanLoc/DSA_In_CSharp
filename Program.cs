@@ -98,6 +98,15 @@ heap.Insert(18);
 heap.Insert(27);
 heap.Insert(12);
 heap.Insert(55);
+// heap.Insert(100);
+// heap.Insert(19);
+// heap.Insert(36);
+// heap.Insert(17);
+// heap.Insert(3);
+// heap.Insert(25);
+// heap.Insert(1);
+// heap.Insert(2);
+// heap.Insert(7);
 
 foreach (var item in heap._data)
 {
