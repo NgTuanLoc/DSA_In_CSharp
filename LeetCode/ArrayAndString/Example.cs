@@ -87,5 +87,16 @@ public static class ArrayAndStringExample
         // !Exercises
         // *Two Pointers
         Console.WriteLine(TwoPointers.ReverseWords("Let's take LeetCode contest"));
+        Console.WriteLine(TwoPointers.ReverseOnlyLetters("a-bC-dEf-ghIj"));
+        Console.WriteLine(TwoPointers.GetCommon([1, 2, 3, 6], [2, 3, 4, 5]));
+        int[] nums = [0, 1, 0, 3, 12];
+        TwoPointers.MoveZeroes(nums);
+        Console.WriteLine("===================================");
+        foreach (var item in nums)
+        {
+            Console.WriteLine(item);
+        }
+        Console.WriteLine("===================================");
+        Console.WriteLine(TwoPointers.ReversePrefix("abcdefd", 'd'));
     }
 }

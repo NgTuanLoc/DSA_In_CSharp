@@ -139,4 +139,90 @@ public static class TwoPointers
 
         return stringBuilder.ToString();
     }
+
+    public static string ReverseOnlyLetters(string s)
+    {
+        // https://leetcode.com/problems/reverse-only-letters/
+        var l = s.ToCharArray();
+        int left = 0;
+        int right = s.Length - 1;
+        while (left < right)
+        {
+            if (!char.IsLetter(s[left]))
+            {
+                left++;
+                continue;
+            }
+            if (!char.IsLetter(s[right]))
+            {
+                right--;
+                continue;
+            }
+            (l[left], l[right]) = (l[right], l[left]);
+            left++;
+            right--;
+        }
+        return new string(l);
+    }
+
+    public static int GetCommon(int[] nums1, int[] nums2)
+    {
+        // https://leetcode.com/problems/minimum-common-value/
+        int i = 0;
+        int j = 0;
+
+        while (i < nums1.Length && j < nums2.Length)
+        {
+            if (nums1[i] == nums2[j]) return nums1[i];
+            if (nums1[i] < nums2[j])
+            {
+                i++;
+            }
+            else
+            {
+                j++;
+            }
+        }
+
+        return -1;
+    }
+
+    public static void MoveZeroes(int[] nums)
+    {
+        int left = 0;
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            if (nums[i] != 0)
+            {
+                (nums[left], nums[i]) = (nums[i], nums[left]);
+                left++;
+            }
+        }
+    }
+    public static string ReversePrefix(string word, char ch)
+    {
+        var temp = word.ToCharArray();
+        int right = -1;
+        int left = 0;
+        for (int i = 0; i < word.Length; i++)
+        {
+            if (word[i] == ch)
+            {
+                right = i;
+                break;
+            }
+        }
+
+        if (right == -1) return word;
+
+        while (left < right)
+        {
+            (temp[left], temp[right]) = (temp[right], temp[left]);
+            left++;
+            right--;
+        }
+
+        return new string(temp);
+    }
 }
