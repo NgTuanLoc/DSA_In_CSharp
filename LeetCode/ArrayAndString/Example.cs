@@ -86,17 +86,32 @@ public static class ArrayAndStringExample
 
         // !Exercises
         // *Two Pointers
-        Console.WriteLine(TwoPointers.ReverseWords("Let's take LeetCode contest"));
-        Console.WriteLine(TwoPointers.ReverseOnlyLetters("a-bC-dEf-ghIj"));
-        Console.WriteLine(TwoPointers.GetCommon([1, 2, 3, 6], [2, 3, 4, 5]));
-        int[] nums = [0, 1, 0, 3, 12];
-        TwoPointers.MoveZeroes(nums);
-        Console.WriteLine("===================================");
-        foreach (var item in nums)
-        {
-            Console.WriteLine(item);
-        }
-        Console.WriteLine("===================================");
-        Console.WriteLine(TwoPointers.ReversePrefix("abcdefd", 'd'));
+        // Console.WriteLine(TwoPointers.ReverseWords("Let's take LeetCode contest"));
+        // Console.WriteLine(TwoPointers.ReverseOnlyLetters("a-bC-dEf-ghIj"));
+        // Console.WriteLine(TwoPointers.GetCommon([1, 2, 3, 6], [2, 3, 4, 5]));
+        // int[] nums = [0, 1, 0, 3, 12];
+        // TwoPointers.MoveZeroes(nums);
+        // Console.WriteLine("===================================");
+        // foreach (var item in nums)
+        // {
+        //     Console.WriteLine(item);
+        // }
+        // Console.WriteLine("===================================");
+        // Console.WriteLine(TwoPointers.ReversePrefix("abcdefd", 'd'));
+
+        // *Sliding Window
+        // Console.WriteLine(SlidingWindow.MinSubArrayLen(7, [2, 3, 1, 2, 4, 3]));
+        // Console.WriteLine(SlidingWindow.MinSubArrayLen(11, [1, 1, 1, 1, 1, 1, 1, 1]));
+        // Console.WriteLine(SlidingWindow.MinSubArrayLen(4, [1, 4, 4]));
+        // Console.WriteLine(SlidingWindow.MinSubArrayLen(11, [1, 2, 3, 4, 5]));
+        // Console.WriteLine(SlidingWindow.MinSubArrayLen(15, [1, 2, 3, 4, 5]));
+
+        // Console.WriteLine(SlidingWindow.MaxVowels("abciiidef", 3));
+        // Console.WriteLine(SlidingWindow.MaxVowels("ibpbhixfiouhdljnjfflpapptrxgcomvnb", 33));
+        // Console.WriteLine("ibpbhixfiouhdljnjfflpapptrxgcomvnb".Length);
+
+        Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "bcdf", 3));
+        Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "cdef", 3));
+        Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "acde", 0));
     }
 }

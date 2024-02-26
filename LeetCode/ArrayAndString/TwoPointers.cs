@@ -189,6 +189,7 @@ public static class TwoPointers
 
     public static void MoveZeroes(int[] nums)
     {
+        // https://leetcode.com/problems/move-zeroes/description/
         int left = 0;
 
         for (int i = 0; i < nums.Length; i++)
@@ -202,6 +203,7 @@ public static class TwoPointers
     }
     public static string ReversePrefix(string word, char ch)
     {
+        // https://leetcode.com/problems/reverse-prefix-of-word/description/
         var temp = word.ToCharArray();
         int right = -1;
         int left = 0;

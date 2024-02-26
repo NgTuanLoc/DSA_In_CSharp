@@ -140,4 +140,90 @@ public static class SlidingWindow
 
         return result;
     }
+
+    // !Exercises
+    public static int MinSubArrayLen(int target, int[] nums)
+    {
+        // https://leetcode.com/problems/minimum-size-subarray-sum/
+        int curr = 0;
+        int left = 0;
+        int answer = nums.Length + 1;
+
+        for (int right = 0; right < nums.Length; right++)
+        {
+            curr += nums[right];
+            while (curr >= target)
+            {
+                answer = Math.Min(answer, right - left + 1);
+                curr -= nums[left];
+                left++;
+            }
+        }
+
+        return answer == nums.Length + 1 ? 0 : answer;
+    }
+
+    public static int MaxVowels(string s, int k)
+    {
+        // https://leetcode.com/problems/maximum-number-of-vowels-in-a-substring-of-given-length/submissions/1186382760/
+        int curr = 0;
+        int left = 0;
+
+        for (int i = 0; i < k; i++)
+        {
+            curr += IsVowel(s[i]);
+        }
+        int answer = curr;
+
+        for (int right = k; right < s.Length; right++)
+        {
+            if (curr == k) return k;
+            curr -= IsVowel(s[left]);
+            curr += IsVowel(s[right]);
+            left++;
+            answer = Math.Max(answer, curr);
+        }
+
+        return answer;
+    }
+
+    public static int IsVowel(char ch)
+    {
+        // Convert the character to lowercase for easier comparison
+        ch = char.ToLower(ch);
+
+        // Check if the character is a vowel
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' ? 1 : 0;
+    }
+
+    public static int EqualSubstring(string s, string t, int maxCost)
+    {
+        //    https://leetcode.com/problems/get-equal-substrings-within-budget/
+        int answer = 0;
+        int curr = 0;
+        int left = 0;
+        int sum = 0;
+
+        for (int right = 0; right < s.Length; right++)
+        {
+            sum += CalculateDifferenceBetweenCharacters(s[right], t[right]);
+            curr++;
+
+            while (sum > maxCost)
+            {
+                sum -= CalculateDifferenceBetweenCharacters(s[left], t[left]);
+                left++;
+                curr--;
+            }
+
+            answer = Math.Max(answer, curr);
+        }
+
+        return answer;
+    }
+
+    public static int CalculateDifferenceBetweenCharacters(char s, char t)
+    {
+        return Math.Abs(Convert.ToInt32(s) - Convert.ToInt32(t));
+    }
 }
