@@ -110,8 +110,22 @@ public static class ArrayAndStringExample
         // Console.WriteLine(SlidingWindow.MaxVowels("ibpbhixfiouhdljnjfflpapptrxgcomvnb", 33));
         // Console.WriteLine("ibpbhixfiouhdljnjfflpapptrxgcomvnb".Length);
 
-        Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "bcdf", 3));
-        Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "cdef", 3));
-        Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "acde", 0));
+        // Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "bcdf", 3));
+        // Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "cdef", 3));
+        // Console.WriteLine(SlidingWindow.EqualSubstring("abcd", "acde", 0));
+
+        // *Prefix Sum
+        // Console.WriteLine(PrefixSum.LargestAltitude([-5, 1, 5, 0, -7]));
+        // Console.WriteLine(PrefixSum.LargestAltitude([-4, -3, -2, -1, 4, 3, 2]));
+
+        // Console.WriteLine(PrefixSum.PivotIndex([1, 7, 3, 6, 5, 6]));
+        // Console.WriteLine(PrefixSum.PivotIndex([1, 2, 3]));
+        // Console.WriteLine(PrefixSum.PivotIndex([2, 1, -1]));
+        // Console.WriteLine(PrefixSum.PivotIndex([-1, -1, 0, 1, 1, 0]));
+        // Console.WriteLine(PrefixSum.PivotIndex([-1, -1, -1, 1, 1, 1]));
+        // Console.WriteLine(PrefixSum.PivotIndex([-1, -1, 0, 1, 1, 1]));
+        // Console.WriteLine(PrefixSum.PivotIndex([0]));
+
+
     }
 }
