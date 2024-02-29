@@ -4,11 +4,12 @@ using DSA.Algorithm.Helpers;
 using DSA.DataStructure;
 using DSA.LeetCode.ArrayAndString;
 using DSA.LeetCode.Hashing;
+using DSA.LeetCode.TreesAndGraphs;
 using DSA_In_CSharp.Algorithm;
 using DSA_In_CSharp.Algorithm.SearchAlgorithm;
 using DSA_In_CSharp.DynamicProgramming;
 using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
-// Console.Clear();
+Console.Clear();
 
 // SortDemo.Run();
 
@@ -132,4 +133,5 @@ using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
 
 // !LEET CODE
 // ArrayAndStringExample.Run();
-HashingExample.Run();
+// HashingExample.Run();
+TreesAndGraphsExample.Run();
