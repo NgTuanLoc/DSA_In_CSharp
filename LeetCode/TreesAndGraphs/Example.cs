@@ -2,7 +2,7 @@
 
 public class TreesAndGraphsExample
 {
-    public static void Run()
+    public static void Run_DFS()
     {
         // !Initialize a tree
         // Creating nodes for the binary tree
@@ -149,20 +149,117 @@ public class TreesAndGraphsExample
         // Console.WriteLine(BinaryTreeDeptFirstSearch.MaxAncestorDiff(rootA));
 
         //!Diameter of Binary 
-        TreeNode rootA = new(1);
-        TreeNode node2 = new(2);
-        TreeNode node3 = new(3);
-        TreeNode node4 = new(4);
-        TreeNode node5 = new(5);
+        // TreeNode rootA = new(1);
+        // TreeNode node2 = new(2);
+        // TreeNode node3 = new(3);
+        // TreeNode node4 = new(4);
+        // TreeNode node5 = new(5);
 
-        rootA.left = node2;
-        rootA.right = node3;
+        // rootA.left = node2;
+        // rootA.right = node3;
 
-        node2.left = node4;
-        node2.right = node5;
+        // node2.left = node4;
+        // node2.right = node5;
 
-        BinaryTreeDeptFirstSearch n = new();
+        // BinaryTreeDeptFirstSearch n = new();
 
-        Console.WriteLine(n.DiameterOfBinaryTree(rootA));
+        // Console.WriteLine(n.DiameterOfBinaryTree(rootA));
+    }
+
+    public static void Run_BFS()
+    {
+        // !BFS
+        // TreeNode root = new(0);
+        // TreeNode node1 = new(1);
+        // TreeNode node2 = new(2);
+        // TreeNode node3 = new(3);
+        // TreeNode node4 = new(4);
+        // TreeNode node5 = new(5);
+        // TreeNode node6 = new(6);
+        // TreeNode node7 = new(7);
+        // TreeNode node8 = new(8);
+
+        // root.left = node1;
+        // root.right = node2;
+
+        // node1.left = node3;
+        // node1.right = node4;
+
+        // node3.left = node6;
+
+        // node4.left = node7;
+        // node4.right = node8;
+
+        // node2.right = node5;
+
+        // BFS.PrintAllNodes(root);
+
+        // !Binary Tree Right Side View
+        // var result = BFS.RightSideView(root);
+        // foreach (var item in result)
+        // {
+        //     Console.Write($"{item}  ");
+        // }
+
+        // !Find Largest Value in Each Tree Row
+        // var result = BFS.LargestValues(root);
+        // foreach (var item in result)
+        // {
+        //     Console.Write($"{item}  ");
+        // }
+
+        // !Get Deepest Leaves Sum
+        // Console.WriteLine(BFS.DeepestLeavesSum(root));
+
+        // !Binary Tree Zigzag Level Order Traversal
+        // var result = BFS.ZigzagLevelOrder(root);
+
+        // foreach (var level in result)
+        // {
+        //     Console.WriteLine();
+        //     foreach (var item in level)
+        //     {
+        //         Console.Write($"{item} ");
+        //     }
+        //     Console.WriteLine();
+        // }
+    }
+
+    public static void Run_BinarySearchTree()
+    {
+        // !Initialize Binary Search Tree
+        TreeNode root = new(23);
+        TreeNode node8 = new(8);
+        TreeNode node37 = new(37);
+        TreeNode node6 = new(6);
+        TreeNode node17 = new(17);
+        TreeNode node29 = new(29);
+        TreeNode node50 = new(50);
+        TreeNode node9 = new(9);
+        TreeNode node20 = new(20);
+
+        root.left = node8;
+        root.right = node37;
+
+        node8.left = node6;
+        node8.right = node17;
+
+        node37.left = node29;
+        node37.right = node50;
+
+        node17.left = node9;
+        node17.right = node20;
+
+        // !Range Sum of BST
+        // Console.WriteLine(BinarySearchTree.RangeSumBST(root, 8, 17));
+        // Console.WriteLine(BinarySearchTree.RangeSumBST_Iteration(root, 8, 17));
+
+        // !Minimum Absolute Difference in BST
+        // Console.WriteLine(BinarySearchTree.GetMinimumDifference(root));
+        // Console.WriteLine(BinarySearchTree.GetMinimumDifference_Iteration(root));
+
+        // !Validate BST
+        Console.WriteLine(BinarySearchTree.IsValidBST(root));
+        Console.WriteLine(BinarySearchTree.IsValidBST_Iteration(root));
     }
 }
