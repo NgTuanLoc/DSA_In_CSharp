@@ -138,4 +138,5 @@ Console.Clear();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
 // TreesAndGraphsExample.Run_BinarySearchTree();
-BacktrackingExample.Run();
+// BacktrackingExample.Run();
+HeapExample.Run();
