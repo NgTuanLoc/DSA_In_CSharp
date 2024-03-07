@@ -25,8 +25,12 @@ public class HeapExample
         //     Console.WriteLine(item);
         // }
 
-        // Last Stone Weight
+        // !Last Stone Weight
         // HeapSolution.LastStoneWeight([2, 7, 4, 1, 8, 1]);
-        HeapSolution.LastStoneWeight([7, 5, 6, 9, 10, 5]);
+        // HeapSolution.LastStoneWeight([7, 5, 6, 9, 10, 5]);
+
+        // !Minimum Operations to Halve Array Sum
+        // Console.WriteLine(HeapSolution.HalveArray([5, 19, 8, 1]));
+        Console.WriteLine(HeapSolution.HalveArray([3, 8, 20]));
     }
 }

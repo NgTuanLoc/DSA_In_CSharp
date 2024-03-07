@@ -9,6 +9,7 @@ interface IHeap<T> where T : IComparable<T>
     void BubbleUp();
     void BubbleDown();
     T Remove();
+    T Top();
 }
 
 public class Heap<T>(HeapType heapType) : IHeap<T> where T : IComparable<T>
@@ -107,5 +108,10 @@ public class Heap<T>(HeapType heapType) : IHeap<T> where T : IComparable<T>
     public int Count()
     {
         return Data.Count;
+    }
+
+    public T Top()
+    {
+        return Data.First();
     }
 }
