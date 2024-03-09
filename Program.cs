@@ -134,9 +134,9 @@ Console.Clear();
 
 // !LEET CODE
 // ArrayAndStringExample.Run();
-// HashingExample.Run();
+HashingExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
 // TreesAndGraphsExample.Run_BinarySearchTree();
 // BacktrackingExample.Run();
-HeapExample.Run();
+// HeapExample.Run();
