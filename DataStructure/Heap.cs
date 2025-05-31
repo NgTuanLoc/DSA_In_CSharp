@@ -1,16 +1,20 @@
 namespace DSA.DataStructure;
+
 public class Heap
 {
     public List<int> _data;
+
     public Heap()
     {
-        _data = new List<int>();
+        _data = [];
     }
+
     public void Insert(int value)
     {
         _data.Add(value);
         BubbleUp();
     }
+
     public void BubbleUp()
     {
         int index = _data.Count - 1;

@@ -15,12 +15,10 @@ public class QuickSortStrategy : ISortStrategy
     }
     private void QuickSort(List<int> list, int left, int right)
     {
-        if (left < right)
-        {
-            var pivotIndex = Pivot(list, left, right);
-            QuickSort(list, left, pivotIndex - 1);
-            QuickSort(list, pivotIndex + 1, right);
-        }
+        if (left >= right) return;
+        var pivotIndex = Pivot(list, left, right);
+        QuickSort(list, left, pivotIndex - 1);
+        QuickSort(list, pivotIndex + 1, right);
     }
     private static int Pivot(List<int> list, int start, int end)
     {

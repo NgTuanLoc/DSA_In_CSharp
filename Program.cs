@@ -9,6 +9,7 @@ using DSA.LeetCode.TreesAndGraphs;
 using DSA_In_CSharp.Algorithm;
 using DSA_In_CSharp.Algorithm.SearchAlgorithm;
 using DSA_In_CSharp.DynamicProgramming;
+using DSA.LeetCode;
 using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
 Console.Clear();
 
@@ -134,9 +135,21 @@ Console.Clear();
 
 // !LEET CODE
 // ArrayAndStringExample.Run();
-HashingExample.Run();
+// HashingExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
 // TreesAndGraphsExample.Run_BinarySearchTree();
 // BacktrackingExample.Run();
 // HeapExample.Run();
+
+// !Playground
+var result = Playground.LongestOnes([1,1,1,0,0,0,1,1,1,1,0], 2);
+var result1 = Playground.LongestOnes([0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], 3);
+Console.WriteLine(result);
+Console.WriteLine(result1);
+
+
+
+
+
+
