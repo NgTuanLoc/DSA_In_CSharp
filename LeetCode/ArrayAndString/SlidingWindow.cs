@@ -2,7 +2,7 @@
 
 public static class SlidingWindow
 {
-    // !Sliding Window
+    // Example 1: Given an array of positive integers nums and an integer k, find the length of the longest subarray whose sum is less than or equal to k. This is the problem we have been talking about above. We will now formally solve it.
     public static int FindMaxLengthOfTheSubArraySmallerThanK(List<int> nums, int k)
     {
         int left = 0;
@@ -24,7 +24,6 @@ public static class SlidingWindow
         return answer;
     }
 
-    // !Sliding Window
     public static int FindTheLongestLengthOfSubStringThatContainOnlyOne(string s)
     {
         int answer = 0;
@@ -51,6 +50,7 @@ public static class SlidingWindow
     // !Number of SubArrays
     public static int NumSubArrayProductLessThanK(List<int> nums, int k)
     {
+        // https://leetcode.com/problems/subarray-product-less-than-k/description/
         if (k <= 1) return 0;
 
         int answer = 0;

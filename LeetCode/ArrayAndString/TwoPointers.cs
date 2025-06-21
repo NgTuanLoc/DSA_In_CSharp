@@ -70,20 +70,27 @@ public static class TwoPointers
 
     public static bool IsSubSequence(string s, string t)
     {
+        // https://leetcode.com/problems/is-subsequence/description/
+        int i = 0;
         int j = 0;
 
-        for (int i = 0; i < t.Length; i++)
+        while (i < s.Length && j < t.Length)
         {
-            if (s[j] != t[i]) continue;
-            if (j == s.Length - 1) return true;
+            if (s[i] == t[j])
+            {
+                i++;
+                j++;
+                continue;
+            }
             j++;
         }
 
-        return false;
+        return s.Length == i;
     }
 
     public static void ReverseString(char[] s)
     {
+        // https://leetcode.com/problems/reverse-string/description/
         int i = 0;
         int j = s.Length - 1;
 
@@ -97,6 +104,7 @@ public static class TwoPointers
 
     public static int[] SortedSquares(int[] nums)
     {
+        // https://leetcode.com/problems/squares-of-a-sorted-array/
         int[] result = new int[nums.Length];
         int i = 0;
         int j = nums.Length - 1;

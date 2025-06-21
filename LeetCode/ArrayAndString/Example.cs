@@ -125,7 +125,5 @@ public static class ArrayAndStringExample
         // Console.WriteLine(PrefixSum.PivotIndex([-1, -1, -1, 1, 1, 1]));
         // Console.WriteLine(PrefixSum.PivotIndex([-1, -1, 0, 1, 1, 1]));
         // Console.WriteLine(PrefixSum.PivotIndex([0]));
-
-
     }
 }

@@ -143,13 +143,35 @@ Console.Clear();
 // HeapExample.Run();
 
 // !Playground
-var result = Playground.LongestOnes([1,1,1,0,0,0,1,1,1,1,0], 2);
-var result1 = Playground.LongestOnes([0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], 3);
-Console.WriteLine(result);
-Console.WriteLine(result1);
+//var result = Playground.LongestOnes([1,1,1,0,0,0,1,1,1,1,0], 2);
+//var result1 = Playground.LongestOnes([0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], 3);
+//Console.WriteLine(result);
+//Console.WriteLine(result1);
 
 
 
 
+int PivotIndex(int[] nums)
+{
+    int left = 0;
+    int right = 0;
+    int n = nums.Length;
 
+    for (int i = 0; i < n; i++)
+    {
+        right += nums[i];
+    }
 
+    for (int i = 0; i < n; i++)
+    {
+        right -= nums[i];
+        if (left == right) return i;
+        left += nums[i];
+    }
+
+    return -1;
+}
+
+Console.WriteLine(PivotIndex([1, 7, 3, 6, 5, 6]));
+Console.WriteLine(PivotIndex([1, 2, 3]));
+Console.WriteLine(PivotIndex([2, 1, -1]));
