@@ -1,18 +1,5 @@
 ﻿// using DSA.Algorithm.SortAlgorithm;
-using System.Diagnostics;
-using DSA.Algorithm.Helpers;
-using DSA.DataStructure;
 using DSA.LeetCode.ArrayAndString;
-using DSA.LeetCode.Backtracking;
-using DSA.LeetCode.Hashing;
-using DSA.LeetCode.TreesAndGraphs;
-using DSA_In_CSharp.Algorithm;
-using DSA_In_CSharp.Algorithm.SearchAlgorithm;
-using DSA_In_CSharp.DynamicProgramming;
-using DSA.LeetCode;
-using LinkedList = DSA_In_CSharp.DataStructure.LinkedList;
-Console.Clear();
-
 // SortDemo.Run();
 
 // Search Algorithm
@@ -134,7 +121,7 @@ Console.Clear();
 
 
 // !LEET CODE
-// ArrayAndStringExample.Run();
+ArrayAndStringExample.Run();
 // HashingExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
@@ -148,30 +135,3 @@ Console.Clear();
 //Console.WriteLine(result);
 //Console.WriteLine(result1);
 
-
-
-
-int PivotIndex(int[] nums)
-{
-    int left = 0;
-    int right = 0;
-    int n = nums.Length;
-
-    for (int i = 0; i < n; i++)
-    {
-        right += nums[i];
-    }
-
-    for (int i = 0; i < n; i++)
-    {
-        right -= nums[i];
-        if (left == right) return i;
-        left += nums[i];
-    }
-
-    return -1;
-}
-
-Console.WriteLine(PivotIndex([1, 7, 3, 6, 5, 6]));
-Console.WriteLine(PivotIndex([1, 2, 3]));
-Console.WriteLine(PivotIndex([2, 1, -1]));

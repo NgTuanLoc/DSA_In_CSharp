@@ -6,8 +6,8 @@ public static class TwoPointers
 {
     public static bool CheckPalindrome(string s)
     {
-        int left = 0;
-        int right = s.Length - 1;
+        var left = 0;
+        var right = s.Length - 1;
 
         while (left < right)
         {
@@ -21,11 +21,11 @@ public static class TwoPointers
 
     public static bool CheckForTarget(List<int> list, int target)
     {
-        int left = 0;
-        int right = list.Count - 1;
+        var left = 0;
+        var right = list.Count - 1;
         while (left != right)
         {
-            int sum = list[left] + list[right];
+            var sum = list[left] + list[right];
             if (sum == target) return true;
 
             if (sum > target) right--;
@@ -38,8 +38,8 @@ public static class TwoPointers
     public static List<int> CombineTwoSortedList(List<int> list1, List<int> list2)
     {
         List<int> result = [];
-        int i = 0;
-        int j = 0;
+        var i = 0;
+        var j = 0;
 
         while (i < list1.Count && j < list2.Count)
         {
@@ -71,8 +71,8 @@ public static class TwoPointers
     public static bool IsSubSequence(string s, string t)
     {
         // https://leetcode.com/problems/is-subsequence/description/
-        int i = 0;
-        int j = 0;
+        var i = 0;
+        var j = 0;
 
         while (i < s.Length && j < t.Length)
         {
@@ -91,8 +91,8 @@ public static class TwoPointers
     public static void ReverseString(char[] s)
     {
         // https://leetcode.com/problems/reverse-string/description/
-        int i = 0;
-        int j = s.Length - 1;
+        var i = 0;
+        var j = s.Length - 1;
 
         while (i < j)
         {
@@ -105,14 +105,14 @@ public static class TwoPointers
     public static int[] SortedSquares(int[] nums)
     {
         // https://leetcode.com/problems/squares-of-a-sorted-array/
-        int[] result = new int[nums.Length];
-        int i = 0;
-        int j = nums.Length - 1;
+        var result = new int[nums.Length];
+        var i = 0;
+        var j = nums.Length - 1;
 
-        for (int count = nums.Length - 1; count >= 0; count--)
+        for (var count = nums.Length - 1; count >= 0; count--)
         {
-            int left = nums[i] * nums[i];
-            int right = nums[j] * nums[j];
+            var left = nums[i] * nums[i];
+            var right = nums[j] * nums[j];
 
             if (left < right)
             {
@@ -134,10 +134,10 @@ public static class TwoPointers
         List<string> temp = [.. s.Split(" ")];
         StringBuilder stringBuilder = new();
 
-        for (int i = 0; i < temp.Count; i++)
+        for (var i = 0; i < temp.Count; i++)
         {
-            string item = temp[i];
-            for (int j = item.Length - 1; j >= 0; j--)
+            var item = temp[i];
+            for (var j = item.Length - 1; j >= 0; j--)
             {
                 stringBuilder.Append(item[j]);
             }
@@ -152,8 +152,8 @@ public static class TwoPointers
     {
         // https://leetcode.com/problems/reverse-only-letters/
         var l = s.ToCharArray();
-        int left = 0;
-        int right = s.Length - 1;
+        var left = 0;
+        var right = s.Length - 1;
         while (left < right)
         {
             if (!char.IsLetter(s[left]))
@@ -176,8 +176,8 @@ public static class TwoPointers
     public static int GetCommon(int[] nums1, int[] nums2)
     {
         // https://leetcode.com/problems/minimum-common-value/
-        int i = 0;
-        int j = 0;
+        var i = 0;
+        var j = 0;
 
         while (i < nums1.Length && j < nums2.Length)
         {
@@ -198,30 +198,26 @@ public static class TwoPointers
     public static void MoveZeroes(int[] nums)
     {
         // https://leetcode.com/problems/move-zeroes/description/
-        int left = 0;
+        var left = 0;
 
-        for (int i = 0; i < nums.Length; i++)
+        for (var i = 0; i < nums.Length; i++)
         {
-            if (nums[i] != 0)
-            {
-                (nums[left], nums[i]) = (nums[i], nums[left]);
-                left++;
-            }
+            if (nums[i] == 0) continue;
+            (nums[left], nums[i]) = (nums[i], nums[left]);
+            left++;
         }
     }
     public static string ReversePrefix(string word, char ch)
     {
         // https://leetcode.com/problems/reverse-prefix-of-word/description/
         var temp = word.ToCharArray();
-        int right = -1;
-        int left = 0;
-        for (int i = 0; i < word.Length; i++)
+        var right = -1;
+        var left = 0;
+        for (var i = 0; i < word.Length; i++)
         {
-            if (word[i] == ch)
-            {
-                right = i;
-                break;
-            }
+            if (word[i] != ch) continue;
+            right = i;
+            break;
         }
 
         if (right == -1) return word;
