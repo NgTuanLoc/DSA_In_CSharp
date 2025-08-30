@@ -1,5 +1,7 @@
 ﻿// using DSA.Algorithm.SortAlgorithm;
 using DSA.LeetCode.ArrayAndString;
+using DSA.LeetCode.TreesAndGraphs;
+Console.WriteLine("======= Data structure and Algorithm =======");
 // SortDemo.Run();
 
 // Search Algorithm
@@ -121,7 +123,7 @@ using DSA.LeetCode.ArrayAndString;
 
 
 // !LEET CODE
-ArrayAndStringExample.Run();
+// ArrayAndStringExample.Run();
 // HashingExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
@@ -134,4 +136,3 @@ ArrayAndStringExample.Run();
 //var result1 = Playground.LongestOnes([0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], 3);
 //Console.WriteLine(result);
 //Console.WriteLine(result1);
-

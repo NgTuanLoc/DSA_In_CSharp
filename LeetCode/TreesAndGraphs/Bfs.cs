@@ -1,8 +1,6 @@
-﻿using DSA.LeetCode.TreesAndGraphs;
+﻿namespace DSA.LeetCode.TreesAndGraphs;
 
-namespace DSA;
-
-public class BFS
+public class Bfs
 {
     public static void PrintAllNodes(TreeNode root)
     {
@@ -11,9 +9,9 @@ public class BFS
         while (queue.Count != 0)
         {
             var curr = queue.Dequeue();
-            Console.WriteLine(curr.val);
-            if (curr.left != null) queue.Enqueue(curr.left);
-            if (curr.right != null) queue.Enqueue(curr.right);
+            Console.WriteLine(curr.Val);
+            if (curr.Left != null) queue.Enqueue(curr.Left);
+            if (curr.Right != null) queue.Enqueue(curr.Right);
         }
     }
 
@@ -28,14 +26,14 @@ public class BFS
 
         while (queue.Count != 0)
         {
-            int prev = 0;
-            int size = queue.Count;
-            for (int i = 0; i < size; i++)
+            var prev = 0;
+            var size = queue.Count;
+            for (var i = 0; i < size; i++)
             {
                 var currNode = queue.Dequeue();
-                prev = currNode.val;
-                if (currNode.left != null) queue.Enqueue(currNode.left);
-                if (currNode.right != null) queue.Enqueue(currNode.right);
+                prev = currNode.Val;
+                if (currNode.Left != null) queue.Enqueue(currNode.Left);
+                if (currNode.Right != null) queue.Enqueue(currNode.Right);
             }
             result.Add(prev);
         }
@@ -43,7 +41,7 @@ public class BFS
         return result;
     }
 
-    public static IList<int> LargestValues(TreeNode root)
+    public static IList<int> LargestValues(TreeNode? root)
     {
         // https://leetcode.com/problems/find-largest-value-in-each-tree-row/
         IList<int> result = [];
@@ -60,10 +58,10 @@ public class BFS
             for (int i = 0; i < size; i++)
             {
                 var curr = queue.Dequeue();
-                if (temp < curr.val) temp = curr.val;
+                if (temp < curr.Val) temp = curr.Val;
 
-                if (curr.left != null) queue.Enqueue(curr.left);
-                if (curr.right != null) queue.Enqueue(curr.right);
+                if (curr.Left != null) queue.Enqueue(curr.Left);
+                if (curr.Right != null) queue.Enqueue(curr.Right);
             }
             result.Add(temp);
         }
@@ -71,11 +69,11 @@ public class BFS
         return result;
     }
 
-    public static int DeepestLeavesSum(TreeNode root)
+    public static int DeepestLeavesSum(TreeNode? root)
     {
         // https://leetcode.com/problems/deepest-leaves-sum/description/
         Queue<TreeNode> queue = [];
-        int result = 0;
+        var result = 0;
 
         if (root == null) return result;
 
@@ -83,22 +81,22 @@ public class BFS
 
         while (queue.Count != 0)
         {
-            int size = queue.Count;
-            bool isTheLastLevel = true;
-            int sum = 0;
+            var size = queue.Count;
+            var isTheLastLevel = true;
+            var sum = 0;
 
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
                 var curr = queue.Dequeue();
-                sum += curr.val;
-                if (curr.left != null)
+                sum += curr.Val;
+                if (curr.Left != null)
                 {
-                    queue.Enqueue(curr.left);
+                    queue.Enqueue(curr.Left);
                     isTheLastLevel = false;
                 }
-                if (curr.right != null)
+                if (curr.Right != null)
                 {
-                    queue.Enqueue(curr.right);
+                    queue.Enqueue(curr.Right);
                     isTheLastLevel = false;
                 }
                 if (isTheLastLevel) result = sum;
@@ -108,11 +106,11 @@ public class BFS
         return result;
     }
 
-    public static IList<IList<int>> ZigzagLevelOrder(TreeNode root)
+    public static IList<IList<int>> ZigzagLevelOrder(TreeNode? root)
     {
         // https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
         IList<IList<int>> result = [];
-        bool isReverse = false;
+        var isReverse = false;
         if (root == null) return result;
 
         Queue<TreeNode> queue = [];
@@ -120,17 +118,17 @@ public class BFS
 
         while (queue.Count != 0)
         {
-            int size = queue.Count;
-            IList<int> level = [];
+            var size = queue.Count;
+            List<int> level = [];
 
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
                 var currNode = queue.Dequeue();
 
-                if (currNode.left != null) queue.Enqueue(currNode.left);
-                if (currNode.right != null) queue.Enqueue(currNode.right);
+                if (currNode.Left != null) queue.Enqueue(currNode.Left);
+                if (currNode.Right != null) queue.Enqueue(currNode.Right);
 
-                level.Add(currNode.val);
+                level.Add(currNode.Val);
             }
             if (isReverse) level = level.Reverse<int>().ToList();
 

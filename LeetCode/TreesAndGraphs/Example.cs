@@ -6,21 +6,21 @@ public class TreesAndGraphsExample
     {
         // !Initialize a tree
         // Creating nodes for the binary tree
-        // TreeNode root = new(0);
-        // TreeNode node1 = new(1);
-        // TreeNode node2 = new(2);
-        // TreeNode node3 = new(3);
-        // TreeNode node4 = new(4);
-        // TreeNode node5 = new(5);
-        // TreeNode node6 = new(6);
+        TreeNode root = new(0);
+        TreeNode node1 = new(1);
+        TreeNode node2 = new(2);
+        TreeNode node3 = new(3);
+        TreeNode node4 = new(4);
+        TreeNode node5 = new(5);
+        TreeNode node6 = new(6);
 
         // // Connecting nodes to build the binary tree
-        // root.left = node1;
-        // root.right = node2;
-        // node1.left = node3;
-        // node1.right = node4;
-        // node4.right = node6;
-        // node2.right = node5;
+        root.Left = node1;
+        root.Right = node2;
+        node1.Left = node3;
+        node1.Right = node4;
+        node4.Right = node6;
+        node2.Right = node5;
 
         //                0
         //            /       \
@@ -38,7 +38,7 @@ public class TreesAndGraphsExample
         // BinaryTreeDeptFirstSearch.DFS_InOrder(root);
         // Console.WriteLine("=======PostOrder======= (After Children)");
         // BinaryTreeDeptFirstSearch.DFS_PostOrder(root);
-
+        
         // Console.WriteLine(BinaryTreeDeptFirstSearch.MaxDepth(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.MaxDepth_Iteration(root));
         // System.Console.WriteLine("========");
@@ -46,7 +46,22 @@ public class TreesAndGraphsExample
         // Console.WriteLine(BinaryTreeDeptFirstSearch.HasPathSum(root, 4));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.HasPathSum_Iteration(root, 4));
 
-        // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes(root));
+        int GoodNodeDfs(TreeNode? node, int maxSoFar)
+        {
+            if (node is null) return 0;
+
+            var left = GoodNodeDfs(node.Left, Math.Max(maxSoFar, node.Val));
+            var right = GoodNodeDfs(node.Right, Math.Max(maxSoFar, node.Val));
+
+            var result = left + right;
+
+            if (node.Val >= maxSoFar) return result + 1;
+            
+            return result;
+        }
+        
+        Console.WriteLine(GoodNodes(root));
+        Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes_Iteration(root));
 
         // !Same Tree
@@ -164,6 +179,11 @@ public class TreesAndGraphsExample
         // BinaryTreeDeptFirstSearch n = new();
 
         // Console.WriteLine(n.DiameterOfBinaryTree(rootA));
+
+        int GoodNodes(TreeNode node)
+        {
+            return GoodNodeDfs(node, int.MinValue);
+        }
     }
 
     public static void Run_BFS()
@@ -238,17 +258,17 @@ public class TreesAndGraphsExample
         TreeNode node9 = new(9);
         TreeNode node20 = new(20);
 
-        root.left = node8;
-        root.right = node37;
+        root.Left = node8;
+        root.Right = node37;
 
-        node8.left = node6;
-        node8.right = node17;
+        node8.Left = node6;
+        node8.Right = node17;
 
-        node37.left = node29;
-        node37.right = node50;
+        node37.Left = node29;
+        node37.Right = node50;
 
-        node17.left = node9;
-        node17.right = node20;
+        node17.Left = node9;
+        node17.Right = node20;
 
         // !Range Sum of BST
         // Console.WriteLine(BinarySearchTree.RangeSumBST(root, 8, 17));

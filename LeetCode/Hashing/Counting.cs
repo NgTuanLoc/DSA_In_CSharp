@@ -8,10 +8,10 @@ public class Counting
         // For example, given s = "eceba" and k = 2, return 3. The longest substring with at most 2 distinct characters is "ece".
 
         Dictionary<char, int> table = [];
-        int answer = 0;
-        int left = 0;
+        var answer = 0;
+        var left = 0;
 
-        for (int right = 0; right < s.Length; right++)
+        for (var right = 0; right < s.Length; right++)
         {
             if (table.ContainsKey(s[right]))
             {
@@ -34,19 +34,19 @@ public class Counting
         return answer;
     }
 
-    // https://leetcode.com/problems/intersection-of-multiple-arrays/
     public static IList<int> Intersection(int[][] nums)
     {
+        // https://leetcode.com/problems/intersection-of-multiple-arrays/
         List<int> result = [];
         Dictionary<int, int> table = [];
-        int n = nums.Length;
+        var n = nums.Length;
 
-        for (int i = 0; i < nums[0].Length; i++)
+        for (var i = 0; i < nums[0].Length; i++)
         {
             table.Add(nums[0][i], 1);
         }
 
-        for (int i = 1; i < nums.Length; i++)
+        for (var i = 1; i < nums.Length; i++)
         {
             var list = nums[i];
             foreach (var item in list)
@@ -55,10 +55,7 @@ public class Counting
             }
         }
 
-        foreach (var key in table.Keys)
-        {
-            if (table[key] == n) result.Add(key);
-        }
+        result.AddRange(table.Keys.Where(key => table[key] == n));
 
         result.Sort();
 
@@ -70,46 +67,33 @@ public class Counting
         // https://leetcode.com/problems/check-if-all-characters-have-equal-number-of-occurrences/description/
         Dictionary<char, int> table = [];
 
-        foreach (var c in s)
+        foreach (var c in s.Where(c => !table.TryAdd(c, 1)))
         {
-            if (table.ContainsKey(c))
-            {
-                table[c] += 1;
-                continue;
-            }
-            table.Add(c, 1);
+            table[c] += 1;
         }
 
-        int temp = table[s[0]];
+        var temp = table[s[0]];
 
-        foreach (var key in table.Keys)
-        {
-            if (table[key] != temp) return false;
-        }
-
-        return true;
+        return table.Keys.All(key => table[key] == temp);
     }
     public static int SubArraySum(int[] nums, int k)
     {
         // https://leetcode.com/problems/subarray-sum-equals-k/description/
-        int answer = 0;
-        int curr = 0;
+        var answer = 0;
+        var curr = 0;
         Dictionary<int, int> table = [];
         table.Add(0, 1);
 
-        for (int i = 0; i < nums.Length; i++)
+        foreach (var t in nums)
         {
-            curr += nums[i];
+            curr += t;
             if (table.ContainsKey(curr - k))
             {
                 answer += table[curr - k];
             }
-            if (table.ContainsKey(curr))
-            {
-                table[curr] += 1;
-                continue;
-            }
-            table[curr] = 1;
+
+            if (table.TryAdd(curr, 1)) continue;
+            table[curr] += 1;
         }
 
         return answer;
@@ -118,53 +102,43 @@ public class Counting
     public static int NumberOfSubArrays(int[] nums, int k)
     {
         // https://leetcode.com/problems/count-number-of-nice-subarrays/
-        int answer = 0;
-        int curr = 0;
+        var answer = 0;
+        var curr = 0;
         Dictionary<int, int> table = [];
         table.Add(0, 1);
 
-        for (int i = 0; i < nums.Length; i++)
+        foreach (var t in nums)
         {
-            curr += nums[i] % 2;
+            curr += t % 2;
             if (table.ContainsKey(curr - k))
             {
                 answer += table[curr - k];
             }
-            if (table.ContainsKey(curr))
-            {
-                table[curr] += 1;
-                continue;
-            }
-            table[curr] = 1;
+
+            if (table.TryAdd(curr, 1)) continue;
+            table[curr] += 1;
         }
 
         return answer;
     }
-    // https://leetcode.com/problems/find-players-with-zero-or-one-losses/
+
     public static IList<IList<int>> FindWinners(int[][] matches)
     {
         // https://leetcode.com/problems/find-players-with-zero-or-one-losses/description/
         Dictionary<int, int> tableHistoryAboutLossMatches = [];
         IList<IList<int>> result = [[], []];
 
-        for (int i = 0; i < matches.Length; i++)
+        foreach (var match in matches)
         {
-            var match = matches[i];
             var winner = match[0];
             var loser = match[1];
 
-            if (!tableHistoryAboutLossMatches.ContainsKey(loser))
-            {
-                tableHistoryAboutLossMatches[loser] = 1;
-            }
-            else
+            if (!tableHistoryAboutLossMatches.TryAdd(loser, 1))
             {
                 tableHistoryAboutLossMatches[loser] += 1;
             }
-            if (!tableHistoryAboutLossMatches.ContainsKey(winner))
-            {
-                tableHistoryAboutLossMatches[winner] = 0;
-            }
+
+            tableHistoryAboutLossMatches.TryAdd(winner, 0);
         }
 
         List<int> sortedPlayerList = [.. tableHistoryAboutLossMatches.Keys];
@@ -185,21 +159,12 @@ public class Counting
 
         foreach (var item in nums)
         {
-            if (table.ContainsKey(item))
-            {
-                table[item] += 1;
-                continue;
-            }
-            table[item] = 1;
+            if (table.TryAdd(item, 1)) continue;
+            table[item] += 1;
+            continue;
         }
 
-        int answer = -1;
-        foreach (var key in table.Keys)
-        {
-            if (table[key] == 1) answer = Math.Max(answer, key);
-        }
-
-        return answer;
+        return table.Keys.Where(key => table[key] == 1).Prepend(-1).Max();
     }
 
     public static int MaxNumberOfBalloons(string text)
@@ -207,25 +172,20 @@ public class Counting
         // https://leetcode.com/problems/maximum-number-of-balloons/
         Dictionary<char, int> table = [];
 
-        foreach (var c in text)
+        foreach (var c in text.Where(c => !table.TryAdd(c, 1)))
         {
-            if (table.ContainsKey(c))
-            {
-                table[c] += 1;
-                continue;
-            }
-            table[c] = 1;
+            table[c] += 1;
+            continue;
         }
 
-        int result = 0;
-        string s = "balloon";
+        var result = 0;
+        const string s = "balloon";
 
         while (true)
         {
             foreach (var c in s)
             {
-                if (!table.ContainsKey(c)) return result;
-                if (table[c] == 0) return result;
+                if (!table.TryGetValue(c, out var value) || value == 0) return result;
                 table[c] -= 1;
             }
             result++;
@@ -235,25 +195,23 @@ public class Counting
     public static int FindMaxLength(int[] nums)
     {
         // https://leetcode.com/problems/contiguous-array/description/
-        int result = 0;
-        int count = 0;
+        var result = 0;
+        var count = 0;
         Dictionary<int, int> table = [];
         table.Add(0, -1);
 
-        for (int i = 0; i < nums.Length; i++)
+        for (var i = 0; i < nums.Length; i++)
         {
             count += nums[i] == 0 ? -1 : 1;
-            if (table.ContainsKey(count))
+            if (table.TryGetValue(count, out int value))
             {
-                result = Math.Max(result, i - table[count]);
+                result = Math.Max(result, i - value);
             }
             else
             {
                 table.Add(count, i);
             }
         }
-
         return result;
     }
-
 }

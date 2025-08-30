@@ -1,24 +1,15 @@
-namespace DSA_In_CSharp.Algorithm;
-public class Node
+namespace DSA.DataStructure;
+public class Node(int n)
 {
-    public int Value { get; set; }
-    public Node? Left { get; set; }
-    public Node? Right { get; set; }
-    public Node(int n)
-    {
-        Value = n;
-        Left = null;
-        Right = null;
-    }
+    public int Value { get; set; } = n;
+    public Node? Left { get; set; } = null;
+    public Node? Right { get; set; } = null;
 }
 
 public class BinarySearchTree
 {
-    private Node? _root;
-    public BinarySearchTree()
-    {
-        _root = null;
-    }
+    private Node? _root = null;
+
     public void Insert(int value)
     {
         var newNode = new Node(value);
@@ -56,7 +47,7 @@ public class BinarySearchTree
     }
     public bool Find(int value)
     {
-        var found = false;
+        const bool found = false;
         var currentNode = _root;
 
         if (currentNode == null) return false;
@@ -64,19 +55,12 @@ public class BinarySearchTree
         while (currentNode != null)
         {
             if (value == currentNode.Value) return true;
-            if (value < currentNode.Value)
-            {
-                currentNode = currentNode.Left;
-            }
-            else
-            {
-                currentNode = currentNode.Right;
-            }
+            currentNode = value < currentNode.Value ? currentNode.Left : currentNode.Right;
         }
 
         return found;
     }
-    public List<int> BFS()
+    public List<int> Bfs()
     {
         var data = new List<int>();
         var node = _root;
@@ -95,7 +79,7 @@ public class BinarySearchTree
 
         return data;
     }
-    public List<int> DFSPreOrder()
+    public List<int> DfsPreOrder()
     {
         var data = new List<int>();
         var currentNode = _root;
@@ -105,7 +89,7 @@ public class BinarySearchTree
 
         return data;
     }
-    public List<int> DFSPostOrder()
+    public List<int> DfsPostOrder()
     {
         var data = new List<int>();
         var currentNode = _root;
@@ -114,7 +98,7 @@ public class BinarySearchTree
         TraversePostOrder(data, currentNode);
         return data;
     }
-    public List<int> DFSInOrder()
+    public List<int> DfsInOrder()
     {
         var data = new List<int>();
         var currentNode = _root;

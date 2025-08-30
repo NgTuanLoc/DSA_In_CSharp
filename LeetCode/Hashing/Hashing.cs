@@ -7,9 +7,9 @@ public class CheckForExistence
     {
         Dictionary<int, int> table = [];
 
-        for (int i = 0; i < nums.Count; i++)
+        for (var i = 0; i < nums.Count; i++)
         {
-            if (table.ContainsKey(nums[i])) return [i, table[nums[i]]];
+            if (table.TryGetValue(nums[i], out var value)) return [i, value];
 
             table.Add(target - nums[i], i);
         }
@@ -25,10 +25,9 @@ public class CheckForExistence
         // https://leetcode.com/problems/first-letter-to-appear-twice/description/
         HashSet<int> table = [];
 
-        foreach (var item in s)
+        foreach (var item in s.Where(item => !table.Add(item)))
         {
-            if (table.Contains(item)) return item;
-            table.Add(item);
+            return item;
         }
 
         return 'a';
@@ -44,11 +43,7 @@ public class CheckForExistence
             table.Add(item);
         }
 
-        foreach (var item in nums)
-        {
-            if (table.Contains(item - 1) || table.Contains(item + 1)) continue;
-            result.Add(item);
-        }
+        result.AddRange(nums.Where(item => !table.Contains(item - 1) && !table.Contains(item + 1)));
 
         return result;
     }
@@ -56,19 +51,14 @@ public class CheckForExistence
     public static bool CheckIfPangram(string sentence)
     {
         // https://leetcode.com/problems/check-if-the-sentence-is-pangram/
-        int[] table = new int[26];
+        var table = new int[26];
 
         foreach (var item in sentence)
         {
             table[item - 'a'] = 1;
         }
 
-        foreach (var item in table)
-        {
-            if (item == 0) return false;
-        }
-
-        return true;
+        return table.All(item => item != 0);
     }
 
     public static int MissingNumber(int[] nums)
@@ -76,12 +66,12 @@ public class CheckForExistence
         // https://leetcode.com/problems/missing-number/description/
         HashSet<int> table = [];
 
-        for (int i = 0; i < nums.Length; i++)
+        foreach (var t in nums)
         {
-            table.Add(nums[i]);
+            table.Add(t);
         }
 
-        for (int i = 0; i < nums.Length + 1; i++)
+        for (var i = 0; i < nums.Length + 1; i++)
         {
             if (!table.Contains(i)) return i;
         }
@@ -94,18 +84,12 @@ public class CheckForExistence
         // https://leetcode.com/problems/counting-elements/description/
         // Given an integer array arr, count how many elements x there are, such that x + 1 is also in arr. If there are duplicates in arr, count them separately.
         HashSet<int> table = [];
-        int count = 0;
 
         foreach (var item in arr)
         {
             table.Add(item);
         }
 
-        foreach (var item in arr)
-        {
-            if (table.Contains(item + 1)) count++;
-        }
-
-        return count;
+        return arr.Count(item => table.Contains(item + 1));
     }
 }

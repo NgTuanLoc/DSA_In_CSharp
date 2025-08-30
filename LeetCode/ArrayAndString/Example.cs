@@ -36,7 +36,7 @@ public static class ArrayAndStringExample
         // // Find The Length Of The Longest SubString Achievable That Contains Only 1
         // Console.WriteLine(SlidingWindow.FindTheLongestLengthOfSubStringThatContainOnlyOne("1101100111"));
 
-        // // Number Of SubArray Product Less Than K
+        // // Number Of SubArray Products Less Than K
         // Console.WriteLine(SlidingWindow.NumSubArrayProductLessThanK([10, 5, 2, 6], 1000000));
 
         // // Given an integer array nums and an integer k, find the sum of the SubArray with the largest sum whose length is k.

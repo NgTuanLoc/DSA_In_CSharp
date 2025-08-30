@@ -2,7 +2,7 @@
 
 namespace DSA.LeetCode.Hashing;
 
-public class Practice
+public abstract class Practice
 {
     public static IList<IList<string>> GroupAnagrams(string[] strs)
     {
@@ -12,13 +12,15 @@ public class Practice
 
         foreach (var item in strs)
         {
-            string key = SortString(item);
-            if (!dict.ContainsKey(key))
+            var key = SortString(item);
+            if (!dict.TryGetValue(key, out var value))
             {
-                dict.Add(key, [item]);
+                value = ([item]);
+                dict.Add(key, value);
                 continue;
             }
-            dict[key].Add(item);
+
+            value.Add(item);
         }
 
         foreach (var key in dict.Keys)
@@ -31,7 +33,7 @@ public class Practice
 
     private static string SortString(string str)
     {
-        char[] charArr = str.ToCharArray();
+        var charArr = str.ToCharArray();
         Array.Sort(charArr);
         return new string(charArr);
     }
@@ -39,16 +41,16 @@ public class Practice
     public static int MinimumCardPickup(int[] cards)
     {
         // https://leetcode.com/problems/minimum-consecutive-cards-to-pick-up/description/
-        int result = int.MaxValue;
+        var result = int.MaxValue;
         Dictionary<int, int> dict = [];
         // key: item, value: index
 
-        for (int i = 0; i < cards.Length; i++)
+        for (var i = 0; i < cards.Length; i++)
         {
-            int key = cards[i];
-            if (dict.ContainsKey(key))
+            var key = cards[i];
+            if (dict.TryGetValue(key, out var value))
             {
-                result = Math.Min(i - dict[key] + 1, result);
+                result = Math.Min(i - value + 1, result);
             }
             dict[key] = i;
         }
@@ -59,48 +61,39 @@ public class Practice
     public static int EqualPairs(int[][] grid)
     {
         // https://leetcode.com/problems/equal-row-and-column-pairs/
-        int result = 0;
-        int n = grid.Length;
+        var result = 0;
+        var n = grid.Length;
         Dictionary<string, int> dictRow = [];
         Dictionary<string, int> dictCol = [];
         // key: values in row or col
         // value: number of valid pairs
 
-        for (int row = 0; row < n; row++)
+        for (var row = 0; row < n; row++)
         {
-            string rowValues = "";
-            string colValues = "";
-            for (int col = 0; col < n; col++)
+            var rowValues = "";
+            var colValues = "";
+            for (var col = 0; col < n; col++)
             {
                 rowValues += $"{grid[row][col]},";
                 colValues += $"{grid[col][row]},";
             }
 
-            if (dictRow.ContainsKey(rowValues))
+            if (!dictRow.TryAdd(rowValues, 1))
             {
                 dictRow[rowValues] += 1;
             }
-            else
-            {
-                dictRow[rowValues] = 1;
-            }
 
-            if (dictCol.ContainsKey(colValues))
+            if (!dictCol.TryAdd(colValues, 1))
             {
                 dictCol[colValues] += 1;
-            }
-            else
-            {
-                dictCol[colValues] = 1;
             }
         }
 
         foreach (var key in dictRow.Keys)
         {
-            // System.Console.WriteLine($"{key} === {dict[key]}");
-            if (dictCol.ContainsKey(key))
+            if (dictCol.TryGetValue(key, out var value))
             {
-                result += dictRow[key] * dictCol[key];
+                result += dictRow[key] * value;
             }
         }
 
@@ -112,14 +105,10 @@ public class Practice
         // https://leetcode.com/problems/ransom-note/
         Dictionary<char, int> dict = [];
 
-        foreach (var item in magazine)
+        foreach (var item in magazine.Where(item => !dict.TryAdd(item, 1)))
         {
-            if (dict.ContainsKey(item))
-            {
-                dict[item] += 1;
-                continue;
-            }
-            dict.Add(item, 1);
+            dict[item] += 1;
+            continue;
         }
 
         foreach (var item in ransomNote)
@@ -136,41 +125,34 @@ public class Practice
     {
         // https://leetcode.com/problems/jewels-and-stones/description/
         HashSet<char> hashSet = [];
-        int result = 0;
         foreach (var jewel in jewels)
         {
             hashSet.Add(jewel);
         }
 
-        foreach (var stone in stones)
-        {
-            if (hashSet.Contains(stone)) result += 1;
-        }
-
-        return result;
+        return stones.Count(stone => hashSet.Contains(stone));
     }
 
     public static int LengthOfLongestSubstring(string s)
     {
         // https://leetcode.com/problems/longest-substring-without-repeating-characters/
         if (s.Length <= 1) return s.Length;
-        int result = 0;
+        var result = 0;
         Dictionary<char, int> dict = [];
         dict.Add(s[0], 0);
 
-        for (int j = 1; j < s.Length; j++)
+        for (var j = 1; j < s.Length; j++)
         {
-            if (!dict.ContainsKey(s[j]))
+            if (!dict.TryGetValue(s[j], out var removeIndex))
             {
-                dict[s[j]] = j;
+                removeIndex = j;
+                dict[s[j]] = removeIndex;
                 continue;
             }
             result = Math.Max(dict.Count, result);
-            int removeIndex = dict[s[j]];
-
             while (removeIndex >= 0)
             {
-                if (dict.TryGetValue(s[removeIndex], out int value) && removeIndex == value) dict.Remove(s[removeIndex]);
+                if (dict.TryGetValue(s[removeIndex], out var value) && removeIndex == value) dict.Remove(s[removeIndex]);
 
                 removeIndex--;
             }
@@ -187,13 +169,7 @@ public class Practice
         // https://leetcode.com/problems/contains-duplicate/description/
         HashSet<int> hashSet = [];
 
-        foreach (var num in nums)
-        {
-            if (hashSet.Contains(num)) return true;
-            hashSet.Add(num);
-        }
-
-        return false;
+        return nums.Any(num => !hashSet.Add(num));
     }
     public static string DestCity(IList<IList<string>> paths)
     {
@@ -203,26 +179,20 @@ public class Practice
 
         foreach (var path in paths)
         {
-            string cityA = path[0];
-            string cityB = path[1];
+            var cityA = path[0];
+            var cityB = path[1];
 
-            if (!dict.ContainsKey(cityA))
-            {
-                dict[cityA] = 1;
-            }
-            else
+            if (!dict.TryAdd(cityA, 1))
             {
                 dict[cityA] += 1;
             }
-            if (!destList.Contains(cityB))
-            {
-                destList.Add(cityB);
-            }
+
+            destList.Add(cityB);
         }
 
-        foreach (var city in destList)
+        foreach (var city in destList.Where(city => !dict.ContainsKey(city)))
         {
-            if (!dict.ContainsKey(city)) return city;
+            return city;
         }
 
         return "";
@@ -240,15 +210,13 @@ public class Practice
 
         List<int> curr = [0, 0];
 
-        foreach (var item in path)
+        foreach (var point in path.Select(item => table[item]))
         {
-            var point = table[item];
             curr[0] += point[0];
             curr[1] += point[1];
 
-            string currPoint = $"{curr[0]},{curr[1]}";
-            if (hashSet.Contains(currPoint)) return true;
-            hashSet.Add(currPoint);
+            var currPoint = $"{curr[0]},{curr[1]}";
+            if (!hashSet.Add(currPoint)) return true;
         }
 
         return false;
@@ -259,74 +227,44 @@ public class Practice
     {
         // https://leetcode.com/problems/sum-of-unique-elements/
         Dictionary<int, int> table = [];
-        int result = 0;
 
         foreach (var num in nums)
         {
-            if (table.ContainsKey(num))
-            {
-                table[num] += 1;
-                continue;
-            }
-            table[num] = 1;
+            if (table.TryAdd(num, 1)) continue;
+            table[num] += 1;
         }
 
-        foreach (var key in table.Keys)
-        {
-            if (table[key] == 1) result += key;
-        }
-
-        return result;
+        return table.Keys.Where(key => table[key] == 1).Sum();
     }
 
     public static int MaxFrequencyElements(int[] nums)
     {
         // https://leetcode.com/problems/count-elements-with-maximum-frequency/description/
-        int result = 0;
-        int max = 1;
+        var max = 1;
         Dictionary<int, int> table = [];
 
         foreach (var num in nums)
         {
-            if (table.ContainsKey(num))
-            {
-                table[num] += 1;
-                max = Math.Max(table[num], max);
-                continue;
-            }
-            table[num] = 1;
+            if (table.TryAdd(num, 1)) continue;
+            table[num] += 1;
+            max = Math.Max(table[num], max);
         }
 
-        foreach (var key in table.Keys)
-        {
-            if (table[key] == max) result += max;
-        }
-
-        return result;
+        return table.Keys.Where(key => table[key] == max).Sum(key => max);
     }
 
     public static int FindLucky(int[] arr)
     {
         // https://leetcode.com/problems/find-lucky-integer-in-an-array/description/
-        int result = -1;
         Dictionary<int, int> table = [];
 
         foreach (var num in arr)
         {
-            if (table.ContainsKey(num))
-            {
-                table[num] += 1;
-                continue;
-            }
-            table[num] = 1;
+            if (table.TryAdd(num, 1)) continue;
+            table[num] += 1;
         }
 
-        foreach (var key in table.Keys)
-        {
-            if (key == table[key]) result = Math.Max(result, key);
-        }
-
-        return result;
+        return table.Keys.Where(key => key == table[key]).Prepend(-1).Max();
     }
 
     public static bool UniqueOccurrences(int[] arr)
@@ -337,21 +275,11 @@ public class Practice
 
         foreach (var item in arr)
         {
-            if (table.ContainsKey(item))
-            {
-                table[item] += 1;
-                continue;
-            }
-            table[item] = 1;
+            if (table.TryAdd(item, 1)) continue;
+            table[item] += 1;
         }
 
-        foreach (var key in table.Keys)
-        {
-            if (hashSet.Contains(table[key])) return false;
-            hashSet.Add(table[key]);
-        }
-
-        return true;
+        return table.Keys.All(key => hashSet.Add(table[key]));
     }
 
     public static string FrequencySort(string s)
@@ -360,21 +288,16 @@ public class Practice
         StringBuilder stringBuilder = new();
         Dictionary<char, int> table = [];
 
-        foreach (var c in s)
+        foreach (var c in s.Where(c => !table.TryAdd(c, 1)))
         {
-            if (table.ContainsKey(c))
-            {
-                table[c] += 1;
-                continue;
-            }
-            table[c] = 1;
+            table[c] += 1;
         }
 
         var sortedTable = table.OrderByDescending(item => item.Value);
 
         foreach (var entry in sortedTable)
         {
-            for (int i = 0; i < entry.Value; i++)
+            for (var i = 0; i < entry.Value; i++)
             {
                 stringBuilder.Append(entry.Key);
             }
@@ -386,13 +309,13 @@ public class Practice
     public static int MaxSubArrayLength(int[] nums, int k)
     {
         // https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/description/
-        int curr = 1;
-        int max = 1;
+        var curr = 1;
+        var max = 1;
         Dictionary<int, int> table = [];
         table.Add(nums[0], 1);
-        int left = 0;
+        var left = 0;
 
-        for (int right = 1; right < nums.Length; right++)
+        for (var right = 1; right < nums.Length; right++)
         {
             curr += 1;
             if (!table.ContainsKey(nums[right]))
@@ -418,18 +341,14 @@ public class Practice
     public static int NumIdenticalPairs(int[] nums)
     {
         // https://leetcode.com/problems/number-of-good-pairs/description/
-        int result = 0;
+        var result = 0;
         Dictionary<int, int> dict = [];
 
         foreach (var num in nums)
         {
-            if (dict.ContainsKey(num))
-            {
-                result += dict[num];
-                dict[num] += 1;
-                continue;
-            }
-            dict[num] = 1;
+            if (dict.TryAdd(num, 1)) continue;
+            result += dict[num];
+            dict[num] += 1;
         }
         return result;
     }
@@ -440,7 +359,7 @@ public class Practice
         int result = 0, curr = 0;
         var dict = new Dictionary<int, int> { { 0, 1 } };
 
-        foreach (int num in nums)
+        foreach (var num in nums)
         {
             curr += num;
             result += dict.GetValueOrDefault(curr - goal, 0);
@@ -454,16 +373,15 @@ public class Practice
     {
         // https://leetcode.com/problems/maximum-erasure-value/
         HashSet<int> hashSet = [];
-        int left = 0;
-        int curr = nums[left];
-        int max = curr;
+        var left = 0;
+        var curr = nums[left];
+        var max = curr;
         hashSet.Add(nums[left]);
 
-        for (int right = 1; right < nums.Length; right++)
+        for (var right = 1; right < nums.Length; right++)
         {
-            if (!hashSet.Contains(nums[right]))
+            if (hashSet.Add(nums[right]))
             {
-                hashSet.Add(nums[right]);
                 curr += nums[right];
                 max = Math.Max(max, curr);
                 continue;
@@ -489,24 +407,17 @@ public class Practice
         Dictionary<char, int> dict1 = [];
         StringBuilder stringBuilder = new();
 
-        foreach (var item in s1)
+        foreach (var item in s1.Where(item => !dict1.TryAdd(item, 1)))
         {
-            if (dict1.ContainsKey(item))
-            {
-                dict1[item] += 1;
-                continue;
-            }
-            dict1[item] = 1;
+            dict1[item] += 1;
         }
 
-        for (int right = 0; right < s2.Length; right++)
+        foreach (var t in s2)
         {
-            stringBuilder.Append(s2[right]);
-            if (stringBuilder.Length == s1.Length)
-            {
-                if (CheckPermutation(dict1, stringBuilder.ToString())) return true;
-                stringBuilder.Remove(0, 1);
-            }
+            stringBuilder.Append(t);
+            if (stringBuilder.Length != s1.Length) continue;
+            if (CheckPermutation(dict1, stringBuilder.ToString())) return true;
+            stringBuilder.Remove(0, 1);
         }
 
         return false;
@@ -515,14 +426,9 @@ public class Practice
     private static bool CheckPermutation(Dictionary<char, int> dict, string s)
     {
         Dictionary<char, int> curr = [];
-        foreach (var item in s)
+        foreach (var item in s.Where(item => !curr.TryAdd(item, 1)))
         {
-            if (curr.ContainsKey(item))
-            {
-                curr[item] += 1;
-                continue;
-            }
-            curr[item] = 1;
+            curr[item] += 1;
         }
 
         foreach (var key in dict.Keys)
@@ -542,15 +448,15 @@ public class Practice
         HashSet<char> hashSet = [];
         StringBuilder stringBuilder = new();
 
-        for (int i = 0; i < s.Length; i++)
+        for (var i = 0; i < s.Length; i++)
         {
-            if (!dict.ContainsKey(s[i]))
+            if (!dict.TryGetValue(s[i], out char value))
             {
-                if (hashSet.Contains(t[i])) return false;
-                hashSet.Add(t[i]);
-                dict[s[i]] = t[i];
+                if (!hashSet.Add(t[i])) return false;
+                value = t[i];
+                dict[s[i]] = value;
             }
-            stringBuilder.Append(dict[s[i]]);
+            stringBuilder.Append(value);
         }
 
         return stringBuilder.ToString() == t;
@@ -565,15 +471,15 @@ public class Practice
 
         if (pattern.Length != words.Count) return false;
 
-        for (int i = 0; i < words.Count; i++)
+        for (var i = 0; i < words.Count; i++)
         {
-            if (!dict.ContainsKey(pattern[i]))
+            if (!dict.TryGetValue(pattern[i], out string? value))
             {
-                if (hashSet.Contains(words[i])) return false;
-                hashSet.Add(words[i]);
-                dict[pattern[i]] = words[i];
+                if (!hashSet.Add(words[i])) return false;
+                value = words[i];
+                dict[pattern[i]] = value;
             }
-            if (dict[pattern[i]] != words[i]) return false;
+            if (value != words[i]) return false;
         }
 
         return true;
@@ -590,36 +496,30 @@ public class Practice
         Dictionary<char, int> dict2 = [];
         List<char> otherCharacter = [];
 
-        for (int i = 0; i < order.Length; i++)
+        for (var i = 0; i < order.Length; i++)
         {
             dict1[order[i]] = i;
         }
 
-        for (int i = 0; i < s.Length; i++)
+        foreach (var target in s)
         {
-            char target = s[i];
             if (!dict1.ContainsKey(target))
             {
                 otherCharacter.Add(target);
                 continue;
             }
-            if (dict2.ContainsKey(target))
-            {
-                dict2[target] += 1;
-                continue;
-            }
-            dict2[target] = 1;
+
+            if (dict2.TryAdd(target, 1)) continue;
+            dict2[target] += 1;
         }
 
         foreach (var orderItem in order)
         {
-            char c = orderItem;
-            if (!dict2.ContainsKey(c)) continue;
-            int count = dict2[c];
+            if (!dict2.TryGetValue(orderItem, out var count)) continue;
 
             while (count != 0)
             {
-                stringBuilder.Append(c);
+                stringBuilder.Append(orderItem);
                 count--;
             }
         }
@@ -635,13 +535,13 @@ public class Practice
     public static bool CloseStrings(string word1, string word2)
     {
         // https://leetcode.com/problems/determine-if-two-strings-are-close/
-        int n = word1.Length;
+        var n = word1.Length;
         if (n != word2.Length) return false;
 
         Dictionary<char, int> dict1 = [];
         Dictionary<char, int> dict2 = [];
 
-        for (int i = 0; i < n; i++)
+        for (var i = 0; i < n; i++)
         {
             if (dict1.ContainsKey(word1[i]))
             {
@@ -666,16 +566,14 @@ public class Practice
         foreach (var key1 in dict1.Keys)
         {
             if (!dict2.ContainsKey(key1)) return false;
-            bool flag = false;
+            var flag = false;
 
-            for (int i = 0; i < list2.Count; i++)
+            for (var i = 0; i < list2.Count; i++)
             {
-                if (list2[i] == dict1[key1])
-                {
-                    flag = true;
-                    list2.Remove(list2[i]);
-                    break;
-                }
+                if (list2[i] != dict1[key1]) continue;
+                flag = true;
+                list2.Remove(list2[i]);
+                break;
             }
 
             if (!flag) return false;
@@ -687,21 +585,21 @@ public class Practice
     public static bool CloseStrings2(string word1, string word2)
     {
         // https://leetcode.com/problems/determine-if-two-strings-are-close/
-        int n = word1.Length;
+        var n = word1.Length;
         if (n != word2.Length) return false;
 
-        int[] count1 = new int[26];
-        int[] count2 = new int[26];
+        var count1 = new int[26];
+        var count2 = new int[26];
         HashSet<char> set1 = [];
         HashSet<char> set2 = [];
 
-        for (int i = 0; i < n; i++)
+        for (var i = 0; i < n; i++)
         {
             count1[word1[i] - 'a']++;
             set1.Add(word1[i]);
         }
 
-        for (int i = 0; i < n; i++)
+        for (var i = 0; i < n; i++)
         {
             count2[word2[i] - 'a']++;
             set2.Add(word2[i]);
@@ -725,13 +623,6 @@ public class Practice
     }
     private static bool ArraysEqual(int[] arr1, int[] arr2)
     {
-        for (int i = 0; i < arr1.Length; i++)
-        {
-            if (arr1[i] != arr2[i])
-            {
-                return false;
-            }
-        }
-        return true;
+        return !arr1.Where((t, i) => t != arr2[i]).Any();
     }
 }
