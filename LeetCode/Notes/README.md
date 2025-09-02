@@ -56,6 +56,28 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
       - [For Subsets](#for-subsets)
     - [Problem Type Recognition Guide](#problem-type-recognition-guide)
     - [Key Insights](#key-insights)
+  - [4. Hashing](#4-hashing)
+    - [Learning Objectives](#learning-objectives-2)
+    - [Hash Maps and Sets Fundamentals](#hash-maps-and-sets-fundamentals)
+      - [What is Hashing?](#what-is-hashing)
+      - [Hash Map vs Array Comparison](#hash-map-vs-array-comparison)
+      - [When to Use Hash Maps](#when-to-use-hash-maps)
+    - [4.1 Checking for Existence](#41-checking-for-existence)
+      - [Core Concept](#core-concept)
+      - [Common Pattern Template](#common-pattern-template)
+      - [Key Applications](#key-applications)
+    - [4.2 Counting Patterns](#42-counting-patterns)
+      - [Core Concept](#core-concept-1)
+      - [Frequency Counting Template](#frequency-counting-template)
+      - [Advanced Counting Patterns](#advanced-counting-patterns)
+      - [Complexity Analysis](#complexity-analysis-1)
+      - [Common Counting Applications](#common-counting-applications)
+    - [Key Insights](#key-insights-1)
+    - [4.3 More Hashing Patterns](#43-more-hashing-patterns)
+      - [Group Identification Patterns](#group-identification-patterns)
+      - [Distance and Proximity Problems](#distance-and-proximity-problems)
+      - [Digit Sum Grouping](#digit-sum-grouping)
+      - [Array Conversion for Hashing](#array-conversion-for-hashing)
   - [Study Progress](#study-progress)
     - [✅ Completed Sections](#-completed-sections)
     - [🔄 Currently Studying](#-currently-studying)
@@ -679,6 +701,415 @@ IList<IList<int>> SubsetsBitwise(int[] nums) {
 
 ---
 
+## 4. Hashing
+
+### Learning Objectives
+
+- Understand hash maps and sets fundamentals
+- Master existence checking patterns
+- Learn counting and frequency tracking techniques
+- Apply hashing to improve algorithm efficiency
+
+### Hash Maps and Sets Fundamentals
+
+#### What is Hashing?
+
+**Hash Function**: A function that converts any input (key) into an integer within a fixed range.
+
+**Hash Map (Dictionary)**: Data structure that stores key-value pairs using hashing.
+- **Keys**: Can be almost any immutable type (strings, numbers, tuples)
+- **Values**: Can be any data type
+- **Time Complexity**: O(1) for add, remove, update, and lookup operations
+
+**Set**: Similar to hash map but only stores keys (no values).
+- **Purpose**: Check existence and eliminate duplicates
+- **Time Complexity**: O(1) for add, remove, and lookup operations
+
+#### Hash Map vs Array Comparison
+
+| Operation | Hash Map | Array |
+|-----------|----------|-------|
+| **Access by key/index** | O(1) | O(1) |
+| **Search for value** | O(1) if you have key | O(n) |
+| **Insert** | O(1) | O(n) for arbitrary position |
+| **Delete** | O(1) | O(n) for arbitrary position |
+| **Space overhead** | Higher (hash table overhead) | Lower |
+| **Key constraints** | Any immutable type | Integer indices only |
+
+#### When to Use Hash Maps
+
+✅ **Use hash maps when:**
+- Need to check if elements exist
+- Need to count frequencies
+- Want to map relationships between data
+- Need to eliminate duplicates
+- Working with non-integer keys
+
+❌ **Avoid hash maps when:**
+- Input size is very small (overhead not worth it)
+- Need to maintain order (unless language provides ordered maps)
+- Memory is extremely constrained
+
+### 4.1 Checking for Existence
+
+#### Core Concept
+
+Convert O(n) existence checks to O(1) using hash maps/sets, often improving overall time complexity from O(n²) to O(n).
+
+#### Common Pattern Template
+
+```csharp
+// Pattern: Two Sum type problems
+var twoSum = function(nums, target) {
+    var seen = new Dictionary<int, int>();  // value -> index
+    
+    for (int i = 0; i < nums.Length; i++) {
+        int complement = target - nums[i];
+        
+        if (seen.ContainsKey(complement)) {
+            return new int[] { seen[complement], i };
+        }
+        
+        seen[nums[i]] = i;
+    }
+    
+    return new int[] { -1, -1 };
+}
+
+// Pattern: Existence checking
+var checkExistence = function(nums) {
+    var numSet = new HashSet<int>(nums);  // Preprocessing
+    
+    foreach (int num in nums) {
+        if (numSet.Contains(num + 1) && numSet.Contains(num - 1)) {
+            // Found what we're looking for
+        }
+    }
+}
+```
+
+#### Key Applications
+
+**1. Two Sum Problems**
+- Use hash map to store seen values and their indices
+- Check for complement in O(1) time
+
+**2. Duplicate Detection**
+- Add elements to set as you iterate
+- If element already exists, you found a duplicate
+
+**3. Intersection Problems**
+- Convert one array to set for O(1) lookups
+- Check existence of elements from other arrays
+
+**4. Complement Finding**
+- Store elements in hash map/set
+- For each element, check if its complement exists
+
+### 4.2 Counting Patterns
+
+#### Core Concept
+
+Use hash maps to count frequencies of elements, enabling constraint-based problems and frequency analysis.
+
+#### Frequency Counting Template
+
+```csharp
+// Basic frequency counting
+var countFrequencies = function(items) {
+    var counts = new Dictionary<string, int>();
+    
+    foreach (var item in items) {
+        counts[item] = counts.GetValueOrDefault(item, 0) + 1;
+    }
+    
+    return counts;
+}
+
+// Sliding window with frequency constraints
+var slidingWindowWithCounting = function(s, k) {
+    var counts = new Dictionary<char, int>();
+    int left = 0, result = 0;
+    
+    for (int right = 0; right < s.Length; right++) {
+        // Add current character
+        counts[s[right]] = counts.GetValueOrDefault(s[right], 0) + 1;
+        
+        // Shrink window if constraint violated
+        while (counts.Count > k) {  // More than k distinct characters
+            counts[s[left]]--;
+            if (counts[s[left]] == 0) {
+                counts.Remove(s[left]);
+            }
+            left++;
+        }
+        
+        result = Math.Max(result, right - left + 1);
+    }
+    
+    return result;
+}
+```
+
+#### Advanced Counting Patterns
+
+**1. Frequency-Based Constraints**
+```csharp
+// Check if all characters have equal frequency
+bool AllEqualFrequency(string s) {
+    var counts = new Dictionary<char, int>();
+    
+    // Count frequencies
+    foreach (char c in s) {
+        counts[c] = counts.GetValueOrDefault(c, 0) + 1;
+    }
+    
+    // Check if all frequencies are the same
+    var frequencies = new HashSet<int>(counts.Values);
+    return frequencies.Count == 1;
+}
+```
+
+**2. Multi-Array Intersection**
+```csharp
+// Find elements that appear in all arrays
+List<int> IntersectionOfArrays(int[][] arrays) {
+    var counts = new Dictionary<int, int>();
+    
+    // Count occurrences across all arrays
+    foreach (var array in arrays) {
+        foreach (int num in array) {
+            counts[num] = counts.GetValueOrDefault(num, 0) + 1;
+        }
+    }
+    
+    // Find elements that appear in all arrays
+    var result = new List<int>();
+    foreach (var kvp in counts) {
+        if (kvp.Value == arrays.Length) {
+            result.Add(kvp.Key);
+        }
+    }
+    
+    result.Sort();
+    return result;
+}
+```
+
+#### Complexity Analysis
+
+**Time Complexity:**
+- Building frequency map: O(n)
+- Checking constraints: O(1) per operation
+- Overall: Usually O(n) instead of O(n²)
+
+**Space Complexity:**
+- O(k) where k is number of distinct elements
+- In worst case: O(n) where all elements are unique
+
+#### Common Counting Applications
+
+1. **Character/Element Frequency**: Count how often each element appears
+2. **Sliding Window with Constraints**: Maintain frequency while sliding window
+3. **Anagram Detection**: Compare character frequency maps
+4. **Intersection Problems**: Count occurrences across multiple collections
+5. **Frequency-Based Filtering**: Find elements that meet frequency criteria
+
+### Key Insights
+
+1. **Hash maps trade space for time**: Convert O(n) searches to O(1)
+2. **Preprocessing**: Build hash map once, use multiple times efficiently
+3. **Frequency tracking**: Essential for constraint-based problems
+4. **Sliding window enhancement**: Hash maps enable multi-element constraints
+5. **Set vs Map**: Use sets for existence, maps for counting/relationships
+
+### 4.3 More Hashing Patterns
+
+Advanced hashing patterns for complex grouping, optimization, and data transformation problems.
+
+#### Group Identification Patterns
+
+**Pattern: Use characteristic properties as hash keys**
+
+Example: Group Anagrams
+
+```csharp
+public IList<IList<string>> GroupAnagrams(string[] strs) {
+    var groups = new Dictionary<string, List<string>>();
+    
+    foreach (string str in strs) {
+        char[] chars = str.ToCharArray();
+        Array.Sort(chars);
+        string key = new string(chars);
+        
+        if (!groups.ContainsKey(key)) {
+            groups[key] = new List<string>();
+        }
+        groups[key].Add(str);
+    }
+    
+    return groups.Values.Cast<IList<string>>().ToList();
+}
+```
+
+**Key Insight**: Use sorted string as canonical form for anagram identification.
+
+#### Distance and Proximity Problems
+
+**Pattern: Track elements to find minimum distances**
+
+Example: Minimum Consecutive Cards (Basic Version)
+
+```csharp
+public int MinimumCardPickup(int[] cards) {
+    var seen = new Dictionary<int, int>();
+    int minDist = int.MaxValue;
+    
+    for (int i = 0; i < cards.Length; i++) {
+        if (seen.ContainsKey(cards[i])) {
+            minDist = Math.Min(minDist, i - seen[cards[i]] + 1);
+        }
+        seen[cards[i]] = i;
+    }
+    
+    return minDist == int.MaxValue ? -1 : minDist;
+}
+```
+
+**Optimization**: Track only the most recent occurrence to reduce space complexity for problems with many duplicates.
+
+```csharp
+public int MinimumCardPickupOptimized(int[] cards) {
+    var lastSeen = new Dictionary<int, int>();
+    int minDist = int.MaxValue;
+    
+    for (int i = 0; i < cards.Length; i++) {
+        if (lastSeen.ContainsKey(cards[i])) {
+            minDist = Math.Min(minDist, i - lastSeen[cards[i]] + 1);
+        }
+        lastSeen[cards[i]] = i;
+    }
+    
+    return minDist == int.MaxValue ? -1 : minDist;
+}
+```
+
+#### Digit Sum Grouping
+
+**Pattern: Group numbers by computed properties**
+
+Example: Max Sum of Equal Digit Sum Numbers
+
+```csharp
+public int MaximumSum(int[] nums) {
+    var groups = new Dictionary<int, List<int>>();
+    
+    foreach (int num in nums) {
+        int digitSum = GetDigitSum(num);
+        
+        if (!groups.ContainsKey(digitSum)) {
+            groups[digitSum] = new List<int>();
+        }
+        groups[digitSum].Add(num);
+    }
+    
+    int maxSum = -1;
+    foreach (var group in groups.Values) {
+        if (group.Count >= 2) {
+            group.Sort((a, b) => b.CompareTo(a));
+            maxSum = Math.Max(maxSum, group[0] + group[1]);
+        }
+    }
+    
+    return maxSum;
+}
+
+private int GetDigitSum(int num) {
+    int sum = 0;
+    while (num > 0) {
+        sum += num % 10;
+        num /= 10;
+    }
+    return sum;
+}
+```
+
+**Optimization**: Track only the two largest numbers per group instead of storing all numbers.
+
+```csharp
+public int MaximumSumOptimized(int[] nums) {
+    var maxTwo = new Dictionary<int, (int first, int second)>();
+    
+    foreach (int num in nums) {
+        int digitSum = GetDigitSum(num);
+        
+        if (!maxTwo.ContainsKey(digitSum)) {
+            maxTwo[digitSum] = (num, -1);
+        } else {
+            var (first, second) = maxTwo[digitSum];
+            if (num > first) {
+                maxTwo[digitSum] = (num, first);
+            } else if (num > second) {
+                maxTwo[digitSum] = (first, num);
+            }
+        }
+    }
+    
+    int maxSum = -1;
+    foreach (var (first, second) in maxTwo.Values) {
+        if (second != -1) {
+            maxSum = Math.Max(maxSum, first + second);
+        }
+    }
+    
+    return maxSum;
+}
+```
+
+#### Array Conversion for Hashing
+
+**Pattern: Convert arrays to strings for use as hash keys**
+
+Example: Equal Row and Column Pairs
+
+```csharp
+public int EqualPairs(int[][] grid) {
+    var rowMap = new Dictionary<string, int>();
+    int n = grid.Length;
+    
+    // Count rows
+    for (int i = 0; i < n; i++) {
+        string rowKey = string.Join(",", grid[i]);
+        rowMap[rowKey] = rowMap.GetValueOrDefault(rowKey, 0) + 1;
+    }
+    
+    // Check columns against rows
+    int count = 0;
+    for (int j = 0; j < n; j++) {
+        var column = new int[n];
+        for (int i = 0; i < n; i++) {
+            column[i] = grid[i][j];
+        }
+        
+        string colKey = string.Join(",", column);
+        if (rowMap.ContainsKey(colKey)) {
+            count += rowMap[colKey];
+        }
+    }
+    
+    return count;
+}
+```
+
+**Key Insight**: Convert arrays to comma-separated strings to enable hash table lookups for equality comparison.
+
+**Complexity Considerations**:
+- Time: O(n²) for grid traversal + O(n) for string operations per row/column
+- Space: O(n²) for storing all row strings
+- Alternative: Use tuple conversion for better performance in some languages
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -689,10 +1120,15 @@ IList<IList<int>> SubsetsBitwise(int[] nums) {
 - [x] **Two Pointers** - Efficient traversal techniques
 - [x] **Sliding Window** - Subarray optimization problems
 - [x] **Prefix Sum** - Fast range query techniques
+- [x] **Subarrays, Subsequences, and Subsets** - Understanding different data groupings
+- [x] **Hashing Fundamentals** - Hash maps and sets concepts
+- [x] **Existence Checking** - O(1) lookup patterns
+- [x] **Counting Patterns** - Frequency tracking and constraints
+- [x] **More Hashing Patterns** - Advanced grouping and optimization techniques
 
 ### 🔄 Currently Studying
 
-- More Common Patterns in Arrays/Strings
+- Trees and Graphs fundamentals
 
 ### 📋 Next Topics
 
@@ -701,7 +1137,6 @@ IList<IList<int>> SubsetsBitwise(int[] nums) {
 - Depth-First Search (DFS)
 - Breadth-First Search (BFS)
 - Heaps and Priority Queues
-- Hashing techniques
 - Dynamic Programming
 - Backtracking
 
