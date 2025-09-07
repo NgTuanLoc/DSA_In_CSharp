@@ -77,6 +77,22 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
     - [Distance and Proximity Problems](#distance-and-proximity-problems)
     - [Digit Sum Grouping](#digit-sum-grouping)
     - [Array Conversion for Hashing](#array-conversion-for-hashing)
+- [5. LinkedLists](#5-linkedlists)
+  - [Learning Objectives](#learning-objectives-3)
+  - [5.1 Introduction](#51-introduction)
+    - [Node Structure and Basic Operations](#node-structure-and-basic-operations)
+    - [Types of Linked Lists](#types-of-linked-lists)
+    - [Advantages and Disadvantages](#advantages-and-disadvantages)
+    - [Pointer Manipulation Fundamentals](#pointer-manipulation-fundamentals)
+  - [5.2 Fast and Slow Pointers](#52-fast-and-slow-pointers)
+    - [Two Pointer Technique for LinkedLists](#two-pointer-technique-for-linkedlists)
+    - [Finding Middle Elements](#finding-middle-elements)
+    - [Cycle Detection](#cycle-detection)
+    - [Kth Node from End](#kth-node-from-end)
+  - [5.3 Reversing LinkedLists](#53-reversing-linkedlists)
+    - [Basic Reversal Algorithm](#basic-reversal-algorithm)
+    - [Swapping Node Pairs](#swapping-node-pairs)
+    - [Partial Reversals](#partial-reversals)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -1109,6 +1125,362 @@ public int EqualPairs(int[][] grid) {
 
 ---
 
+## 5. LinkedLists
+
+### Learning Objectives
+
+- Master linked list fundamentals and pointer manipulation
+- Understand different types of linked lists (singly, doubly, with sentinels)
+- Apply two-pointer techniques for cycle detection and traversal
+- Implement efficient linked list reversal algorithms
+
+### 5.1 Introduction
+
+#### Node Structure and Basic Operations
+
+**What is a Linked List?**
+
+A linked list is a linear data structure where elements are stored in nodes, and each node contains:
+- **Data**: The actual value (integer, string, etc.)
+- **Next pointer**: Reference to the next node in the sequence
+
+```csharp
+public class ListNode {
+    public int val;
+    public ListNode next;
+    
+    public ListNode(int val = 0, ListNode next = null) {
+        this.val = val;
+        this.next = next;
+    }
+}
+```
+
+**Basic Operations**:
+
+```csharp
+// Creating a linked list: 1 -> 2 -> 3
+ListNode head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+
+// Traversal
+public void PrintList(ListNode head) {
+    ListNode current = head;
+    while (current != null) {
+        Console.Write(current.val + " -> ");
+        current = current.next;
+    }
+    Console.WriteLine("null");
+}
+```
+
+#### Types of Linked Lists
+
+**1. Singly Linked List**
+- Each node points to the next node
+- Can only traverse forward
+- Most common type used in interviews
+
+**2. Doubly Linked List**
+- Each node has both `next` and `prev` pointers
+- Allows bidirectional traversal
+- Useful for certain optimization problems
+
+```csharp
+public class DoublyListNode {
+    public int val;
+    public DoublyListNode next;
+    public DoublyListNode prev;
+    
+    public DoublyListNode(int val = 0) {
+        this.val = val;
+        this.next = null;
+        this.prev = null;
+    }
+}
+```
+
+**3. Linked Lists with Sentinel Nodes**
+- Dummy head and tail nodes to simplify edge cases
+- Makes insertion/deletion operations cleaner
+- Reduces need for null checks
+
+#### Advantages and Disadvantages
+
+| Aspect | Linked List | Array |
+|--------|-------------|-------|
+| **Access by index** | O(n) - must traverse | O(1) - direct indexing |
+| **Search** | O(n) - sequential search | O(n) - unless sorted |
+| **Insertion at position** | O(1) with reference | O(n) - shifting required |
+| **Deletion at position** | O(1) with reference | O(n) - shifting required |
+| **Memory usage** | Higher (pointer overhead) | Lower (contiguous) |
+| **Memory allocation** | Dynamic, as needed | Fixed size (static arrays) |
+
+#### Pointer Manipulation Fundamentals
+
+**Key Principles:**
+
+1. **Assignment**: Variables point to objects in memory
+```csharp
+ListNode ptr = head;  // ptr points to same node as head
+head = head.next;     // head moves, ptr stays at original node
+```
+
+2. **Safe Traversal**: Always check for null
+```csharp
+while (current != null && current.next != null) {
+    // Safe to access current.next.next
+    current = current.next;
+}
+```
+
+3. **Insertion Pattern**: Save next before breaking links
+```csharp
+public void InsertAfter(ListNode node, int val) {
+    ListNode newNode = new ListNode(val);
+    newNode.next = node.next;  // Connect new node to rest of list
+    node.next = newNode;       // Connect previous node to new node
+}
+```
+
+4. **Deletion Pattern**: Bridge over node to delete
+```csharp
+public void DeleteNext(ListNode node) {
+    if (node.next != null) {
+        node.next = node.next.next;  // Skip over the node to delete
+    }
+}
+```
+
+### 5.2 Fast and Slow Pointers
+
+#### Two Pointer Technique for LinkedLists
+
+The fast and slow pointer technique (also called "tortoise and hare") uses two pointers moving at different speeds to solve various linked list problems efficiently.
+
+**Basic Template:**
+```csharp
+public void FastSlowPattern(ListNode head) {
+    ListNode slow = head;
+    ListNode fast = head;
+    
+    while (fast != null && fast.next != null) {
+        slow = slow.next;           // Move 1 step
+        fast = fast.next.next;      // Move 2 steps
+        
+        // Process or check condition here
+    }
+}
+```
+
+#### Finding Middle Elements
+
+**Problem**: Find the middle node of a linked list.
+
+```csharp
+public ListNode FindMiddle(ListNode head) {
+    ListNode slow = head;
+    ListNode fast = head;
+    
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    
+    return slow;  // slow is at middle when fast reaches end
+}
+```
+
+**Why it works**: When fast pointer travels 2n steps, slow pointer travels n steps, placing it at the middle.
+
+#### Cycle Detection
+
+**Problem**: Detect if a linked list has a cycle.
+
+```csharp
+public bool HasCycle(ListNode head) {
+    if (head == null || head.next == null) return false;
+    
+    ListNode slow = head;
+    ListNode fast = head;
+    
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        
+        if (slow == fast) {
+            return true;  // Cycle detected
+        }
+    }
+    
+    return false;  // No cycle
+}
+```
+
+**Alternative approach using HashSet** (uses O(n) space):
+```csharp
+public bool HasCycleWithSet(ListNode head) {
+    HashSet<ListNode> seen = new HashSet<ListNode>();
+    
+    while (head != null) {
+        if (seen.Contains(head)) {
+            return true;
+        }
+        seen.Add(head);
+        head = head.next;
+    }
+    
+    return false;
+}
+```
+
+#### Kth Node from End
+
+**Problem**: Find the kth node from the end of the linked list.
+
+```csharp
+public ListNode FindKthFromEnd(ListNode head, int k) {
+    ListNode fast = head;
+    ListNode slow = head;
+    
+    // Move fast pointer k steps ahead
+    for (int i = 0; i < k; i++) {
+        if (fast == null) return null;  // List shorter than k
+        fast = fast.next;
+    }
+    
+    // Move both pointers until fast reaches end
+    while (fast != null) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+    
+    return slow;  // slow is now k nodes from end
+}
+```
+
+**Time Complexity**: O(n) where n is the length of the list
+**Space Complexity**: O(1)
+
+### 5.3 Reversing LinkedLists
+
+#### Basic Reversal Algorithm
+
+**Problem**: Reverse a singly linked list.
+
+**Approach**: Use three pointers to iteratively reverse the direction of links.
+
+```csharp
+public ListNode ReverseList(ListNode head) {
+    ListNode prev = null;
+    ListNode current = head;
+    
+    while (current != null) {
+        ListNode nextTemp = current.next;  // Save next node
+        current.next = prev;               // Reverse the link
+        prev = current;                    // Move prev forward
+        current = nextTemp;                // Move current forward
+    }
+    
+    return prev;  // prev is the new head
+}
+```
+
+**Step-by-step visualization** for `1 -> 2 -> 3 -> null`:
+
+```
+Initial:  prev=null, current=1->2->3->null
+
+Step 1:   prev=null, current=1, nextTemp=2->3->null
+          After reversal: null<-1  2->3->null
+          
+Step 2:   prev=1, current=2, nextTemp=3->null  
+          After reversal: null<-1<-2  3->null
+          
+Step 3:   prev=2, current=3, nextTemp=null
+          After reversal: null<-1<-2<-3  current=null
+          
+Result:   3->2->1->null (prev=3 is new head)
+```
+
+#### Swapping Node Pairs
+
+**Problem**: Swap every two adjacent nodes. 
+Example: `1->2->3->4` becomes `2->1->4->3`
+
+```csharp
+public ListNode SwapPairs(ListNode head) {
+    // Edge case: 0 or 1 nodes
+    if (head == null || head.next == null) {
+        return head;
+    }
+    
+    ListNode dummy = head.next;  // New head will be original second node
+    ListNode prev = null;
+    
+    while (head != null && head.next != null) {
+        ListNode nextPair = head.next.next;  // Save reference to next pair
+        
+        // Connect previous pair to current second node
+        if (prev != null) {
+            prev.next = head.next;
+        }
+        
+        // Swap the pair
+        head.next.next = head;
+        head.next = nextPair;
+        
+        // Move to next pair
+        prev = head;
+        head = nextPair;
+    }
+    
+    return dummy;
+}
+```
+
+#### Partial Reversals
+
+**Advanced Pattern**: Reverse only a portion of the linked list.
+
+**Example**: Reverse nodes from position left to right.
+
+```csharp
+public ListNode ReverseBetween(ListNode head, int left, int right) {
+    if (left == right) return head;
+    
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode prev = dummy;
+    
+    // Move to the node before the left position
+    for (int i = 1; i < left; i++) {
+        prev = prev.next;
+    }
+    
+    // Start reversing from left position
+    ListNode current = prev.next;
+    for (int i = left; i < right; i++) {
+        ListNode nextNode = current.next;
+        current.next = nextNode.next;
+        nextNode.next = prev.next;
+        prev.next = nextNode;
+    }
+    
+    return dummy.next;
+}
+```
+
+**Key Insights**:
+
+1. **Dummy nodes** simplify edge cases (especially when head might change)
+2. **Three-pointer technique** is fundamental for most reversal problems
+3. **Save references** before breaking links to avoid losing parts of the list
+4. **Iterative solutions** are generally preferred over recursive for space efficiency
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -1124,6 +1496,9 @@ public int EqualPairs(int[][] grid) {
 - [x] **Existence Checking** - O(1) lookup patterns
 - [x] **Counting Patterns** - Frequency tracking and constraints
 - [x] **More Hashing Patterns** - Advanced grouping and optimization techniques
+- [x] **LinkedList Fundamentals** - Node structures, types, and pointer manipulation
+- [x] **Fast and Slow Pointers** - Two-pointer techniques for cycle detection and traversal
+- [x] **LinkedList Reversals** - Algorithms for reversing entire or partial linked lists
 
 ### 🔄 Currently Studying
 
@@ -1131,7 +1506,6 @@ public int EqualPairs(int[][] grid) {
 
 ### 📋 Next Topics
 
-- Trees and Graphs
 - Binary Search Trees
 - Depth-First Search (DFS)
 - Breadth-First Search (BFS)
