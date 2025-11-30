@@ -95,4 +95,60 @@ public static class ReversingLinkedList
 
         return true;
     }
+
+    // https://leetcode.com/problems/reverse-nodes-in-even-length-groups/
+    public static ListNode ReverseEvenLengthGroups(ListNode head)
+    {
+        var dummy = new ListNode(0) { Next = head };
+        var prev = dummy;
+        var groupLength = 1;
+
+        while (prev.Next != null)
+        {
+            // Count actual nodes in current group (may be less than groupLength for last group)
+            var curr = prev.Next;
+            var actualLength = 0;
+            var temp = curr;
+
+            while (temp != null && actualLength < groupLength)
+            {
+                actualLength++;
+                temp = temp.Next;
+            }
+
+            // Reverse if group has even length
+            if (actualLength % 2 == 0)
+            {
+                // Reverse the group
+                var groupPrev = prev.Next;
+                var groupCurr = groupPrev!.Next;
+
+                for (int i = 1; i < actualLength; i++)
+                {
+                    var nextNode = groupCurr!.Next;
+                    groupCurr.Next = groupPrev;
+                    groupPrev = groupCurr;
+                    groupCurr = nextNode;
+                }
+
+                // Reconnect with the rest of the list
+                var tail = prev.Next;
+                prev.Next = groupPrev;
+                tail!.Next = groupCurr;
+                prev = tail;
+            }
+            else
+            {
+                // Skip odd-length group
+                for (int i = 0; i < actualLength; i++)
+                {
+                    prev = prev.Next!;
+                }
+            }
+
+            groupLength++;
+        }
+
+        return dummy.Next!;
+    }
 }

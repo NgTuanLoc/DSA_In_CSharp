@@ -468,4 +468,157 @@ public class ReversingLinkedListTests
         Assert.False(result);
     }
     #endregion
+
+    #region ReverseEvenLengthGroups Tests
+    /// <summary>
+    /// Test: Verify reversing nodes in even-length groups.
+    /// Pattern: Groups are formed with lengths 1, 2, 3, 4, etc. Reverse only even-length groups.
+    /// LeetCode: https://leetcode.com/problems/reverse-nodes-in-even-length-groups/
+    /// Example: [5,2,6,3,9,1,7,3,8,4] -> Groups: [5], [2,6], [3,9,1], [7,3,8,4]
+    ///          Reverse even groups: [5], [6,2], [3,9,1], [4,8,3,7]
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithMultipleEvenGroups_ReversesCorrectly()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 5, 2, 6, 3, 9, 1, 7, 3, 8, 4 });
+        var expected = new[] { 5, 6, 2, 3, 9, 1, 4, 8, 3, 7 };
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior when last group has even length less than expected.
+    /// Edge case: Last group length may be less than the sequence number.
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithEvenLastGroup_ReversesLastGroup()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 1, 1, 0, 6 });
+        var expected = new[] { 1, 0, 1, 6 };
+        // Groups: [1], [1,0], [6] (last group is only 1 node, odd)
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with last group having 2 nodes (even).
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithTwoNodeLastGroup_ReversesLastGroup()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 1, 1, 0, 6, 5 });
+        var expected = new[] { 1, 0, 1, 5, 6 };
+        // Groups: [1], [1,0], [6,5] (last group has 2 nodes, even)
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with only one node (odd group).
+    /// Edge case: Single node should remain unchanged.
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithSingleNode_RemainsUnchanged()
+    {
+        // Arrange
+        var head = new ListNode(1);
+        var expected = new[] { 1 };
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with two nodes (even group).
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithTwoNodes_ReversesSecondGroup()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 1, 2 });
+        var expected = new[] { 1, 2 };
+        // Groups: [1], [2] - second group has only 1 node (odd), not reversed
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with three nodes.
+    /// Groups: [1], [2,3] - second group has 2 nodes (even), should be reversed.
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithThreeNodes_ReversesSecondGroup()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 1, 2, 3 });
+        var expected = new[] { 1, 3, 2 };
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with mixed odd and even groups.
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithMixedGroups_ReversesEvenGroups()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5, 6, 7 });
+        var expected = new[] { 1, 3, 2, 4, 5, 6, 7 };
+        // Groups: [1], [2,3], [4,5,6], [7]
+        // Even groups: [2,3] -> [3,2]
+        // Odd groups: [1], [4,5,6], [7] - remain unchanged
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with complete groups including a 4-node even group.
+    /// </summary>
+    [Fact]
+    public void ReverseEvenLengthGroups_WithFourNodeGroup_ReversesCorrectly()
+    {
+        // Arrange
+        var head = CreateLinkedList(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+        var expected = new[] { 0, 2, 1, 3, 4, 5, 9, 8, 7, 6 };
+        // Groups: [0], [1,2], [3,4,5], [6,7,8,9]
+        // Reverse: [0], [2,1], [3,4,5], [9,8,7,6]
+
+        // Act
+        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+    #endregion
 }

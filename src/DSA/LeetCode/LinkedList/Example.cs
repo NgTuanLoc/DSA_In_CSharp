@@ -69,9 +69,14 @@ public static class LinkedListExample
         // Console.WriteLine(Utils.PrintLinkedList(FastAndSlowPointers.SwapNodes(Utils.BuildLinkedList([7, 9, 6, 6, 7, 8, 3, 0, 9, 5]), 5)));
         // Console.WriteLine(Utils.PrintLinkedList(FastAndSlowPointers.SwapNodes(Utils.BuildLinkedList([1, 2]), 1)));
 
-        Console.WriteLine("=========Palindrome Linked List=========");
-        Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 2, 2, 1])));
-        Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 2])));
-        Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 1, 2, 1])));
+        // Console.WriteLine("=========Palindrome Linked List=========");
+        // Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 2, 2, 1])));
+        // Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 2])));
+        // Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 1, 2, 1])));
+
+        Console.WriteLine("=========Reverse Nodes in Even Length Groups=========");
+        Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([5, 2, 6, 3, 9, 1, 7, 3, 8, 4]))));
+        Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([1, 1, 0, 6]))));
+        Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([1, 1, 0, 6, 5]))));
     }
 }
