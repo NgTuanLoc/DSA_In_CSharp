@@ -235,4 +235,134 @@ public class ReversingLinkedListTests
         Assert.Equal(expected, result);
     }
     #endregion
+
+    #region RemoveElements Tests
+    /// <summary>
+    /// Test: Verify removing all nodes with specified value from linked list.
+    /// Pattern: Traverse list, skip nodes matching target value, maintain links.
+    /// LeetCode: https://leetcode.com/problems/remove-linked-list-elements/
+    /// Algorithm:
+    /// 1. Track prev and curr pointers
+    /// 2. When curr.Value == val, remove node by updating prev.Next
+    /// 3. Handle head removal separately
+    /// Time: O(n), Space: O(1)
+    /// </summary>
+    [Theory]
+    [InlineData(new[] { 1, 2, 6, 3, 4, 5, 6 }, 6, new[] { 1, 2, 3, 4, 5 })]
+    [InlineData(new[] { 7, 7, 7, 7 }, 7, new int[] { })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 6, new[] { 1, 2, 3, 4, 5 })]
+    [InlineData(new[] { 1 }, 1, new int[] { })]
+    [InlineData(new[] { 1, 2, 2, 1 }, 2, new[] { 1, 1 })]
+    [InlineData(new[] { 2, 2, 1, 2, 2 }, 2, new[] { 1 })]
+    public void RemoveElements_WithVariousInputs_RemovesCorrectly(int[] input, int val, int[] expected)
+    {
+        // Arrange
+        var head = CreateLinkedList(input);
+
+        // Act
+        var result = ReversingLinkedList.RemoveElements(head, val);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with null input.
+    /// Edge case: Null input should return null.
+    /// </summary>
+    [Fact]
+    public void RemoveElements_WithNullHead_ReturnsNull()
+    {
+        // Arrange
+        ListNode? head = null;
+
+        // Act
+        var result = ReversingLinkedList.RemoveElements(head, 1);
+
+        // Assert
+        Assert.Null(result);
+    }
+    #endregion
+
+    #region GetDecimalValue Tests
+    /// <summary>
+    /// Test: Verify converting binary number represented as linked list to decimal integer.
+    /// Pattern: Traverse list left to right, shift and accumulate binary digits.
+    /// LeetCode: https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/
+    /// Algorithm:
+    /// 1. Initialize sum = 0
+    /// 2. For each node: sum = sum * 2 + node.Value
+    /// 3. Return sum
+    /// Example: [1,0,1] represents 101₂ = 5₁₀
+    /// Time: O(n), Space: O(1)
+    /// </summary>
+    [Theory]
+    [InlineData(new[] { 1, 0, 1 }, 5)]
+    [InlineData(new[] { 0 }, 0)]
+    [InlineData(new[] { 1 }, 1)]
+    [InlineData(new[] { 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0 }, 151078)]
+    [InlineData(new[] { 1, 1, 1, 1 }, 15)]
+    [InlineData(new[] { 1, 0, 0, 0 }, 8)]
+    [InlineData(new[] { 1, 1, 0, 1, 0 }, 26)]
+    public void GetDecimalValue_WithVariousInputs_ReturnsCorrectDecimal(int[] input, int expected)
+    {
+        // Arrange
+        var head = CreateLinkedList(input);
+
+        // Act
+        var result = ReversingLinkedList.GetDecimalValue(head);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+    #endregion
+
+    #region OddEvenList Tests
+    /// <summary>
+    /// Test: Verify grouping all odd-indexed nodes together followed by even-indexed nodes.
+    /// Pattern: Maintain two separate chains (odd and even), then connect them.
+    /// LeetCode: https://leetcode.com/problems/odd-even-linked-list/
+    /// Algorithm:
+    /// 1. Keep track of odd and even node chains
+    /// 2. Traverse list, alternating between odd and even updates
+    /// 3. Connect odd tail to even head
+    /// Note: First node is considered odd (index 1), second is even (index 2), etc.
+    /// Time: O(n), Space: O(1)
+    /// </summary>
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, new[] { 1, 3, 5, 2, 4 })]
+    [InlineData(new[] { 2, 1, 3, 5, 6, 4, 7 }, new[] { 2, 3, 6, 7, 1, 5, 4 })]
+    [InlineData(new[] { 1, 2 }, new[] { 1, 2 })]
+    [InlineData(new[] { 1 }, new[] { 1 })]
+    [InlineData(new[] { 1, 2, 3, 4 }, new[] { 1, 3, 2, 4 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6 }, new[] { 1, 3, 5, 2, 4, 6 })]
+    public void OddEvenList_WithVariousInputs_GroupsCorrectly(int[] input, int[] expected)
+    {
+        // Arrange
+        var head = CreateLinkedList(input);
+
+        // Act
+        var result = ReversingLinkedList.OddEvenList(head);
+
+        // Assert
+        Assert.Equal(expected, LinkedListToArray(result));
+    }
+
+    /// <summary>
+    /// Test: Verify correct behavior with null input.
+    /// Edge case: Null input should return null.
+    /// </summary>
+    [Fact]
+    public void OddEvenList_WithNullHead_ReturnsNull()
+    {
+        // Arrange
+        ListNode? head = null;
+
+        // Act
+        var result = ReversingLinkedList.OddEvenList(head);
+
+        // Assert
+        Assert.Null(result);
+    }
+    #endregion
 }

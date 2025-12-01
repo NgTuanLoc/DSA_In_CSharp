@@ -608,17 +608,6 @@ public abstract class Practice
         Array.Sort(count1);
         Array.Sort(count2);
 
-        System.Console.WriteLine("====");
-        foreach (var item in set1)
-        {
-            System.Console.WriteLine(item);
-        }
-        System.Console.WriteLine("====");
-        foreach (var item in set2)
-        {
-            System.Console.WriteLine(item);
-        }
-
         return set1.SetEquals(set2) && ArraysEqual(count1, count2);
     }
     private static bool ArraysEqual(int[] arr1, int[] arr2)

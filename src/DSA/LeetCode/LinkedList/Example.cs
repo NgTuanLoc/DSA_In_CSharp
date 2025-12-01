@@ -6,7 +6,7 @@ public static class LinkedListExample
 {
     public static void Run()
     {
-        Console.WriteLine("+++++++++++++Linked List+++++++++++++");
+        // Console.WriteLine("+++++++++++++Linked List+++++++++++++");
         // // !=========Get Middle Node=========
         // Console.WriteLine("=========Get Middle Node=========");
         // Console.WriteLine(FastAndSlowPointers.GetMiddle(Utils.BuildLinkedList([1, 2, 3, 4, 5])));
@@ -78,9 +78,24 @@ public static class LinkedListExample
         // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([5, 2, 6, 3, 9, 1, 7, 3, 8, 4]))));
         // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([1, 1, 0, 6]))));
 
-        Console.WriteLine("=========Maximum Twin Sum of a Linked List=========");
-        Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([5,4,2,1])));
-        Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([4,2,2,3])));
-        Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([1, 100000])));
+        // Console.WriteLine("=========Maximum Twin Sum of a Linked List=========");
+        // Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([5,4,2,1])));
+        // Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([4,2,2,3])));
+        // Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([1, 100000])));
+
+        // Console.WriteLine("=========Remove Linked List Elements=========");
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.RemoveElements(Utils.BuildLinkedList([1, 2, 6, 3, 4, 5, 6]), 6)));
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.RemoveElements(Utils.BuildLinkedList([7, 7, 7, 7]), 7)));
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.RemoveElements(null, 1)));
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.RemoveElements(Utils.BuildLinkedList([1, 2]), 1)));
+
+        // Console.WriteLine("=========Convert Binary Number in a Linked List to Integer=========");
+        // Console.WriteLine(ReversingLinkedList.GetDecimalValue(Utils.BuildLinkedList([1, 0, 1])));
+        // Console.WriteLine(ReversingLinkedList.GetDecimalValue(Utils.BuildLinkedList([0])));
+
+        // Console.WriteLine("=========Odd Even Linked List=========");
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.OddEvenList(Utils.BuildLinkedList([1, 2, 3, 4, 5]))));
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.OddEvenList(Utils.BuildLinkedList([2, 1, 3, 5, 6, 4, 7]))));
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.OddEvenList(Utils.BuildLinkedList([1, 2, 3, 4, 5, 6, 7, 8]))));
     }
 }

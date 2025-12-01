@@ -1,6 +1,6 @@
 ﻿namespace DSA.LeetCode.Hashing;
 
-public class CheckForExistence
+public static class CheckForExistence
 {
     // !Checking for existence
     public static List<int> TwoSum(List<int> nums, int target)
@@ -12,10 +12,6 @@ public class CheckForExistence
             if (table.TryGetValue(nums[i], out var value)) return [i, value];
 
             table.Add(target - nums[i], i);
-        }
-        foreach (var item in table.Keys)
-        {
-            Console.WriteLine(item);
         }
         return [-1, -1];
     }

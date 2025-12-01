@@ -60,8 +60,8 @@ public class TreesAndGraphsExample
             return result;
         }
         
-        Console.WriteLine(GoodNodes(root));
-        Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes(root));
+        // Console.WriteLine(GoodNodes(root));
+        // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes_Iteration(root));
 
         // !Same Tree
@@ -279,7 +279,7 @@ public class TreesAndGraphsExample
         // Console.WriteLine(BinarySearchTree.GetMinimumDifference_Iteration(root));
 
         // !Validate BST
-        Console.WriteLine(BinarySearchTree.IsValidBST(root));
-        Console.WriteLine(BinarySearchTree.IsValidBST_Iteration(root));
+        // Console.WriteLine(BinarySearchTree.IsValidBST(root));
+        // Console.WriteLine(BinarySearchTree.IsValidBST_Iteration(root));
     }
 }

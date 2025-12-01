@@ -1,10 +1,10 @@
 ﻿// using DSA.Algorithm.SortAlgorithm;
-using DSA.LeetCode.ArrayAndString;
-using DSA.LeetCode.TreesAndGraphs;
-using DSA.Playground;
-using DSA_In_CSharp.LeetCode.LinkedList;
+// using DSA.LeetCode.ArrayAndString;
+// using DSA.LeetCode.TreesAndGraphs;
+// using DSA.Playground;
+// using DSA_In_CSharp.LeetCode.LinkedList;
 
-Console.WriteLine("======= Data structure and Algorithm =======");
+// Console.WriteLine("======= Data structure and Algorithm =======");
 // SortDemo.Run();
 
 // Search Algorithm
@@ -128,9 +128,12 @@ Console.WriteLine("======= Data structure and Algorithm =======");
 // !LEET CODE
 // ArrayAndStringExample.Run();
 // HashingExample.Run();
-LinkedListExample.Run();
+// LinkedListExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
 // TreesAndGraphsExample.Run_BinarySearchTree();
 // BacktrackingExample.Run();
 // HeapExample.Run();
+
+// Entry point
+return;

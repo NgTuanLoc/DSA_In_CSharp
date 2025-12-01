@@ -16,6 +16,7 @@ public static class Utils
 
     public static string PrintLinkedList(ListNode? head)
     {
+        if (head == null) return "";
         List<int> arr = [];
         while (head != null)
         {

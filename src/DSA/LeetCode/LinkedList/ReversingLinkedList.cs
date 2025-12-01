@@ -191,4 +191,69 @@ public static class ReversingLinkedList
 
         return max;
     }
+
+    // https://leetcode.com/problems/remove-linked-list-elements/
+    public static ListNode? RemoveElements(ListNode? head, int val)
+    {
+        if (head == null) return null;
+        ListNode? prev = null;
+        var curr = head;
+
+        while (curr != null && head != null)
+        {
+            if (curr.Value == val)
+            {
+                if (prev == null)
+                {
+                    head = head.Next!;
+                }
+                else
+                {
+                    prev.Next = curr.Next;
+                }
+            }
+            else
+            {
+                prev = curr;
+            }
+            curr = curr.Next;
+        }
+
+        return head;
+    }
+
+    // https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/
+    public static int GetDecimalValue(ListNode head)
+    {
+        int sum = 0;
+
+        while (head != null)
+        {
+            sum *= 2;
+            sum += head.Value;
+            head = head.Next!;
+        }
+        return sum;
+    }
+
+    // https://leetcode.com/problems/odd-even-linked-list/description/
+    public static ListNode? OddEvenList(ListNode head)
+    {
+        if (head == null || head.Next == null) return head;
+
+        var oddNode = head;
+        var evenNode = head.Next;
+        var evenHead = evenNode;
+
+        while (oddNode != null && oddNode.Next != null && evenNode?.Next != null)
+        {
+            oddNode?.Next = evenNode?.Next;
+            oddNode = evenNode?.Next;
+            evenNode?.Next = oddNode?.Next;
+            evenNode = oddNode?.Next;
+        }
+        oddNode!.Next = evenHead;
+
+        return head;
+    }
 }
