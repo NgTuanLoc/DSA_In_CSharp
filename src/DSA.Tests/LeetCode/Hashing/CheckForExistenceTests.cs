@@ -74,34 +74,15 @@ public class CheckForExistenceTests
     /// https://leetcode.com/problems/first-letter-to-appear-twice/description/
     /// Pattern: Hash existence check - detect first duplicate
     /// </summary>
-    [Fact]
-    public void RepeatedCharacter_WithDuplicates_ReturnsFirstRepeated()
+    [Theory]
+    [InlineData("abccbaacz", 'c')]
+    [InlineData("abba", 'b')]
+    [InlineData("aa", 'a')]
+    public void RepeatedCharacter_WithVariousInputs_ReturnsExpected(string s, char expected)
     {
-        var result = CheckForExistence.RepeatedCharacter("abccbaacz");
+        var result = CheckForExistence.RepeatedCharacter(s);
 
-        Assert.Equal('c', result);
-    }
-
-    /// <summary>
-    /// Tests RepeatedCharacter with immediate duplicate.
-    /// </summary>
-    [Fact]
-    public void RepeatedCharacter_WithImmediateDuplicate_ReturnsCharacter()
-    {
-        var result = CheckForExistence.RepeatedCharacter("abba");
-
-        Assert.Equal('b', result);
-    }
-
-    /// <summary>
-    /// Tests RepeatedCharacter with single character repeated.
-    /// </summary>
-    [Fact]
-    public void RepeatedCharacter_WithSingleRepeated_ReturnsCharacter()
-    {
-        var result = CheckForExistence.RepeatedCharacter("aa");
-
-        Assert.Equal('a', result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -172,45 +153,16 @@ public class CheckForExistenceTests
     /// https://leetcode.com/problems/check-if-the-sentence-is-pangram/
     /// Pattern: Hash existence check - verify all alphabet letters present
     /// </summary>
-    [Fact]
-    public void CheckIfPangram_WithAllLetters_ReturnsTrue()
+    [Theory]
+    [InlineData("thequickbrownfoxjumpsoverthelazydog", true)]
+    [InlineData("leetcode", false)]
+    [InlineData("aaaaaaaaaa", false)]
+    [InlineData("abcdefghijklmnopqrstuvwxyzaabbcc", true)]
+    public void CheckIfPangram_WithVariousInputs_ReturnsExpected(string sentence, bool expected)
     {
-        var result = CheckForExistence.CheckIfPangram("thequickbrownfoxjumpsoverthelazydog");
+        var result = CheckForExistence.CheckIfPangram(sentence);
 
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests CheckIfPangram with missing letters.
-    /// </summary>
-    [Fact]
-    public void CheckIfPangram_WithMissingLetters_ReturnsFalse()
-    {
-        var result = CheckForExistence.CheckIfPangram("leetcode");
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests CheckIfPangram with repeated letters but missing some.
-    /// </summary>
-    [Fact]
-    public void CheckIfPangram_WithRepeatedButMissing_ReturnsFalse()
-    {
-        var result = CheckForExistence.CheckIfPangram("aaaaaaaaaa");
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests CheckIfPangram with pangram containing duplicates.
-    /// </summary>
-    [Fact]
-    public void CheckIfPangram_WithDuplicatesButAllLetters_ReturnsTrue()
-    {
-        var result = CheckForExistence.CheckIfPangram("abcdefghijklmnopqrstuvwxyzaabbcc");
-
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -218,56 +170,17 @@ public class CheckForExistenceTests
     /// https://leetcode.com/problems/missing-number/description/
     /// Pattern: Hash existence check - find missing number in sequence
     /// </summary>
-    [Fact]
-    public void MissingNumber_WithMissingInMiddle_ReturnsNumber()
+    [Theory]
+    [InlineData(new[] { 3, 0, 1 }, 2)]
+    [InlineData(new[] { 0, 1 }, 2)]
+    [InlineData(new[] { 1, 2, 3 }, 0)]
+    [InlineData(new[] { 9, 6, 4, 2, 3, 5, 7, 0, 1 }, 8)]
+    [InlineData(new[] { 0 }, 1)]
+    public void MissingNumber_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        var result = CheckForExistence.MissingNumber([3, 0, 1]);
+        var result = CheckForExistence.MissingNumber(nums);
 
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests MissingNumber with missing at end.
-    /// </summary>
-    [Fact]
-    public void MissingNumber_WithMissingAtEnd_ReturnsNumber()
-    {
-        var result = CheckForExistence.MissingNumber([0, 1]);
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests MissingNumber with missing at start.
-    /// </summary>
-    [Fact]
-    public void MissingNumber_WithMissingAtStart_ReturnsZero()
-    {
-        var result = CheckForExistence.MissingNumber([1, 2, 3]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests MissingNumber with large array.
-    /// </summary>
-    [Fact]
-    public void MissingNumber_WithLargeArray_ReturnsCorrectNumber()
-    {
-        var result = CheckForExistence.MissingNumber([9, 6, 4, 2, 3, 5, 7, 0, 1]);
-
-        Assert.Equal(8, result);
-    }
-
-    /// <summary>
-    /// Tests MissingNumber with single element.
-    /// </summary>
-    [Fact]
-    public void MissingNumber_WithSingleElement_ReturnsCorrectNumber()
-    {
-        var result = CheckForExistence.MissingNumber([0]);
-
-        Assert.Equal(1, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -275,77 +188,18 @@ public class CheckForExistenceTests
     /// https://leetcode.com/problems/counting-elements/description/
     /// Pattern: Hash existence check - count elements with successor
     /// </summary>
-    [Fact]
-    public void CountElements_WithValidSuccessors_ReturnsCount()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3 }, 2)]
+    [InlineData(new[] { 1, 1, 3, 3, 5, 5, 7, 7 }, 0)]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 4)]
+    [InlineData(new[] { 1, 3, 5, 7 }, 0)]
+    [InlineData(new[] { 1, 1, 2, 2 }, 2)]
+    [InlineData(new[] { -1, 0, 1, 2 }, 3)]
+    [InlineData(new[] { 5 }, 0)]
+    public void CountElements_WithVariousInputs_ReturnsExpected(int[] arr, int expected)
     {
-        var result = CheckForExistence.CountElements([1, 2, 3]);
+        var result = CheckForExistence.CountElements(arr);
 
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests CountElements with duplicates counting separately.
-    /// </summary>
-    [Fact]
-    public void CountElements_WithDuplicates_CountsEachOccurrence()
-    {
-        var result = CheckForExistence.CountElements([1, 1, 3, 3, 5, 5, 7, 7]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests CountElements with consecutive sequences.
-    /// </summary>
-    [Fact]
-    public void CountElements_WithConsecutiveSequence_ReturnsAllButLast()
-    {
-        var result = CheckForExistence.CountElements([1, 2, 3, 4, 5]);
-
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests CountElements with no valid successors.
-    /// </summary>
-    [Fact]
-    public void CountElements_WithNoSuccessors_ReturnsZero()
-    {
-        var result = CheckForExistence.CountElements([1, 3, 5, 7]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests CountElements with mixed scenarios.
-    /// </summary>
-    [Fact]
-    public void CountElements_WithMixedScenarios_ReturnsCorrectCount()
-    {
-        var result = CheckForExistence.CountElements([1, 1, 2, 2]);
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests CountElements with negative numbers.
-    /// </summary>
-    [Fact]
-    public void CountElements_WithNegativeNumbers_ReturnsCorrectCount()
-    {
-        var result = CheckForExistence.CountElements([-1, 0, 1, 2]);
-
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests CountElements with single element.
-    /// </summary>
-    [Fact]
-    public void CountElements_WithSingleElement_ReturnsZero()
-    {
-        var result = CheckForExistence.CountElements([5]);
-
-        Assert.Equal(0, result);
+        Assert.Equal(expected, result);
     }
 }

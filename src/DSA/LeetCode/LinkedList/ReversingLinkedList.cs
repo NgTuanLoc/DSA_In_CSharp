@@ -151,4 +151,44 @@ public static class ReversingLinkedList
 
         return dummy.Next!;
     }
+
+    // https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/
+    public static int PairSum(ListNode head)
+    {
+        // Find middle using fast and slow pointers
+        var slow = head;
+        var fast = head;
+
+        while (fast != null && fast.Next != null)
+        {
+            slow = slow.Next!;
+            fast = fast.Next.Next;
+        }
+
+        // Reverse second half in-place
+        ListNode? prev = null;
+        var curr = slow;
+
+        while (curr != null)
+        {
+            var next = curr.Next;
+            curr.Next = prev;
+            prev = curr;
+            curr = next;
+        }
+
+        // Calculate max twin sum
+        var max = 0;
+        var firstHalf = head;
+        var secondHalf = prev;
+
+        while (secondHalf != null)
+        {
+            max = Math.Max(max, firstHalf!.Value + secondHalf.Value);
+            firstHalf = firstHalf.Next;
+            secondHalf = secondHalf.Next;
+        }
+
+        return max;
+    }
 }

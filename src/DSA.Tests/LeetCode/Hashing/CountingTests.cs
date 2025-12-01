@@ -8,56 +8,17 @@ public class CountingTests
     /// Tests FindLongestSubstring finding longest substring with at most k distinct characters.
     /// Pattern: Hash counting with sliding window - track character frequencies
     /// </summary>
-    [Fact]
-    public void FindLongestSubstring_WithMaxTwoDistinct_ReturnsLength()
+    [Theory]
+    [InlineData("eceba", 2, 3)]
+    [InlineData("abc", 3, 3)]
+    [InlineData("aabbcc", 5, 6)]
+    [InlineData("aaaa", 1, 4)]
+    [InlineData("abcabcbb", 1, 2)]
+    public void FindLongestSubstring_WithVariousInputs_ReturnsExpected(string s, int k, int expected)
     {
-        var result = Counting.FindLongestSubstring("eceba", 2);
+        var result = Counting.FindLongestSubstring(s, k);
 
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests FindLongestSubstring with k equal to string length.
-    /// </summary>
-    [Fact]
-    public void FindLongestSubstring_WithKEqualsLength_ReturnsFullLength()
-    {
-        var result = Counting.FindLongestSubstring("abc", 3);
-
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests FindLongestSubstring with k larger than distinct characters.
-    /// </summary>
-    [Fact]
-    public void FindLongestSubstring_WithKLargerThanDistinct_ReturnsFullLength()
-    {
-        var result = Counting.FindLongestSubstring("aabbcc", 5);
-
-        Assert.Equal(6, result);
-    }
-
-    /// <summary>
-    /// Tests FindLongestSubstring with all same characters.
-    /// </summary>
-    [Fact]
-    public void FindLongestSubstring_WithAllSameChars_ReturnsFullLength()
-    {
-        var result = Counting.FindLongestSubstring("aaaa", 1);
-
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests FindLongestSubstring with k equals one.
-    /// </summary>
-    [Fact]
-    public void FindLongestSubstring_WithKEqualsOne_ReturnsLongestSingleChar()
-    {
-        var result = Counting.FindLongestSubstring("abcabcbb", 1);
-
-        Assert.Equal(2, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -122,45 +83,16 @@ public class CountingTests
     /// https://leetcode.com/problems/check-if-all-characters-have-equal-number-of-occurrences/description/
     /// Pattern: Hash counting - compare frequencies
     /// </summary>
-    [Fact]
-    public void AreOccurrencesEqual_WithEqualOccurrences_ReturnsTrue()
+    [Theory]
+    [InlineData("abacbc", true)]
+    [InlineData("aaabb", false)]
+    [InlineData("aaa", true)]
+    [InlineData("abc", true)]
+    public void AreOccurrencesEqual_WithVariousInputs_ReturnsExpected(string s, bool expected)
     {
-        var result = Counting.AreOccurrencesEqual("abacbc");
+        var result = Counting.AreOccurrencesEqual(s);
 
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests AreOccurrencesEqual with unequal occurrences.
-    /// </summary>
-    [Fact]
-    public void AreOccurrencesEqual_WithUnequalOccurrences_ReturnsFalse()
-    {
-        var result = Counting.AreOccurrencesEqual("aaabb");
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests AreOccurrencesEqual with single character.
-    /// </summary>
-    [Fact]
-    public void AreOccurrencesEqual_WithSingleChar_ReturnsTrue()
-    {
-        var result = Counting.AreOccurrencesEqual("aaa");
-
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests AreOccurrencesEqual with all unique characters.
-    /// </summary>
-    [Fact]
-    public void AreOccurrencesEqual_WithAllUnique_ReturnsTrue()
-    {
-        var result = Counting.AreOccurrencesEqual("abc");
-
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -168,67 +100,18 @@ public class CountingTests
     /// https://leetcode.com/problems/subarray-sum-equals-k/description/
     /// Pattern: Hash counting with prefix sum - count subarrays
     /// </summary>
-    [Fact]
-    public void SubArraySum_WithMultipleMatches_ReturnsCount()
+    [Theory]
+    [InlineData(new[] { 1, 1, 1 }, 2, 2)]
+    [InlineData(new[] { 1, 2, 3 }, 3, 2)]
+    [InlineData(new[] { 1, 2, 1, 2, 1 }, 3, 4)]
+    [InlineData(new[] { 1 }, 0, 0)]
+    [InlineData(new[] { -1, -1, 1 }, 0, 1)]
+    [InlineData(new[] { 1, -1, 0 }, 0, 3)]
+    public void SubArraySum_WithVariousInputs_ReturnsExpected(int[] nums, int k, int expected)
     {
-        var result = Counting.SubArraySum([1, 1, 1], 2);
+        var result = Counting.SubArraySum(nums, k);
 
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests SubArraySum with exact array sum.
-    /// </summary>
-    [Fact]
-    public void SubArraySum_WithExactArraySum_ReturnsOne()
-    {
-        var result = Counting.SubArraySum([1, 2, 3], 3);
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests SubArraySum with multiple overlapping subarrays.
-    /// </summary>
-    [Fact]
-    public void SubArraySum_WithOverlapping_ReturnsAllMatches()
-    {
-        var result = Counting.SubArraySum([1, 2, 1, 2, 1], 3);
-
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests SubArraySum with zero target.
-    /// </summary>
-    [Fact]
-    public void SubArraySum_WithZeroTarget_ReturnsZero()
-    {
-        var result = Counting.SubArraySum([1], 0);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests SubArraySum with negative numbers summing to zero.
-    /// </summary>
-    [Fact]
-    public void SubArraySum_WithNegativeNumbers_ReturnsCorrectCount()
-    {
-        var result = Counting.SubArraySum([-1, -1, 1], 0);
-
-        Assert.Equal(1, result);
-    }
-
-    /// <summary>
-    /// Tests SubArraySum with mixed positives and negatives.
-    /// </summary>
-    [Fact]
-    public void SubArraySum_WithMixedNumbers_ReturnsCorrectCount()
-    {
-        var result = Counting.SubArraySum([1, -1, 0], 0);
-
-        Assert.Equal(3, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -236,45 +119,16 @@ public class CountingTests
     /// https://leetcode.com/problems/count-number-of-nice-subarrays/
     /// Pattern: Hash counting with prefix sum - count nice subarrays
     /// </summary>
-    [Fact]
-    public void NumberOfSubArrays_WithKOddNumbers_ReturnsCount()
+    [Theory]
+    [InlineData(new[] { 1, 1, 2, 1, 1 }, 3, 2)]
+    [InlineData(new[] { 2, 4, 6 }, 1, 0)]
+    [InlineData(new[] { 2, 2, 2, 1, 2, 2, 1, 2, 2, 2 }, 2, 16)]
+    [InlineData(new[] { 2, 4, 6, 8 }, 0, 10)]
+    public void NumberOfSubArrays_WithVariousInputs_ReturnsExpected(int[] nums, int k, int expected)
     {
-        var result = Counting.NumberOfSubArrays([1, 1, 2, 1, 1], 3);
+        var result = Counting.NumberOfSubArrays(nums, k);
 
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests NumberOfSubArrays with no odd numbers possible.
-    /// </summary>
-    [Fact]
-    public void NumberOfSubArrays_WithAllEven_ReturnsZero()
-    {
-        var result = Counting.NumberOfSubArrays([2, 4, 6], 1);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests NumberOfSubArrays with multiple nice subarrays.
-    /// </summary>
-    [Fact]
-    public void NumberOfSubArrays_WithMultipleOdds_ReturnsCorrectCount()
-    {
-        var result = Counting.NumberOfSubArrays([2, 2, 2, 1, 2, 2, 1, 2, 2, 2], 2);
-
-        Assert.Equal(16, result);
-    }
-
-    /// <summary>
-    /// Tests NumberOfSubArrays with k equals zero.
-    /// </summary>
-    [Fact]
-    public void NumberOfSubArrays_WithKZero_CountsEvenSubarrays()
-    {
-        var result = Counting.NumberOfSubArrays([2, 4, 6, 8], 0);
-
-        Assert.Equal(10, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -320,45 +174,16 @@ public class CountingTests
     /// https://leetcode.com/problems/largest-unique-number/description/
     /// Pattern: Hash counting - find unique with max value
     /// </summary>
-    [Fact]
-    public void LargestUniqueNumber_WithUniques_ReturnsLargest()
+    [Theory]
+    [InlineData(new[] { 5, 7, 3, 9, 4, 9, 8, 3, 1 }, 8)]
+    [InlineData(new[] { 9, 9, 8, 8 }, -1)]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 5)]
+    [InlineData(new[] { 7 }, 7)]
+    public void LargestUniqueNumber_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        var result = Counting.LargestUniqueNumber([5, 7, 3, 9, 4, 9, 8, 3, 1]);
+        var result = Counting.LargestUniqueNumber(nums);
 
-        Assert.Equal(8, result);
-    }
-
-    /// <summary>
-    /// Tests LargestUniqueNumber with no unique numbers.
-    /// </summary>
-    [Fact]
-    public void LargestUniqueNumber_WithNoUniques_ReturnsMinusOne()
-    {
-        var result = Counting.LargestUniqueNumber([9, 9, 8, 8]);
-
-        Assert.Equal(-1, result);
-    }
-
-    /// <summary>
-    /// Tests LargestUniqueNumber with all unique.
-    /// </summary>
-    [Fact]
-    public void LargestUniqueNumber_WithAllUnique_ReturnsMax()
-    {
-        var result = Counting.LargestUniqueNumber([1, 2, 3, 4, 5]);
-
-        Assert.Equal(5, result);
-    }
-
-    /// <summary>
-    /// Tests LargestUniqueNumber with single element.
-    /// </summary>
-    [Fact]
-    public void LargestUniqueNumber_WithSingleElement_ReturnsElement()
-    {
-        var result = Counting.LargestUniqueNumber([7]);
-
-        Assert.Equal(7, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -366,45 +191,16 @@ public class CountingTests
     /// https://leetcode.com/problems/maximum-number-of-balloons/
     /// Pattern: Hash counting - track character availability
     /// </summary>
-    [Fact]
-    public void MaxNumberOfBalloons_WithEnoughChars_ReturnsCount()
+    [Theory]
+    [InlineData("nlaebolko", 1)]
+    [InlineData("loonbalxballpoon", 2)]
+    [InlineData("leetcode", 0)]
+    [InlineData("balloonballoon", 2)]
+    public void MaxNumberOfBalloons_WithVariousInputs_ReturnsExpected(string text, int expected)
     {
-        var result = Counting.MaxNumberOfBalloons("nlaebolko");
+        var result = Counting.MaxNumberOfBalloons(text);
 
-        Assert.Equal(1, result);
-    }
-
-    /// <summary>
-    /// Tests MaxNumberOfBalloons with multiple instances.
-    /// </summary>
-    [Fact]
-    public void MaxNumberOfBalloons_WithMultipleInstances_ReturnsCount()
-    {
-        var result = Counting.MaxNumberOfBalloons("loonbalxballpoon");
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests MaxNumberOfBalloons with insufficient characters.
-    /// </summary>
-    [Fact]
-    public void MaxNumberOfBalloons_WithInsufficientChars_ReturnsZero()
-    {
-        var result = Counting.MaxNumberOfBalloons("leetcode");
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests MaxNumberOfBalloons with extra characters.
-    /// </summary>
-    [Fact]
-    public void MaxNumberOfBalloons_WithExtraChars_ReturnsCorrectCount()
-    {
-        var result = Counting.MaxNumberOfBalloons("balloonballoon");
-
-        Assert.Equal(2, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -412,77 +208,18 @@ public class CountingTests
     /// https://leetcode.com/problems/contiguous-array/description/
     /// Pattern: Hash counting with balance tracking - prefix sum technique
     /// </summary>
-    [Fact]
-    public void FindMaxLength_WithEqualZerosAndOnes_ReturnsLength()
+    [Theory]
+    [InlineData(new[] { 0, 1 }, 2)]
+    [InlineData(new[] { 0, 1, 0 }, 2)]
+    [InlineData(new[] { 0, 1, 0, 0, 1, 1, 0 }, 6)]
+    [InlineData(new[] { 0, 0, 0, 0 }, 0)]
+    [InlineData(new[] { 1, 1, 1, 1 }, 0)]
+    [InlineData(new[] { 0 }, 0)]
+    [InlineData(new[] { 0, 0, 1, 1 }, 4)]
+    public void FindMaxLength_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        var result = Counting.FindMaxLength([0, 1]);
+        var result = Counting.FindMaxLength(nums);
 
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests FindMaxLength with unequal counts.
-    /// </summary>
-    [Fact]
-    public void FindMaxLength_WithUnequal_ReturnsLongestEqual()
-    {
-        var result = Counting.FindMaxLength([0, 1, 0]);
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests FindMaxLength with longer array.
-    /// </summary>
-    [Fact]
-    public void FindMaxLength_WithLongerArray_ReturnsMaxLength()
-    {
-        var result = Counting.FindMaxLength([0, 1, 0, 0, 1, 1, 0]);
-
-        Assert.Equal(6, result);
-    }
-
-    /// <summary>
-    /// Tests FindMaxLength with all zeros.
-    /// </summary>
-    [Fact]
-    public void FindMaxLength_WithAllZeros_ReturnsZero()
-    {
-        var result = Counting.FindMaxLength([0, 0, 0, 0]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests FindMaxLength with all ones.
-    /// </summary>
-    [Fact]
-    public void FindMaxLength_WithAllOnes_ReturnsZero()
-    {
-        var result = Counting.FindMaxLength([1, 1, 1, 1]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests FindMaxLength with single element.
-    /// </summary>
-    [Fact]
-    public void FindMaxLength_WithSingleElement_ReturnsZero()
-    {
-        var result = Counting.FindMaxLength([0]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests FindMaxLength with entire array equal.
-    /// </summary>
-    [Fact]
-    public void FindMaxLength_WithEntireArrayEqual_ReturnsFullLength()
-    {
-        var result = Counting.FindMaxLength([0, 0, 1, 1]);
-
-        Assert.Equal(4, result);
+        Assert.Equal(expected, result);
     }
 }

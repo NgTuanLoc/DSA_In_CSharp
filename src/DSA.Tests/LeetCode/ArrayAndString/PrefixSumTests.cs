@@ -145,47 +145,12 @@ public class PrefixSumTests
     /// Pattern: Each element becomes sum of all previous elements plus itself.
     /// LeetCode: https://leetcode.com/problems/running-sum-of-1d-array/
     /// </summary>
-    [Fact]
-    public void RunningSum_WithPositiveNumbers_ReturnsCorrectRunningSum()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4 }, new[] { 1, 3, 6, 10 })]
+    [InlineData(new[] { 3, 1, 2, 10, -5 }, new[] { 3, 4, 6, 16, 11 })]
+    [InlineData(new[] { 5 }, new[] { 5 })]
+    public void RunningSum_WithVariousInputs_ReturnsExpected(int[] nums, int[] expected)
     {
-        // Arrange
-        var nums = new int[] { 1, 2, 3, 4 };
-        var expected = new int[] { 1, 3, 6, 10 };
-
-        // Act
-        var result = PrefixSum.RunningSum(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with negative numbers.
-    /// </summary>
-    [Fact]
-    public void RunningSum_WithMixedNumbers_ReturnsCorrectRunningSum()
-    {
-        // Arrange
-        var nums = new int[] { 3, 1, 2, 10, -5 };
-        var expected = new int[] { 3, 4, 6, 16, 11 };
-
-        // Act
-        var result = PrefixSum.RunningSum(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single element.
-    /// </summary>
-    [Fact]
-    public void RunningSum_WithSingleElement_ReturnsSameArray()
-    {
-        // Arrange
-        var nums = new int[] { 5 };
-        var expected = new int[] { 5 };
-
         // Act
         var result = PrefixSum.RunningSum(nums);
 
@@ -200,47 +165,12 @@ public class PrefixSumTests
     /// Pattern: Find minimum prefix sum, then calculate required start value.
     /// LeetCode: https://leetcode.com/problems/minimum-value-to-get-positive-step-by-step-sum/
     /// </summary>
-    [Fact]
-    public void MinStartValue_WithNegativeMinimum_ReturnsCorrectStartValue()
+    [Theory]
+    [InlineData(new[] { -3, 2, -3, 4, 2 }, 5)]
+    [InlineData(new[] { 1, 2, 3 }, 1)]
+    [InlineData(new[] { 1, -2, -3 }, 5)]
+    public void MinStartValue_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        // Arrange
-        var nums = new int[] { -3, 2, -3, 4, 2 };
-        var expected = 5; // To keep step-by-step sum positive
-
-        // Act
-        var result = PrefixSum.MinStartValue(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when all numbers are positive.
-    /// </summary>
-    [Fact]
-    public void MinStartValue_WithAllPositiveNumbers_ReturnsOne()
-    {
-        // Arrange
-        var nums = new int[] { 1, 2, 3 };
-        var expected = 1;
-
-        // Act
-        var result = PrefixSum.MinStartValue(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with descending negative values.
-    /// </summary>
-    [Fact]
-    public void MinStartValue_WithDescendingNegatives_ReturnsCorrectStartValue()
-    {
-        // Arrange
-        var nums = new int[] { 1, -2, -3 };
-        var expected = 5; // start=5: 5->6->4->1 (all positive)
-
         // Act
         var result = PrefixSum.MinStartValue(nums);
 
@@ -313,47 +243,12 @@ public class PrefixSumTests
     /// Pattern: Compute running sum to get altitudes at each point.
     /// LeetCode: https://leetcode.com/problems/find-the-highest-altitude/
     /// </summary>
-    [Fact]
-    public void LargestAltitude_WithPositiveAndNegativeGains_ReturnsMaxAltitude()
+    [Theory]
+    [InlineData(new[] { -5, 1, 5, 0, -7 }, 1)]
+    [InlineData(new[] { -4, -3, -2, -1 }, 0)]
+    [InlineData(new[] { 1, 2, 3, 4 }, 10)]
+    public void LargestAltitude_WithVariousInputs_ReturnsExpected(int[] gain, int expected)
     {
-        // Arrange
-        var gain = new int[] { -5, 1, 5, 0, -7 };
-        var expected = 1; // altitudes: 0, -5, -4, 1, 1, -6
-
-        // Act
-        var result = PrefixSum.LargestAltitude(gain);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with all negative gains.
-    /// </summary>
-    [Fact]
-    public void LargestAltitude_WithAllNegativeGains_ReturnsZero()
-    {
-        // Arrange
-        var gain = new int[] { -4, -3, -2, -1 };
-        var expected = 0; // Starting altitude is highest
-
-        // Act
-        var result = PrefixSum.LargestAltitude(gain);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with all positive gains.
-    /// </summary>
-    [Fact]
-    public void LargestAltitude_WithAllPositiveGains_ReturnsSum()
-    {
-        // Arrange
-        var gain = new int[] { 1, 2, 3, 4 };
-        var expected = 10; // Final altitude: 0+1+2+3+4 = 10
-
         // Act
         var result = PrefixSum.LargestAltitude(gain);
 
@@ -368,84 +263,14 @@ public class PrefixSumTests
     /// Pattern: Use prefix sum to efficiently compute and compare left/right sums.
     /// LeetCode: https://leetcode.com/problems/find-pivot-index/
     /// </summary>
-    [Fact]
-    public void PivotIndex_WithValidPivot_ReturnsPivotIndex()
+    [Theory]
+    [InlineData(new[] { 1, 7, 3, 6, 5, 6 }, 3)]
+    [InlineData(new[] { 1, 2, 3 }, -1)]
+    [InlineData(new[] { 2, 1, -1 }, 0)]
+    [InlineData(new[] { -1, 1, 2 }, 2)]
+    [InlineData(new[] { 1 }, 0)]
+    public void PivotIndex_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        // Arrange
-        var nums = new int[] { 1, 7, 3, 6, 5, 6 };
-        var expected = 3; // left sum = 1+7+3 = 11, right sum = 5+6 = 11
-
-        // Act
-        var result = PrefixSum.PivotIndex(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when no pivot exists.
-    /// </summary>
-    [Fact]
-    public void PivotIndex_WithNoPivot_ReturnsNegativeOne()
-    {
-        // Arrange
-        var nums = new int[] { 1, 2, 3 };
-        var expected = -1;
-
-        // Act
-        var result = PrefixSum.PivotIndex(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when pivot is at first index.
-    /// Edge case: Left sum is 0.
-    /// </summary>
-    [Fact]
-    public void PivotIndex_WithPivotAtStart_ReturnsZero()
-    {
-        // Arrange
-        var nums = new int[] { 2, 1, -1 };
-        var expected = 0; // left sum = 0, right sum = 1 + (-1) = 0
-
-        // Act
-        var result = PrefixSum.PivotIndex(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when pivot is at last index.
-    /// Edge case: Right sum is 0.
-    /// </summary>
-    [Fact]
-    public void PivotIndex_WithPivotAtEnd_ReturnsLastIndex()
-    {
-        // Arrange
-        var nums = new int[] { -1, 1, 2 };
-        var expected = 2; // left sum = -1 + 1 = 0, right sum = 0
-
-        // Act
-        var result = PrefixSum.PivotIndex(nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single element.
-    /// Edge case: Both sums are 0.
-    /// </summary>
-    [Fact]
-    public void PivotIndex_WithSingleElement_ReturnsZero()
-    {
-        // Arrange
-        var nums = new int[] { 1 };
-        var expected = 0;
-
         // Act
         var result = PrefixSum.PivotIndex(nums);
 

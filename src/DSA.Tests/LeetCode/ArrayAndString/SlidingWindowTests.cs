@@ -266,50 +266,12 @@ public class SlidingWindowTests
     /// Pattern: Maintain count of zeros in window, shrink when count exceeds k.
     /// LeetCode: https://leetcode.com/problems/max-consecutive-ones-iii/
     /// </summary>
-    [Fact]
-    public void LongestOnes_WithKFlips_ReturnsMaxLength()
+    [Theory]
+    [InlineData(new[] { 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0 }, 2, 6)]
+    [InlineData(new[] { 1, 1, 0, 1, 1, 1, 0, 1 }, 0, 3)]
+    [InlineData(new[] { 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1 }, 10, 19)]
+    public void LongestOnes_WithVariousInputs_ReturnsExpected(int[] nums, int k, int expected)
     {
-        // Arrange
-        var nums = new int[] { 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0 };
-        var k = 2;
-        var expected = 6; // [1,1,1,0,0,1] or [0,0,1,1,1,1]
-
-        // Act
-        var result = SlidingWindow.LongestOnes(nums, k);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with k = 0 (no flips allowed).
-    /// </summary>
-    [Fact]
-    public void LongestOnes_WithNoFlipsAllowed_ReturnsLongestConsecutiveOnes()
-    {
-        // Arrange
-        var nums = new int[] { 1, 1, 0, 1, 1, 1, 0, 1 };
-        var k = 0;
-        var expected = 3;
-
-        // Act
-        var result = SlidingWindow.LongestOnes(nums, k);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when k >= number of zeros.
-    /// </summary>
-    [Fact]
-    public void LongestOnes_WithKGreaterThanZeroCount_ReturnsArrayLength()
-    {
-        // Arrange
-        var nums = new int[] { 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1 };
-        var k = 10;
-        var expected = 19;
-
         // Act
         var result = SlidingWindow.LongestOnes(nums, k);
 
@@ -324,50 +286,12 @@ public class SlidingWindowTests
     /// Pattern: Expand window until sum >= target, then shrink to find minimum length.
     /// LeetCode: https://leetcode.com/problems/minimum-size-subarray-sum/
     /// </summary>
-    [Fact]
-    public void MinSubArrayLen_WithValidTarget_ReturnsMinLength()
+    [Theory]
+    [InlineData(7, new[] { 2, 3, 1, 2, 4, 3 }, 2)]
+    [InlineData(100, new[] { 1, 2, 3, 4, 5 }, 0)]
+    [InlineData(4, new[] { 1, 4, 4 }, 1)]
+    public void MinSubArrayLen_WithVariousInputs_ReturnsExpected(int target, int[] nums, int expected)
     {
-        // Arrange
-        var target = 7;
-        var nums = new int[] { 2, 3, 1, 2, 4, 3 };
-        var expected = 2; // [4, 3]
-
-        // Act
-        var result = SlidingWindow.MinSubArrayLen(target, nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when no subarray sum reaches target.
-    /// </summary>
-    [Fact]
-    public void MinSubArrayLen_WithNoValidSubarray_ReturnsZero()
-    {
-        // Arrange
-        var target = 100;
-        var nums = new int[] { 1, 2, 3, 4, 5 };
-        var expected = 0;
-
-        // Act
-        var result = SlidingWindow.MinSubArrayLen(target, nums);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when single element meets target.
-    /// </summary>
-    [Fact]
-    public void MinSubArrayLen_WithSingleElementMeetsTarget_ReturnsOne()
-    {
-        // Arrange
-        var target = 4;
-        var nums = new int[] { 1, 4, 4 };
-        var expected = 1;
-
         // Act
         var result = SlidingWindow.MinSubArrayLen(target, nums);
 
@@ -382,51 +306,12 @@ public class SlidingWindowTests
     /// Pattern: Fixed window size counting vowels.
     /// LeetCode: https://leetcode.com/problems/maximum-number-of-vowels-in-a-substring-of-given-length/
     /// </summary>
-    [Fact]
-    public void MaxVowels_WithMixedString_ReturnsMaxVowelCount()
+    [Theory]
+    [InlineData("abciiidef", 3, 3)]
+    [InlineData("rhythm", 3, 0)]
+    [InlineData("aeioubc", 5, 5)]
+    public void MaxVowels_WithVariousInputs_ReturnsExpected(string s, int k, int expected)
     {
-        // Arrange
-        var s = "abciiidef";
-        var k = 3;
-        var expected = 3; // "iii"
-
-        // Act
-        var result = SlidingWindow.MaxVowels(s, k);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when no vowels in string.
-    /// </summary>
-    [Fact]
-    public void MaxVowels_WithNoVowels_ReturnsZero()
-    {
-        // Arrange
-        var s = "rhythm";
-        var k = 3;
-        var expected = 0;
-
-        // Act
-        var result = SlidingWindow.MaxVowels(s, k);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify early return when window has k vowels.
-    /// Edge case: Optimal case reached early.
-    /// </summary>
-    [Fact]
-    public void MaxVowels_WithAllVowelsInFirstWindow_ReturnsK()
-    {
-        // Arrange
-        var s = "aeioubc";
-        var k = 5;
-        var expected = 5;
-
         // Act
         var result = SlidingWindow.MaxVowels(s, k);
 
@@ -441,53 +326,12 @@ public class SlidingWindowTests
     /// Pattern: Track cumulative character conversion cost in sliding window.
     /// LeetCode: https://leetcode.com/problems/get-equal-substrings-within-budget/
     /// </summary>
-    [Fact]
-    public void EqualSubstring_WithValidStrings_ReturnsMaxLength()
+    [Theory]
+    [InlineData("abcd", "bcdf", 3, 3)]
+    [InlineData("abcd", "abcd", 0, 4)]
+    [InlineData("abcd", "cdef", 0, 0)]
+    public void EqualSubstring_WithVariousInputs_ReturnsExpected(string s, string t, int maxCost, int expected)
     {
-        // Arrange
-        var s = "abcd";
-        var t = "bcdf";
-        var maxCost = 3;
-        var expected = 3; // "abc" to "bcd"
-
-        // Act
-        var result = SlidingWindow.EqualSubstring(s, t, maxCost);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with identical strings.
-    /// </summary>
-    [Fact]
-    public void EqualSubstring_WithIdenticalStrings_ReturnsFullLength()
-    {
-        // Arrange
-        var s = "abcd";
-        var t = "abcd";
-        var maxCost = 0;
-        var expected = 4;
-
-        // Act
-        var result = SlidingWindow.EqualSubstring(s, t, maxCost);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with zero maxCost and different strings.
-    /// </summary>
-    [Fact]
-    public void EqualSubstring_WithZeroMaxCostAndDifferentStrings_ReturnsZero()
-    {
-        // Arrange
-        var s = "abcd";
-        var t = "cdef";
-        var maxCost = 0;
-        var expected = 0;
-
         // Act
         var result = SlidingWindow.EqualSubstring(s, t, maxCost);
 

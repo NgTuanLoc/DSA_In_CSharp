@@ -14,66 +14,18 @@ public class TwoPointersTests
     /// Test: Verify that a simple palindrome string "racecar" is correctly identified as a palindrome.
     /// Pattern: Two pointers moving from both ends towards the center.
     /// </summary>
-    [Fact]
-    public void CheckPalindrome_WithSimplePalindrome_ReturnsTrue()
+    [Theory]
+    [InlineData("racecar", true)]
+    [InlineData("hello", false)]
+    [InlineData("a", true)]
+    [InlineData("abba", true)]
+    public void CheckPalindrome_WithVariousInputs_ReturnsExpected(string input, bool expected)
     {
-        // Arrange
-        var input = "racecar";
-
         // Act
         var result = TwoPointers.CheckPalindrome(input);
 
         // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify that a non-palindrome string "hello" is correctly identified as not a palindrome.
-    /// </summary>
-    [Fact]
-    public void CheckPalindrome_WithNonPalindrome_ReturnsFalse()
-    {
-        // Arrange
-        var input = "hello";
-
-        // Act
-        var result = TwoPointers.CheckPalindrome(input);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Test: Verify that a single character string is correctly identified as a palindrome.
-    /// Edge case: Minimal valid input.
-    /// </summary>
-    [Fact]
-    public void CheckPalindrome_WithSingleCharacter_ReturnsTrue()
-    {
-        // Arrange
-        var input = "a";
-
-        // Act
-        var result = TwoPointers.CheckPalindrome(input);
-
-        // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify that an even-length palindrome is correctly identified.
-    /// </summary>
-    [Fact]
-    public void CheckPalindrome_WithEvenLengthPalindrome_ReturnsTrue()
-    {
-        // Arrange
-        var input = "abba";
-
-        // Act
-        var result = TwoPointers.CheckPalindrome(input);
-
-        // Assert
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
     #endregion
 
@@ -195,53 +147,17 @@ public class TwoPointersTests
     /// Pattern: Two pointers moving through both strings, matching characters in order.
     /// LeetCode: https://leetcode.com/problems/is-subsequence/
     /// </summary>
-    [Fact]
-    public void IsSubSequence_WithValidSubsequence_ReturnsTrue()
+    [Theory]
+    [InlineData("abc", "ahbgdc", true)]
+    [InlineData("axc", "ahbgdc", false)]
+    [InlineData("", "ahbgdc", true)]
+    public void IsSubSequence_WithVariousInputs_ReturnsExpected(string s, string t, bool expected)
     {
-        // Arrange
-        var s = "abc";
-        var t = "ahbgdc";
-
         // Act
         var result = TwoPointers.IsSubSequence(s, t);
 
         // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify that an invalid subsequence is correctly identified.
-    /// </summary>
-    [Fact]
-    public void IsSubSequence_WithInvalidSubsequence_ReturnsFalse()
-    {
-        // Arrange
-        var s = "axc";
-        var t = "ahbgdc";
-
-        // Act
-        var result = TwoPointers.IsSubSequence(s, t);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when s is empty string.
-    /// Edge case: Empty subsequence is valid for any string.
-    /// </summary>
-    [Fact]
-    public void IsSubSequence_WithEmptyS_ReturnsTrue()
-    {
-        // Arrange
-        var s = "";
-        var t = "ahbgdc";
-
-        // Act
-        var result = TwoPointers.IsSubSequence(s, t);
-
-        // Assert
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
     #endregion
 
@@ -343,30 +259,11 @@ public class TwoPointersTests
     /// Test: Verify that each word in a string is reversed while maintaining word order.
     /// LeetCode: https://leetcode.com/problems/reverse-words-in-a-string-iii/
     /// </summary>
-    [Fact]
-    public void ReverseWords_WithMultipleWords_ReversesEachWord()
+    [Theory]
+    [InlineData("Let's take LeetCode contest", "s'teL ekat edoCteeL tsetnoc")]
+    [InlineData("God", "doG")]
+    public void ReverseWords_WithVariousInputs_ReturnsExpected(string input, string expected)
     {
-        // Arrange
-        var input = "Let's take LeetCode contest";
-        var expected = "s'teL ekat edoCteeL tsetnoc";
-
-        // Act
-        var result = TwoPointers.ReverseWords(input);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single word.
-    /// </summary>
-    [Fact]
-    public void ReverseWords_WithSingleWord_ReversesWord()
-    {
-        // Arrange
-        var input = "God";
-        var expected = "doG";
-
         // Act
         var result = TwoPointers.ReverseWords(input);
 
@@ -381,30 +278,11 @@ public class TwoPointersTests
     /// Pattern: Two pointers skip non-letter characters and swap only letters.
     /// LeetCode: https://leetcode.com/problems/reverse-only-letters/
     /// </summary>
-    [Fact]
-    public void ReverseOnlyLetters_WithMixedCharacters_ReversesOnlyLetters()
+    [Theory]
+    [InlineData("a-bC-dEf-ghIj", "j-Ih-gfE-dCba")]
+    [InlineData("Test", "tseT")]
+    public void ReverseOnlyLetters_WithVariousInputs_ReturnsExpected(string input, string expected)
     {
-        // Arrange
-        var input = "a-bC-dEf-ghIj";
-        var expected = "j-Ih-gfE-dCba";
-
-        // Act
-        var result = TwoPointers.ReverseOnlyLetters(input);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with only letters.
-    /// </summary>
-    [Fact]
-    public void ReverseOnlyLetters_WithOnlyLetters_ReversesAll()
-    {
-        // Arrange
-        var input = "Test";
-        var expected = "tseT";
-
         // Act
         var result = TwoPointers.ReverseOnlyLetters(input);
 
@@ -419,32 +297,11 @@ public class TwoPointersTests
     /// Pattern: Two pointers on two sorted arrays, advancing the pointer with smaller value.
     /// LeetCode: https://leetcode.com/problems/minimum-common-value/
     /// </summary>
-    [Fact]
-    public void GetCommon_WithCommonValues_ReturnsMinimumCommon()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3 }, new[] { 2, 4 }, 2)]
+    [InlineData(new[] { 1, 2, 3 }, new[] { 4, 5, 6 }, -1)]
+    public void GetCommon_WithVariousInputs_ReturnsExpected(int[] nums1, int[] nums2, int expected)
     {
-        // Arrange
-        var nums1 = new int[] { 1, 2, 3 };
-        var nums2 = new int[] { 2, 4 };
-        var expected = 2;
-
-        // Act
-        var result = TwoPointers.GetCommon(nums1, nums2);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify that -1 is returned when no common value exists.
-    /// </summary>
-    [Fact]
-    public void GetCommon_WithNoCommonValues_ReturnsNegativeOne()
-    {
-        // Arrange
-        var nums1 = new int[] { 1, 2, 3 };
-        var nums2 = new int[] { 4, 5, 6 };
-        var expected = -1;
-
         // Act
         var result = TwoPointers.GetCommon(nums1, nums2);
 
@@ -497,50 +354,12 @@ public class TwoPointersTests
     /// Pattern: Find target character, then use two pointers to reverse prefix.
     /// LeetCode: https://leetcode.com/problems/reverse-prefix-of-word/
     /// </summary>
-    [Fact]
-    public void ReversePrefix_WithCharacterFound_ReversesPrefixUpToChar()
+    [Theory]
+    [InlineData("abcdefd", 'd', "dcbaefd")]
+    [InlineData("abcd", 'z', "abcd")]
+    [InlineData("abcd", 'a', "abcd")]
+    public void ReversePrefix_WithVariousInputs_ReturnsExpected(string word, char ch, string expected)
     {
-        // Arrange
-        var word = "abcdefd";
-        var ch = 'd';
-        var expected = "dcbaefd";
-
-        // Act
-        var result = TwoPointers.ReversePrefix(word, ch);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify that string remains unchanged when character not found.
-    /// </summary>
-    [Fact]
-    public void ReversePrefix_WithCharacterNotFound_ReturnsOriginalString()
-    {
-        // Arrange
-        var word = "abcd";
-        var ch = 'z';
-        var expected = "abcd";
-
-        // Act
-        var result = TwoPointers.ReversePrefix(word, ch);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when character is at first position.
-    /// </summary>
-    [Fact]
-    public void ReversePrefix_WithCharacterAtStart_ReturnsOriginalString()
-    {
-        // Arrange
-        var word = "abcd";
-        var ch = 'a';
-        var expected = "abcd";
-
         // Act
         var result = TwoPointers.ReversePrefix(word, ch);
 

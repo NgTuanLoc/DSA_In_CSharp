@@ -54,45 +54,16 @@ public class PracticeTests
     /// https://leetcode.com/problems/minimum-consecutive-cards-to-pick-up/description/
     /// Pattern: Hash tracking - store last seen index
     /// </summary>
-    [Fact]
-    public void MinimumCardPickup_WithMatchingPairs_ReturnsMinDistance()
+    [Theory]
+    [InlineData(new[] { 3, 4, 2, 3, 4, 7 }, 4)]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, -1)]
+    [InlineData(new[] { 1, 1 }, 2)]
+    [InlineData(new[] { 1, 2, 6, 2, 1 }, 3)]
+    public void MinimumCardPickup_WithVariousInputs_ReturnsExpected(int[] cards, int expected)
     {
-        var result = Practice.MinimumCardPickup([3, 4, 2, 3, 4, 7]);
+        var result = Practice.MinimumCardPickup(cards);
 
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests MinimumCardPickup with no matching pairs.
-    /// </summary>
-    [Fact]
-    public void MinimumCardPickup_WithNoMatching_ReturnsMinusOne()
-    {
-        var result = Practice.MinimumCardPickup([1, 2, 3, 4, 5]);
-
-        Assert.Equal(-1, result);
-    }
-
-    /// <summary>
-    /// Tests MinimumCardPickup with immediate pair.
-    /// </summary>
-    [Fact]
-    public void MinimumCardPickup_WithImmediatePair_ReturnsTwo()
-    {
-        var result = Practice.MinimumCardPickup([1, 1]);
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests MinimumCardPickup with multiple pairs.
-    /// </summary>
-    [Fact]
-    public void MinimumCardPickup_WithMultiplePairs_ReturnsSmallest()
-    {
-        var result = Practice.MinimumCardPickup([1, 2, 6, 2, 1]);
-
-        Assert.Equal(3, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -150,34 +121,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/ransom-note/
     /// Pattern: Hash counting - check character availability
     /// </summary>
-    [Fact]
-    public void CanConstruct_WithSufficientChars_ReturnsTrue()
+    [Theory]
+    [InlineData("aa", "aab", true)]
+    [InlineData("aa", "ab", false)]
+    [InlineData("a", "b", false)]
+    public void CanConstruct_WithVariousInputs_ReturnsExpected(string ransomNote, string magazine, bool expected)
     {
-        var result = Practice.CanConstruct("aa", "aab");
+        var result = Practice.CanConstruct(ransomNote, magazine);
 
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests CanConstruct with insufficient characters.
-    /// </summary>
-    [Fact]
-    public void CanConstruct_WithInsufficientChars_ReturnsFalse()
-    {
-        var result = Practice.CanConstruct("aa", "ab");
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests CanConstruct with different characters.
-    /// </summary>
-    [Fact]
-    public void CanConstruct_WithDifferentChars_ReturnsFalse()
-    {
-        var result = Practice.CanConstruct("a", "b");
-
-        Assert.False(result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -185,34 +137,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/jewels-and-stones/description/
     /// Pattern: Hash existence - check membership
     /// </summary>
-    [Fact]
-    public void NumJewelsInStones_WithMultipleMatches_ReturnsCount()
+    [Theory]
+    [InlineData("aA", "aAAbbbb", 3)]
+    [InlineData("z", "ZZ", 0)]
+    [InlineData("abc", "aabbcc", 6)]
+    public void NumJewelsInStones_WithVariousInputs_ReturnsExpected(string jewels, string stones, int expected)
     {
-        var result = Practice.NumJewelsInStones("aA", "aAAbbbb");
+        var result = Practice.NumJewelsInStones(jewels, stones);
 
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests NumJewelsInStones with no matches.
-    /// </summary>
-    [Fact]
-    public void NumJewelsInStones_WithNoMatches_ReturnsZero()
-    {
-        var result = Practice.NumJewelsInStones("z", "ZZ");
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests NumJewelsInStones with all matching.
-    /// </summary>
-    [Fact]
-    public void NumJewelsInStones_WithAllMatching_ReturnsAllCount()
-    {
-        var result = Practice.NumJewelsInStones("abc", "aabbcc");
-
-        Assert.Equal(6, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -220,56 +153,17 @@ public class PracticeTests
     /// https://leetcode.com/problems/longest-substring-without-repeating-characters/
     /// Pattern: Hash with sliding window - track last seen index
     /// </summary>
-    [Fact]
-    public void LengthOfLongestSubstring_WithRepeats_ReturnsMaxLength()
+    [Theory]
+    [InlineData("abcabcbb", 3)]
+    [InlineData("bbbbb", 1)]
+    [InlineData("pwwkew", 3)]
+    [InlineData("au", 2)]
+    [InlineData("dvdf", 3)]
+    public void LengthOfLongestSubstring_WithVariousInputs_ReturnsExpected(string s, int expected)
     {
-        var result = Practice.LengthOfLongestSubstring("abcabcbb");
+        var result = Practice.LengthOfLongestSubstring(s);
 
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests LengthOfLongestSubstring with all same characters.
-    /// </summary>
-    [Fact]
-    public void LengthOfLongestSubstring_WithAllSame_ReturnsOne()
-    {
-        var result = Practice.LengthOfLongestSubstring("bbbbb");
-
-        Assert.Equal(1, result);
-    }
-
-    /// <summary>
-    /// Tests LengthOfLongestSubstring with no repeats.
-    /// </summary>
-    [Fact]
-    public void LengthOfLongestSubstring_WithNoRepeats_ReturnsFullLength()
-    {
-        var result = Practice.LengthOfLongestSubstring("pwwkew");
-
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests LengthOfLongestSubstring with two characters.
-    /// </summary>
-    [Fact]
-    public void LengthOfLongestSubstring_WithTwoChars_ReturnsTwo()
-    {
-        var result = Practice.LengthOfLongestSubstring("au");
-
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests LengthOfLongestSubstring with complex pattern.
-    /// </summary>
-    [Fact]
-    public void LengthOfLongestSubstring_WithComplexPattern_ReturnsCorrectLength()
-    {
-        var result = Practice.LengthOfLongestSubstring("dvdf");
-
-        Assert.Equal(3, result);
+        Assert.Equal(expected, result);
     }
 
     #endregion
@@ -281,34 +175,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/contains-duplicate/description/
     /// Pattern: Hash existence - detect duplicates
     /// </summary>
-    [Fact]
-    public void ContainsDuplicate_WithDuplicates_ReturnsTrue()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 1 }, true)]
+    [InlineData(new[] { 1, 2, 3, 4 }, false)]
+    [InlineData(new[] { 1, 1, 1, 3, 3, 4, 3, 2, 4, 2 }, true)]
+    public void ContainsDuplicate_WithVariousInputs_ReturnsExpected(int[] nums, bool expected)
     {
-        var result = Practice.ContainsDuplicate([1, 2, 3, 1]);
+        var result = Practice.ContainsDuplicate(nums);
 
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests ContainsDuplicate with no duplicates.
-    /// </summary>
-    [Fact]
-    public void ContainsDuplicate_WithNoDuplicates_ReturnsFalse()
-    {
-        var result = Practice.ContainsDuplicate([1, 2, 3, 4]);
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests ContainsDuplicate with multiple duplicates.
-    /// </summary>
-    [Fact]
-    public void ContainsDuplicate_WithMultipleDuplicates_ReturnsTrue()
-    {
-        var result = Practice.ContainsDuplicate([1, 1, 1, 3, 3, 4, 3, 2, 4, 2]);
-
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -351,34 +226,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/path-crossing/
     /// Pattern: Hash tracking - store visited coordinates
     /// </summary>
-    [Fact]
-    public void IsPathCrossing_WithNoCrossing_ReturnsFalse()
+    [Theory]
+    [InlineData("NES", false)]
+    [InlineData("NESWW", true)]
+    [InlineData("NSEW", true)]
+    public void IsPathCrossing_WithVariousInputs_ReturnsExpected(string path, bool expected)
     {
-        var result = Practice.IsPathCrossing("NES");
+        var result = Practice.IsPathCrossing(path);
 
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests IsPathCrossing with crossing path.
-    /// </summary>
-    [Fact]
-    public void IsPathCrossing_WithCrossing_ReturnsTrue()
-    {
-        var result = Practice.IsPathCrossing("NESWW");
-
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests IsPathCrossing returning to origin.
-    /// </summary>
-    [Fact]
-    public void IsPathCrossing_ReturningToOrigin_ReturnsTrue()
-    {
-        var result = Practice.IsPathCrossing("NSEW");
-
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
 
     #endregion
@@ -390,34 +246,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/sum-of-unique-elements/
     /// Pattern: Hash counting - filter by frequency
     /// </summary>
-    [Fact]
-    public void SumOfUnique_WithUniqueElements_ReturnsSum()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 2 }, 4)]
+    [InlineData(new[] { 1, 1, 1, 1, 1 }, 0)]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 15)]
+    public void SumOfUnique_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        var result = Practice.SumOfUnique([1, 2, 3, 2]);
+        var result = Practice.SumOfUnique(nums);
 
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests SumOfUnique with no unique elements.
-    /// </summary>
-    [Fact]
-    public void SumOfUnique_WithNoUnique_ReturnsZero()
-    {
-        var result = Practice.SumOfUnique([1, 1, 1, 1, 1]);
-
-        Assert.Equal(0, result);
-    }
-
-    /// <summary>
-    /// Tests SumOfUnique with all unique.
-    /// </summary>
-    [Fact]
-    public void SumOfUnique_WithAllUnique_ReturnsTotalSum()
-    {
-        var result = Practice.SumOfUnique([1, 2, 3, 4, 5]);
-
-        Assert.Equal(15, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -425,23 +262,14 @@ public class PracticeTests
     /// https://leetcode.com/problems/count-elements-with-maximum-frequency/description/
     /// Pattern: Hash counting - find and count max frequency
     /// </summary>
-    [Fact]
-    public void MaxFrequencyElements_WithMultipleMaxFreq_ReturnsTotal()
+    [Theory]
+    [InlineData(new[] { 1, 2, 2, 3, 1, 4 }, 4)]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 5)]
+    public void MaxFrequencyElements_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        var result = Practice.MaxFrequencyElements([1, 2, 2, 3, 1, 4]);
+        var result = Practice.MaxFrequencyElements(nums);
 
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests MaxFrequencyElements with all unique.
-    /// </summary>
-    [Fact]
-    public void MaxFrequencyElements_WithAllUnique_ReturnsCount()
-    {
-        var result = Practice.MaxFrequencyElements([1, 2, 3, 4, 5]);
-
-        Assert.Equal(5, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -449,34 +277,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/find-lucky-integer-in-an-array/description/
     /// Pattern: Hash counting - match value with frequency
     /// </summary>
-    [Fact]
-    public void FindLucky_WithLuckyNumber_ReturnsLargest()
+    [Theory]
+    [InlineData(new[] { 2, 2, 3, 4 }, 2)]
+    [InlineData(new[] { 1, 2, 2, 3, 3, 3 }, 3)]
+    [InlineData(new[] { 2, 2, 2, 3, 3 }, -1)]
+    public void FindLucky_WithVariousInputs_ReturnsExpected(int[] arr, int expected)
     {
-        var result = Practice.FindLucky([2, 2, 3, 4]);
+        var result = Practice.FindLucky(arr);
 
-        Assert.Equal(2, result);
-    }
-
-    /// <summary>
-    /// Tests FindLucky with multiple lucky numbers.
-    /// </summary>
-    [Fact]
-    public void FindLucky_WithMultipleLucky_ReturnsLargest()
-    {
-        var result = Practice.FindLucky([1, 2, 2, 3, 3, 3]);
-
-        Assert.Equal(3, result);
-    }
-
-    /// <summary>
-    /// Tests FindLucky with no lucky numbers.
-    /// </summary>
-    [Fact]
-    public void FindLucky_WithNoLucky_ReturnsMinusOne()
-    {
-        var result = Practice.FindLucky([2, 2, 2, 3, 3]);
-
-        Assert.Equal(-1, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -484,34 +293,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/unique-number-of-occurrences/description/
     /// Pattern: Hash counting - verify frequency uniqueness
     /// </summary>
-    [Fact]
-    public void UniqueOccurrences_WithUniqueFreqs_ReturnsTrue()
+    [Theory]
+    [InlineData(new[] { 1, 2, 2, 1, 1, 3 }, true)]
+    [InlineData(new[] { 1, 2 }, false)]
+    [InlineData(new[] { -3, 0, 1, -3, 1, 1, 1, -3, 10, 0 }, true)]
+    public void UniqueOccurrences_WithVariousInputs_ReturnsExpected(int[] arr, bool expected)
     {
-        var result = Practice.UniqueOccurrences([1, 2, 2, 1, 1, 3]);
+        var result = Practice.UniqueOccurrences(arr);
 
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests UniqueOccurrences with duplicate frequencies.
-    /// </summary>
-    [Fact]
-    public void UniqueOccurrences_WithDuplicateFreqs_ReturnsFalse()
-    {
-        var result = Practice.UniqueOccurrences([1, 2]);
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests UniqueOccurrences with negative numbers.
-    /// </summary>
-    [Fact]
-    public void UniqueOccurrences_WithNegatives_ReturnsTrue()
-    {
-        var result = Practice.UniqueOccurrences([-3, 0, 1, -3, 1, 1, 1, -3, 10, 0]);
-
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -597,34 +387,15 @@ public class PracticeTests
     /// https://leetcode.com/problems/number-of-good-pairs/description/
     /// Pattern: Hash counting - combinatorial counting
     /// </summary>
-    [Fact]
-    public void NumIdenticalPairs_WithMultiplePairs_ReturnsCount()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 1, 1, 3 }, 4)]
+    [InlineData(new[] { 1, 1, 1, 1 }, 6)]
+    [InlineData(new[] { 1, 2, 3 }, 0)]
+    public void NumIdenticalPairs_WithVariousInputs_ReturnsExpected(int[] nums, int expected)
     {
-        var result = Practice.NumIdenticalPairs([1, 2, 3, 1, 1, 3]);
+        var result = Practice.NumIdenticalPairs(nums);
 
-        Assert.Equal(4, result);
-    }
-
-    /// <summary>
-    /// Tests NumIdenticalPairs with all identical.
-    /// </summary>
-    [Fact]
-    public void NumIdenticalPairs_WithAllIdentical_ReturnsCombination()
-    {
-        var result = Practice.NumIdenticalPairs([1, 1, 1, 1]);
-
-        Assert.Equal(6, result);
-    }
-
-    /// <summary>
-    /// Tests NumIdenticalPairs with all unique.
-    /// </summary>
-    [Fact]
-    public void NumIdenticalPairs_WithAllUnique_ReturnsZero()
-    {
-        var result = Practice.NumIdenticalPairs([1, 2, 3]);
-
-        Assert.Equal(0, result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>
@@ -719,45 +490,16 @@ public class PracticeTests
     /// https://leetcode.com/problems/isomorphic-strings/description/
     /// Pattern: Hash mapping - bijective character mapping
     /// </summary>
-    [Fact]
-    public void IsIsomorphic_WithValidMapping_ReturnsTrue()
+    [Theory]
+    [InlineData("egg", "add", true)]
+    [InlineData("foo", "bar", false)]
+    [InlineData("paper", "title", true)]
+    [InlineData("badc", "baba", false)]
+    public void IsIsomorphic_WithVariousInputs_ReturnsExpected(string s, string t, bool expected)
     {
-        var result = Practice.IsIsomorphic("egg", "add");
+        var result = Practice.IsIsomorphic(s, t);
 
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests IsIsomorphic with invalid mapping.
-    /// </summary>
-    [Fact]
-    public void IsIsomorphic_WithInvalidMapping_ReturnsFalse()
-    {
-        var result = Practice.IsIsomorphic("foo", "bar");
-
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Tests IsIsomorphic with complex pattern.
-    /// </summary>
-    [Fact]
-    public void IsIsomorphic_WithComplexPattern_ReturnsTrue()
-    {
-        var result = Practice.IsIsomorphic("paper", "title");
-
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Tests IsIsomorphic with collision.
-    /// </summary>
-    [Fact]
-    public void IsIsomorphic_WithCollision_ReturnsFalse()
-    {
-        var result = Practice.IsIsomorphic("badc", "baba");
-
-        Assert.False(result);
+        Assert.Equal(expected, result);
     }
 
     /// <summary>

@@ -74,9 +74,13 @@ public static class LinkedListExample
         // Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 2])));
         // Console.WriteLine(ReversingLinkedList.IsPalindrome(Utils.BuildLinkedList([1, 1, 2, 1])));
 
-        Console.WriteLine("=========Reverse Nodes in Even Length Groups=========");
-        Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([5, 2, 6, 3, 9, 1, 7, 3, 8, 4]))));
-        Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([1, 1, 0, 6]))));
-        Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([1, 1, 0, 6, 5]))));
+        // Console.WriteLine("=========Reverse Nodes in Even Length Groups=========");
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([5, 2, 6, 3, 9, 1, 7, 3, 8, 4]))));
+        // Console.WriteLine(Utils.PrintLinkedList(ReversingLinkedList.ReverseEvenLengthGroups(Utils.BuildLinkedList([1, 1, 0, 6]))));
+
+        Console.WriteLine("=========Maximum Twin Sum of a Linked List=========");
+        Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([5,4,2,1])));
+        Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([4,2,2,3])));
+        Console.WriteLine(ReversingLinkedList.PairSum(Utils.BuildLinkedList([1, 100000])));
     }
 }

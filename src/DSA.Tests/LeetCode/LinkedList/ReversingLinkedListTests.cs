@@ -60,64 +60,15 @@ public class ReversingLinkedListTests
     ///    - Reverse current.Next to prev
     ///    - Move prev and current forward
     /// </summary>
-    [Fact]
-    public void ReverseLinkedList_WithMultipleNodes_ReversesEntireList()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, new[] { 5, 4, 3, 2, 1 })]
+    [InlineData(new[] { 1 }, new[] { 1 })]
+    [InlineData(new[] { 1, 2 }, new[] { 2, 1 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 })]
+    public void ReverseLinkedList_WithVariousInputs_ReversesCorrectly(int[] input, int[] expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var expected = new[] { 5, 4, 3, 2, 1 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseLinkedList(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single node.
-    /// Edge case: List with one element should remain unchanged.
-    /// </summary>
-    [Fact]
-    public void ReverseLinkedList_WithSingleNode_ReturnsSameNode()
-    {
-        // Arrange
-        var head = new ListNode(1);
-        var expected = new[] { 1 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseLinkedList(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with two nodes.
-    /// </summary>
-    [Fact]
-    public void ReverseLinkedList_WithTwoNodes_SwapsNodes()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2 });
-        var expected = new[] { 2, 1 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseLinkedList(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with longer list.
-    /// </summary>
-    [Fact]
-    public void ReverseLinkedList_WithLongerList_ReversesCorrectly()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-        var expected = new[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+        var head = CreateLinkedList(input);
 
         // Act
         var result = ReversingLinkedList.ReverseLinkedList(head);
@@ -133,47 +84,15 @@ public class ReversingLinkedListTests
     /// Pattern: For each pair, reverse the links between them while maintaining connection to rest of list.
     /// LeetCode: https://leetcode.com/problems/swap-nodes-in-pairs/
     /// </summary>
-    [Fact]
-    public void SwapPairs_WithEvenNumberOfNodes_SwapsAllPairs()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4 }, new[] { 2, 1, 4, 3 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, new[] { 2, 1, 4, 3, 5 })]
+    [InlineData(new[] { 1 }, new[] { 1 })]
+    [InlineData(new[] { 1, 2 }, new[] { 2, 1 })]
+    public void SwapPairs_WithVariousInputs_SwapsCorrectly(int[] input, int[] expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4 });
-        var expected = new[] { 2, 1, 4, 3 };
-
-        // Act
-        var result = ReversingLinkedList.SwapPairs(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with odd number of nodes (last node remains).
-    /// </summary>
-    [Fact]
-    public void SwapPairs_WithOddNumberOfNodes_LeavesLastNodeUnchanged()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var expected = new[] { 2, 1, 4, 3, 5 };
-
-        // Act
-        var result = ReversingLinkedList.SwapPairs(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single node.
-    /// Edge case: Cannot swap, should return same node.
-    /// </summary>
-    [Fact]
-    public void SwapPairs_WithSingleNode_ReturnsSameNode()
-    {
-        // Arrange
-        var head = new ListNode(1);
-        var expected = new[] { 1 };
+        var head = CreateLinkedList(input);
 
         // Act
         var result = ReversingLinkedList.SwapPairs(head);
@@ -198,23 +117,6 @@ public class ReversingLinkedListTests
         // Assert
         Assert.Null(result);
     }
-
-    /// <summary>
-    /// Test: Verify correct behavior with two nodes.
-    /// </summary>
-    [Fact]
-    public void SwapPairs_WithTwoNodes_SwapsThem()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2 });
-        var expected = new[] { 2, 1 };
-
-        // Act
-        var result = ReversingLinkedList.SwapPairs(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
     #endregion
 
     #region ReverseBetween Tests
@@ -223,110 +125,17 @@ public class ReversingLinkedListTests
     /// Pattern: Navigate to position, then reverse nodes in range, reconnect with rest of list.
     /// LeetCode: https://leetcode.com/problems/reverse-linked-list-ii/
     /// </summary>
-    [Fact]
-    public void ReverseBetween_WithMiddleRange_ReversesSublist()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 2, 4, new[] { 1, 4, 3, 2, 5 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 1, 3, new[] { 3, 2, 1, 4, 5 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 3, 5, new[] { 1, 2, 5, 4, 3 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 3, 3, new[] { 1, 2, 3, 4, 5 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 1, 5, new[] { 5, 4, 3, 2, 1 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 2, 3, new[] { 1, 3, 2, 4, 5 })]
+    public void ReverseBetween_WithVariousRanges_ReversesCorrectly(int[] input, int left, int right, int[] expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var left = 2;
-        var right = 4;
-        var expected = new[] { 1, 4, 3, 2, 5 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseBetween(head, left, right);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify reversing from head.
-    /// </summary>
-    [Fact]
-    public void ReverseBetween_ReversalStartsAtHead_ReversesFromBeginning()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var left = 1;
-        var right = 3;
-        var expected = new[] { 3, 2, 1, 4, 5 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseBetween(head, left, right);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify reversing to end of list.
-    /// </summary>
-    [Fact]
-    public void ReverseBetween_ReversalEndsAtTail_ReversesToEnd()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var left = 3;
-        var right = 5;
-        var expected = new[] { 1, 2, 5, 4, 3 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseBetween(head, left, right);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when left equals right (no reversal needed).
-    /// Edge case: Single position, list should remain unchanged.
-    /// </summary>
-    [Fact]
-    public void ReverseBetween_WithSameLeftAndRight_RemainsUnchanged()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var left = 3;
-        var right = 3;
-        var expected = new[] { 1, 2, 3, 4, 5 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseBetween(head, left, right);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify reversing entire list.
-    /// </summary>
-    [Fact]
-    public void ReverseBetween_ReversingEntireList_ReversesAll()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var left = 1;
-        var right = 5;
-        var expected = new[] { 5, 4, 3, 2, 1 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseBetween(head, left, right);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify reversing two adjacent nodes.
-    /// </summary>
-    [Fact]
-    public void ReverseBetween_WithTwoAdjacentNodes_SwapsThem()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var left = 2;
-        var right = 3;
-        var expected = new[] { 1, 3, 2, 4, 5 };
+        var head = CreateLinkedList(input);
 
         // Act
         var result = ReversingLinkedList.ReverseBetween(head, left, right);
@@ -342,130 +151,25 @@ public class ReversingLinkedListTests
     /// Pattern: Create reversed copy of list, compare values node by node.
     /// LeetCode: https://leetcode.com/problems/palindrome-linked-list/
     /// </summary>
-    [Fact]
-    public void IsPalindrome_WithPalindromeList_ReturnsTrue()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 2, 1 }, true)]
+    [InlineData(new[] { 1, 2, 2, 1 }, true)]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, false)]
+    [InlineData(new[] { 1 }, true)]
+    [InlineData(new[] { 1, 1 }, true)]
+    [InlineData(new[] { 1, 2 }, false)]
+    [InlineData(new[] { 1, 2, 3, 4, 3, 2, 1 }, true)]
+    [InlineData(new[] { 1, 2, 3, 4, 2, 1 }, false)]
+    public void IsPalindrome_WithVariousInputs_ReturnsCorrectResult(int[] input, bool expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 2, 1 });
+        var head = CreateLinkedList(input);
 
         // Act
         var result = ReversingLinkedList.IsPalindrome(head);
 
         // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with even-length palindrome.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithEvenLengthPalindrome_ReturnsTrue()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 2, 1 });
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with non-palindrome list.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithNonPalindromeList_ReturnsFalse()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single node.
-    /// Edge case: Single element is always a palindrome.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithSingleNode_ReturnsTrue()
-    {
-        // Arrange
-        var head = new ListNode(1);
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with two identical nodes.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithTwoIdenticalNodes_ReturnsTrue()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 1 });
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with two different nodes.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithTwoDifferentNodes_ReturnsFalse()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2 });
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with longer palindrome.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithLongerPalindrome_ReturnsTrue()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 3, 2, 1 });
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.True(result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior when middle value differs.
-    /// </summary>
-    [Fact]
-    public void IsPalindrome_WithDifferentMiddleValue_ReturnsFalse()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 2, 1 });
-
-        // Act
-        var result = ReversingLinkedList.IsPalindrome(head);
-
-        // Assert
-        Assert.False(result);
+        Assert.Equal(expected, result);
     }
     #endregion
 
@@ -477,12 +181,19 @@ public class ReversingLinkedListTests
     /// Example: [5,2,6,3,9,1,7,3,8,4] -> Groups: [5], [2,6], [3,9,1], [7,3,8,4]
     ///          Reverse even groups: [5], [6,2], [3,9,1], [4,8,3,7]
     /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithMultipleEvenGroups_ReversesCorrectly()
+    [Theory]
+    [InlineData(new[] { 5, 2, 6, 3, 9, 1, 7, 3, 8, 4 }, new[] { 5, 6, 2, 3, 9, 1, 4, 8, 3, 7 })]
+    [InlineData(new[] { 1, 1, 0, 6 }, new[] { 1, 0, 1, 6 })]
+    [InlineData(new[] { 1, 1, 0, 6, 5 }, new[] { 1, 0, 1, 5, 6 })]
+    [InlineData(new[] { 1 }, new[] { 1 })]
+    [InlineData(new[] { 1, 2 }, new[] { 1, 2 })]
+    [InlineData(new[] { 1, 2, 3 }, new[] { 1, 3, 2 })]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6, 7 }, new[] { 1, 3, 2, 4, 5, 6, 7 })]
+    [InlineData(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new[] { 0, 2, 1, 3, 4, 5, 9, 8, 7, 6 })]
+    public void ReverseEvenLengthGroups_WithVariousInputs_ReversesCorrectly(int[] input, int[] expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 5, 2, 6, 3, 9, 1, 7, 3, 8, 4 });
-        var expected = new[] { 5, 6, 2, 3, 9, 1, 4, 8, 3, 7 };
+        var head = CreateLinkedList(input);
 
         // Act
         var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
@@ -490,135 +201,38 @@ public class ReversingLinkedListTests
         // Assert
         Assert.Equal(expected, LinkedListToArray(result));
     }
+    #endregion
 
+    #region PairSum Tests
     /// <summary>
-    /// Test: Verify correct behavior when last group has even length less than expected.
-    /// Edge case: Last group length may be less than the sequence number.
+    /// Test: Verify finding maximum twin sum in a linked list.
+    /// Pattern: Use fast/slow pointers to find middle, reverse second half, calculate twin sums.
+    /// Twin nodes are n-1 and 0, n-2 and 1, etc.
+    /// LeetCode: https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/
+    /// Algorithm:
+    /// 1. Find middle using fast/slow pointers
+    /// 2. Reverse second half in-place
+    /// 3. Calculate sums of twin pairs and track maximum
+    /// Time: O(n), Space: O(1)
     /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithEvenLastGroup_ReversesLastGroup()
+    [Theory]
+    [InlineData(new[] { 5, 4, 2, 1 }, 6)]
+    [InlineData(new[] { 4, 2, 2, 3 }, 7)]
+    [InlineData(new[] { 1, 2 }, 3)]
+    [InlineData(new[] { 1, 100, 200, 99 }, 300)]
+    [InlineData(new[] { 5, 5, 5, 5 }, 10)]
+    [InlineData(new[] { 1, 2, 3, 4, 5, 6 }, 7)]
+    [InlineData(new[] { 1, 1, 1000, 1000 }, 1001)]
+    public void PairSum_WithVariousInputs_ReturnsMaximumTwinSum(int[] input, int expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 1, 1, 0, 6 });
-        var expected = new[] { 1, 0, 1, 6 };
-        // Groups: [1], [1,0], [6] (last group is only 1 node, odd)
+        var head = CreateLinkedList(input);
 
         // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
+        var result = ReversingLinkedList.PairSum(head);
 
         // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with last group having 2 nodes (even).
-    /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithTwoNodeLastGroup_ReversesLastGroup()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 1, 0, 6, 5 });
-        var expected = new[] { 1, 0, 1, 5, 6 };
-        // Groups: [1], [1,0], [6,5] (last group has 2 nodes, even)
-
-        // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with only one node (odd group).
-    /// Edge case: Single node should remain unchanged.
-    /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithSingleNode_RemainsUnchanged()
-    {
-        // Arrange
-        var head = new ListNode(1);
-        var expected = new[] { 1 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with two nodes (even group).
-    /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithTwoNodes_ReversesSecondGroup()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2 });
-        var expected = new[] { 1, 2 };
-        // Groups: [1], [2] - second group has only 1 node (odd), not reversed
-
-        // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with three nodes.
-    /// Groups: [1], [2,3] - second group has 2 nodes (even), should be reversed.
-    /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithThreeNodes_ReversesSecondGroup()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3 });
-        var expected = new[] { 1, 3, 2 };
-
-        // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with mixed odd and even groups.
-    /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithMixedGroups_ReversesEvenGroups()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5, 6, 7 });
-        var expected = new[] { 1, 3, 2, 4, 5, 6, 7 };
-        // Groups: [1], [2,3], [4,5,6], [7]
-        // Even groups: [2,3] -> [3,2]
-        // Odd groups: [1], [4,5,6], [7] - remain unchanged
-
-        // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with complete groups including a 4-node even group.
-    /// </summary>
-    [Fact]
-    public void ReverseEvenLengthGroups_WithFourNodeGroup_ReversesCorrectly()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-        var expected = new[] { 0, 2, 1, 3, 4, 5, 9, 8, 7, 6 };
-        // Groups: [0], [1,2], [3,4,5], [6,7,8,9]
-        // Reverse: [0], [2,1], [3,4,5], [9,8,7,6]
-
-        // Act
-        var result = ReversingLinkedList.ReverseEvenLengthGroups(head);
-
-        // Assert
-        Assert.Equal(expected, LinkedListToArray(result));
+        Assert.Equal(expected, result);
     }
     #endregion
 }

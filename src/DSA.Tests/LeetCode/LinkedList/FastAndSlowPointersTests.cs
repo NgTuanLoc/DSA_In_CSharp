@@ -82,47 +82,14 @@ public class FastAndSlowPointersTests
     /// Test: Verify finding middle value in odd-length linked list.
     /// Pattern: Count nodes first, then traverse to middle position.
     /// </summary>
-    [Fact]
-    public void GetMiddle_WithOddLengthList_ReturnsMiddleValue()
+    [Theory]
+    [InlineData(new[] { 1, 2, 3, 4, 5 }, 3)]
+    [InlineData(new[] { 1, 2, 3 }, 2)]
+    [InlineData(new[] { 42 }, 42)]
+    public void GetMiddle_WithVariousInputs_ReturnsMiddleValue(int[] input, int expected)
     {
         // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3, 4, 5 });
-        var expected = 3;
-
-        // Act
-        var result = FastAndSlowPointers.GetMiddle(head);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with 3-node list.
-    /// </summary>
-    [Fact]
-    public void GetMiddle_WithThreeNodes_ReturnsMiddleValue()
-    {
-        // Arrange
-        var head = CreateLinkedList(new[] { 1, 2, 3 });
-        var expected = 2;
-
-        // Act
-        var result = FastAndSlowPointers.GetMiddle(head);
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    /// <summary>
-    /// Test: Verify correct behavior with single node.
-    /// Edge case: Minimum valid input.
-    /// </summary>
-    [Fact]
-    public void GetMiddle_WithSingleNode_ReturnsNodeValue()
-    {
-        // Arrange
-        var head = new ListNode(42);
-        var expected = 42;
+        var head = CreateLinkedList(input);
 
         // Act
         var result = FastAndSlowPointers.GetMiddle(head);
