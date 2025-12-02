@@ -38,7 +38,7 @@ public class TreesAndGraphsExample
         // BinaryTreeDeptFirstSearch.DFS_InOrder(root);
         // Console.WriteLine("=======PostOrder======= (After Children)");
         // BinaryTreeDeptFirstSearch.DFS_PostOrder(root);
-        
+
         // Console.WriteLine(BinaryTreeDeptFirstSearch.MaxDepth(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.MaxDepth_Iteration(root));
         // System.Console.WriteLine("========");
@@ -56,10 +56,10 @@ public class TreesAndGraphsExample
             var result = left + right;
 
             if (node.Val >= maxSoFar) return result + 1;
-            
+
             return result;
         }
-        
+
         // Console.WriteLine(GoodNodes(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes_Iteration(root));
@@ -180,10 +180,10 @@ public class TreesAndGraphsExample
 
         // Console.WriteLine(n.DiameterOfBinaryTree(rootA));
 
-        int GoodNodes(TreeNode node)
-        {
-            return GoodNodeDfs(node, int.MinValue);
-        }
+        // int GoodNodes(TreeNode node)
+        // {
+        //     return GoodNodeDfs(node, int.MinValue);
+        // }
     }
 
     public static void Run_BFS()

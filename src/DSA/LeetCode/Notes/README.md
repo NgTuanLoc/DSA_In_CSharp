@@ -93,6 +93,21 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
     - [Basic Reversal Algorithm](#basic-reversal-algorithm)
     - [Swapping Node Pairs](#swapping-node-pairs)
     - [Partial Reversals](#partial-reversals)
+- [6. Stacks and Queues](#6-stacks-and-queues)
+  - [Learning Objectives](#learning-objectives-4)
+  - [6.1 Introduction to Stacks](#61-introduction-to-stacks)
+    - [What is a Stack?](#what-is-a-stack)
+    - [Stack Operations](#stack-operations)
+    - [Implementation in C#](#implementation-in-c)
+    - [The Characteristic of a Stack](#the-characteristic-of-a-stack)
+    - [Stacks and Recursion](#stacks-and-recursion)
+    - [When to Use Stacks](#when-to-use-stacks)
+  - [6.2 String Problems with Stacks](#62-string-problems-with-stacks)
+    - [Example 1: Valid Parentheses](#example-1-valid-parentheses-leetcode-20)
+    - [Example 2: Remove All Adjacent Duplicates](#example-2-remove-all-adjacent-duplicates-leetcode-1047)
+    - [Example 3: Backspace String Compare](#example-3-backspace-string-compare-leetcode-844)
+    - [Key Insights for Stack Problems](#key-insights-for-stack-problems)
+    - [Common Stack Problem Patterns](#common-stack-problem-patterns)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -1519,6 +1534,335 @@ public ListNode ReverseBetween(ListNode head, int left, int right) {
 
 ---
 
+## 6. Stacks and Queues
+
+### Learning Objectives
+
+- Understand stack and queue fundamentals and their interfaces
+- Recognize LIFO (Last In First Out) patterns in problems
+- Apply stacks to string matching and processing problems
+- Master stack-based algorithms for parentheses validation and character matching
+
+### 6.1 Introduction to Stacks
+
+#### What is a Stack?
+
+A **stack** is an ordered collection of elements where elements are only added and removed from the same end. This is known as **LIFO (Last In, First Out)** - the last (most recent) element placed inside is the first element to come out.
+
+**Physical World Example**: A stack of plates in a kitchen - you add plates or remove plates from the top of the pile.
+
+**Software Example**: Browser history - when you click a link, you add to the stack. When you click back, you remove from the stack.
+
+- Site A → click link → [A, B]
+- Site B → click link → [A, B, C]
+- Click back → [A, B]
+- Click back → [A]
+
+#### Stack Operations
+
+Stacks are very simple to implement. Common operations include:
+
+- **Push**: Add an element to the top of the stack
+- **Pop**: Remove and return the top element
+- **Peek**: Look at the element at the top without removing it
+- **IsEmpty**: Check if the stack is empty
+- **Size**: Get the number of elements in the stack
+
+**Time Complexity**: All basic operations are O(1) when implemented with a dynamic array.
+
+| Operation | Time Complexity |
+|-----------|-----------------|
+| Push | O(1) |
+| Pop | O(1) |
+| Peek | O(1) |
+| Search | O(n) |
+| Random Access | O(1) with array implementation |
+
+#### Implementation in C#
+
+```csharp
+// Declaration: use a List or Stack<T>
+var stack = new Stack<int>();
+
+// Pushing elements:
+stack.Push(1);
+stack.Push(2);
+stack.Push(3);
+
+// Popping elements:
+stack.Pop(); // 3
+stack.Pop(); // 2
+
+// Check if empty:
+if (stack.Count == 0) {
+    Console.WriteLine("Stack is empty!");
+}
+
+// Check element at top (peek):
+if (stack.Count > 0) {
+    Console.WriteLine($"Top element: {stack.Peek()}");
+}
+
+// Get size:
+int size = stack.Count;
+```
+
+**Alternative: Using List as Stack**
+
+```csharp
+// Using List<T> for more flexibility
+var stack = new List<int>();
+
+// Pushing elements:
+stack.Add(1);
+stack.Add(2);
+stack.Add(3);
+
+// Popping elements:
+int top = stack[stack.Count - 1];  // Peek
+stack.RemoveAt(stack.Count - 1);   // Pop
+
+// Check if empty:
+bool isEmpty = stack.Count == 0;
+
+// Check element at top:
+if (stack.Count > 0) {
+    int topElement = stack[stack.Count - 1];
+}
+```
+
+#### The Characteristic of a Stack
+
+The key characteristic that makes something a "stack" is that you can **only add and remove elements from the same end**. It doesn't matter how you implement it - a "stack" is just an abstract interface.
+
+**Implementation Options**:
+- Dynamic array (most common)
+- Linked list with tail pointer
+- Built-in Stack class (C#, Java)
+
+#### Stacks and Recursion
+
+Stacks and recursion are very similar because **recursion is actually implemented using a stack**. Function calls are pushed onto the call stack. The call at the top of the stack at any given moment is the "active" call. On a return statement or when the end of the function is reached, the current call is popped off the stack.
+
+#### When to Use Stacks
+
+For algorithm problems, a stack is a good option whenever you can recognize the **LIFO pattern**. Usually, there will be some component of the problem that involves elements in the input interacting with each other:
+
+- **Matching elements together** (e.g., parentheses)
+- **Querying properties** (e.g., "how far is the next largest element?")
+- **Evaluating expressions** (e.g., mathematical equations as strings)
+- **Comparing elements** against each other
+- Any other **abstract interaction** following LIFO order
+
+Sometimes the LIFO property is hard to see, but recognizing it is key to identifying stack-based solutions.
+
+### 6.2 String Problems with Stacks
+
+String questions involving stacks are popular interview topics. Normally, string questions that can utilize a stack will involve:
+
+1. **Iterating over the string**
+2. **Putting characters into the stack**
+3. **Comparing the top of the stack with the current character** at each iteration
+
+Stacks are useful for string matching because they save a "history" of the previous characters.
+
+#### Example 1: Valid Parentheses (LeetCode 20)
+
+**Problem**: Given a string `s` containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid. The string is valid if all open brackets are closed by the same type of closing bracket in the correct order, and each closing bracket closes exactly one open bracket.
+
+**Examples**:
+- Valid: `"({})"`, `"(){}[]"`
+- Invalid: `"(]"`, `"({)}"`
+
+**Key Insight**: The "correct" order is determined by the most recent opening bracket - this is LIFO behavior, perfect for a stack!
+
+**Algorithm**:
+
+1. Iterate over the string
+2. If we see an opening bracket → push it onto the stack
+3. If we see a closing bracket:
+   - Pop from the stack to get the most recent opening bracket
+   - Check if it matches (use a hash map to associate brackets)
+   - If no match or stack is empty → string is invalid
+4. At the end, the stack should be empty (all brackets matched)
+
+```csharp
+public bool IsValid(string s) {
+    var stack = new Stack<char>();
+    var matching = new Dictionary<char, char> {
+        {'(', ')'},
+        {'[', ']'},
+        {'{', '}'}
+    };
+    
+    foreach (char c in s) {
+        if (matching.ContainsKey(c)) {
+            // Opening bracket
+            stack.Push(c);
+        } else {
+            // Closing bracket
+            if (stack.Count == 0) {
+                return false;  // No matching opening bracket
+            }
+            
+            char previousOpening = stack.Pop();
+            if (matching[previousOpening] != c) {
+                return false;  // Mismatched brackets
+            }
+        }
+    }
+    
+    return stack.Count == 0;  // All brackets should be matched
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - each element can only be pushed or popped once
+- **Space**: O(n) - stack can grow linearly with input size
+
+**Key to Recognition**: The problem follows a LIFO nature where the last (most recent) opening bracket is the first to be closed.
+
+#### Example 2: Remove All Adjacent Duplicates (LeetCode 1047)
+
+**Problem**: You are given a string `s`. Continuously remove duplicates (two of the same character beside each other) until you can't anymore. Return the final string.
+
+**Example**: Given `s = "abbaca"`:
+1. Remove "bb" → `"aaca"`
+2. Remove "aa" → `"ca"`
+3. Final answer: `"ca"`
+
+**Challenge**: Not all removals are available at the start. Some characters need to be deleted before others can be matched.
+
+**Example**: `s = "abccba"`
+- Deletion order: c → b → a (LIFO pattern!)
+- As we delete characters, previously separated characters become adjacent
+
+**Algorithm**: Use a stack to maintain history of characters that are "in the way" of each other.
+
+```csharp
+public string RemoveDuplicates(string s) {
+    var stack = new Stack<char>();
+    
+    foreach (char c in s) {
+        if (stack.Count > 0 && stack.Peek() == c) {
+            stack.Pop();  // Remove duplicate
+        } else {
+            stack.Push(c);  // Add to history
+        }
+    }
+    
+    // Convert stack to string (reverse order)
+    return new string(stack.Reverse().ToArray());
+}
+```
+
+**Alternative using StringBuilder (more efficient for string building)**:
+
+```csharp
+public string RemoveDuplicatesOptimized(string s) {
+    var stack = new StringBuilder();
+    
+    foreach (char c in s) {
+        if (stack.Length > 0 && stack[stack.Length - 1] == c) {
+            stack.Length--;  // Remove last character
+        } else {
+            stack.Append(c);
+        }
+    }
+    
+    return stack.ToString();
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - single pass through the string
+- **Space**: O(n) - stack can grow to size of input
+
+**Key Insight**: The most recently seen character is the first one that needs to be deleted when a match is found.
+
+#### Example 3: Backspace String Compare (LeetCode 844)
+
+**Problem**: Given two strings `s` and `t`, return `true` if they are equal when both are typed into empty text editors. `'#'` means a backspace character.
+
+**Example**: Given `s = "ab#c"` and `t = "ad#c"`:
+- After processing: both become `"ac"`
+- Return: `true`
+
+**Recognition**: Backspace follows the LIFO pattern - the most recently typed character is the first to be deleted.
+
+**Algorithm**: Simulate typing with a stack. Push characters onto the stack, and pop when encountering a backspace.
+
+```csharp
+public bool BackspaceCompare(string s, string t) {
+    return BuildString(s) == BuildString(t);
+}
+
+private string BuildString(string str) {
+    var stack = new Stack<char>();
+    
+    foreach (char c in str) {
+        if (c != '#') {
+            stack.Push(c);
+        } else if (stack.Count > 0) {
+            stack.Pop();  // Backspace: remove last character
+        }
+    }
+    
+    return new string(stack.Reverse().ToArray());
+}
+```
+
+**Alternative using StringBuilder**:
+
+```csharp
+public bool BackspaceCompareOptimized(string s, string t) {
+    return BuildStringOptimized(s) == BuildStringOptimized(t);
+}
+
+private string BuildStringOptimized(string str) {
+    var result = new StringBuilder();
+    
+    foreach (char c in str) {
+        if (c != '#') {
+            result.Append(c);
+        } else if (result.Length > 0) {
+            result.Length--;  // Backspace
+        }
+    }
+    
+    return result.ToString();
+}
+```
+
+**Complexity**:
+- **Time**: O(n + m) - where n and m are the lengths of the strings
+- **Space**: O(n + m) - for the stacks/string builders
+
+**Edge Cases to Consider**:
+1. Backspace on empty string (e.g., `"#abc"`)
+2. Multiple consecutive backspaces (e.g., `"ab###c"`)
+3. All characters deleted (e.g., `"abc###"`)
+
+### Key Insights for Stack Problems
+
+1. **LIFO Recognition**: Look for patterns where the most recent element needs to be processed first
+2. **String Matching**: Stacks excel at problems involving character matching and adjacency
+3. **History Tracking**: Use stacks to maintain a "memory" of previous elements
+4. **Efficiency**: Stack operations are O(1), enabling O(n) solutions for many problems
+5. **Implementation Flexibility**: Can use built-in Stack, List, or StringBuilder depending on needs
+
+### Common Stack Problem Patterns
+
+| Pattern | Characteristics | Examples |
+|---------|----------------|----------|
+| **Bracket Matching** | Pairs must match in order | Valid parentheses |
+| **Adjacent Removal** | Remove consecutive duplicates | Remove duplicates |
+| **Character Processing** | Process with backspace/delete | Backspace compare |
+| **Next Greater Element** | Find next larger element | Monotonic stack |
+| **Expression Evaluation** | Evaluate postfix/prefix | Calculator problems |
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -1537,10 +1881,12 @@ public ListNode ReverseBetween(ListNode head, int left, int right) {
 - [x] **LinkedList Fundamentals** - Node structures, types, and pointer manipulation
 - [x] **Fast and Slow Pointers** - Two-pointer techniques for cycle detection and traversal
 - [x] **LinkedList Reversals** - Algorithms for reversing entire or partial linked lists
+- [x] **Stack Fundamentals** - LIFO structure, operations, and implementation
+- [x] **String Problems with Stacks** - Parentheses validation, duplicate removal, and character matching
 
 ### 🔄 Currently Studying
 
-- Trees and Graphs fundamentals
+- Stack and Queue advanced patterns
 
 ### 📋 Next Topics
 
@@ -1591,7 +1937,7 @@ O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)
 
 ---
 
-**Last Updated:** September 2, 2025  
-**Current Focus:** Arrays and Strings Mastery
+**Last Updated:** January 2025  
+**Current Focus:** Stacks and Queues Mastery
 
 > 💡 **Remember**: The goal isn't just to solve problems, but to recognize patterns and choose the most efficient approach for each situation!
