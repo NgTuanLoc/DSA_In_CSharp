@@ -103,11 +103,27 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
     - [Stacks and Recursion](#stacks-and-recursion)
     - [When to Use Stacks](#when-to-use-stacks)
   - [6.2 String Problems with Stacks](#62-string-problems-with-stacks)
-    - [Example 1: Valid Parentheses](#example-1-valid-parentheses-leetcode-20)
-    - [Example 2: Remove All Adjacent Duplicates](#example-2-remove-all-adjacent-duplicates-leetcode-1047)
-    - [Example 3: Backspace String Compare](#example-3-backspace-string-compare-leetcode-844)
-    - [Key Insights for Stack Problems](#key-insights-for-stack-problems)
-    - [Common Stack Problem Patterns](#common-stack-problem-patterns)
+    - [Example 1: Valid Parentheses (LeetCode 20)](#example-1-valid-parentheses-leetcode-20)
+    - [Example 2: Remove All Adjacent Duplicates (LeetCode 1047)](#example-2-remove-all-adjacent-duplicates-leetcode-1047)
+    - [Example 3: Backspace String Compare (LeetCode 844)](#example-3-backspace-string-compare-leetcode-844)
+  - [Key Insights for Stack Problems](#key-insights-for-stack-problems)
+  - [Common Stack Problem Patterns](#common-stack-problem-patterns)
+  - [6.3 Queues](#63-queues)
+    - [What is a Queue?](#what-is-a-queue)
+    - [Queue Operations](#queue-operations)
+    - [Efficient Queue Implementation](#efficient-queue-implementation)
+    - [Implementation in C#](#implementation-in-c-1)
+    - [When to Use Queues](#when-to-use-queues)
+    - [Example: Number of Recent Calls (LeetCode 933)](#example-number-of-recent-calls-leetcode-933)
+  - [6.4 Monotonic Stacks and Queues](#64-monotonic-stacks-and-queues)
+    - [What is Monotonic?](#what-is-monotonic)
+    - [Monotonic Stack Template](#monotonic-stack-template)
+    - [When to Use Monotonic Structures](#when-to-use-monotonic-structures)
+    - [Example 1: Daily Temperatures (LeetCode 739)](#example-1-daily-temperatures-leetcode-739)
+    - [Example 2: Sliding Window Maximum (LeetCode 239)](#example-2-sliding-window-maximum-leetcode-239)
+    - [Example 3: Longest Continuous Subarray (LeetCode 1438)](#example-3-longest-continuous-subarray-leetcode-1438)
+  - [Key Insights for Monotonic Structures](#key-insights-for-monotonic-structures)
+  - [Monotonic Pattern Recognition](#monotonic-pattern-recognition)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -1861,6 +1877,337 @@ private string BuildStringOptimized(string str) {
 | **Next Greater Element** | Find next larger element | Monotonic stack |
 | **Expression Evaluation** | Evaluate postfix/prefix | Calculator problems |
 
+### 6.3 Queues
+
+#### What is a Queue?
+
+While a stack follows **LIFO (Last In First Out)**, a queue follows **FIFO (First In First Out)**. In a stack, elements are added and removed from the same side. In a queue, elements are added and removed from **opposite sides**.
+
+**Physical World Example**: A line at a fast food restaurant - people leave from the front after ordering and people enter from the back.
+
+**Software Example**: Job scheduling systems that handle tasks on a first-come, first-serve basis (e.g., printer queue).
+
+#### Queue Operations
+
+- **Enqueue**: Add an element to the back of the queue
+- **Dequeue**: Remove and return the element from the front
+- **Peek/Front**: Look at the front element without removing it
+- **IsEmpty**: Check if the queue is empty
+- **Size**: Get the number of elements in the queue
+
+**Time Complexity**: O(1) for all operations when using an efficient implementation (doubly linked list or deque).
+
+| Operation | Array Implementation | Deque Implementation |
+|-----------|---------------------|---------------------|
+| Enqueue (back) | O(1) amortized | O(1) |
+| Dequeue (front) | O(n) | O(1) |
+| Peek | O(1) | O(1) |
+
+#### Efficient Queue Implementation
+
+To achieve O(1) operations, use a **doubly linked list** with pointers to both head and tail. This allows:
+- O(1) addition at the tail (enqueue)
+- O(1) removal from the head (dequeue)
+
+**Deque (Double-Ended Queue)**: A more flexible data structure that allows addition and removal from both ends in O(1) time.
+
+#### Implementation in C#
+
+```csharp
+// Using Queue<T>
+var queue = new Queue<int>();
+
+// Enqueuing elements:
+queue.Enqueue(1);
+queue.Enqueue(2);
+queue.Enqueue(3);
+
+// Dequeuing elements:
+int first = queue.Dequeue();  // 1
+int second = queue.Dequeue(); // 2
+
+// Check element at front:
+if (queue.Count > 0) {
+    int front = queue.Peek();  // 3
+}
+
+// Check if empty:
+bool isEmpty = queue.Count == 0;
+
+// Get size:
+int size = queue.Count;
+```
+
+#### When to Use Queues
+
+Queues are less common than stacks in algorithm problems but are essential for:
+- **Breadth-First Search (BFS)** in trees and graphs
+- **Level-order traversal** in trees
+- **Sliding window** with specific removal patterns
+- **Task scheduling** and processing in order
+
+#### Example: Number of Recent Calls (LeetCode 933)
+
+**Problem**: Implement `RecentCounter` class that supports `ping(int t)`, which records a call at time `t` and returns the number of calls in the range `[t - 3000, t]`. Calls have increasing `t`.
+
+**Approach**: Use a queue to store timestamps, removing outdated ones (older than 3000 time units).
+
+```csharp
+public class RecentCounter {
+    private Queue<int> queue;
+    
+    public RecentCounter() {
+        queue = new Queue<int>();
+    }
+    
+    public int Ping(int t) {
+        // Remove all timestamps older than t - 3000
+        while (queue.Count > 0 && queue.Peek() < t - 3000) {
+            queue.Dequeue();
+        }
+        
+        // Add current timestamp
+        queue.Enqueue(t);
+        
+        // Return count of calls in valid range
+        return queue.Count;
+    }
+}
+```
+
+**Why Queue Works**:
+1. Timestamps come in sorted order (increasing `t`)
+2. Oldest call is always at the front of queue
+3. Can efficiently remove outdated calls from front in O(1)
+4. Queue length is the answer after removing old calls
+
+**Complexity**:
+- **Time**: O(1) amortized per `ping` call
+- **Space**: O(n) where n is number of calls in the 3000 time window
+
+**Key Insight**: Queue maintains sorted order naturally when elements arrive in sorted order, making it perfect for sliding time window problems.
+
+### 6.4 Monotonic Stacks and Queues
+
+#### What is Monotonic?
+
+**Monotonic**: A function or quantity that varies in such a way that it either never decreases or never increases.
+
+A **monotonic stack or queue** is one whose elements are always sorted (either ascending or descending). The data structure maintains its sorted property by **removing elements that would violate the property** before adding new elements.
+
+**Example**: Monotonically increasing stack = `[1, 5, 8, 15, 23]`
+- To push `14`: First pop `23` and `15` → Result: `[1, 5, 8, 14]`
+
+#### Monotonic Stack Template
+
+```csharp
+// Monotonic increasing stack
+var stack = new Stack<int>();
+
+foreach (int num in nums) {
+    // Remove elements that violate monotonic property
+    while (stack.Count > 0 && stack.Peek() >= num) {
+        stack.Pop();
+    }
+    
+    // Process logic here (problem-dependent)
+    
+    stack.Push(num);
+}
+```
+
+**Time Complexity**: O(n) - despite nested loop, each element is pushed and popped at most once (amortized O(1) per iteration).
+
+#### When to Use Monotonic Structures
+
+Monotonic stacks/queues excel at problems involving:
+1. **Next Greater/Smaller Element**: Finding the next element that satisfies a condition
+2. **Dynamic Window Maximum/Minimum**: Maintaining min/max as window slides
+3. **Range Queries**: Finding elements within a range that meet criteria
+4. **Stock Span Problems**: Days since last higher/lower value
+
+#### Example 1: Daily Temperatures (LeetCode 739)
+
+**Problem**: Given daily temperatures, return an array where `answer[i]` is the number of days until a warmer temperature. Return `0` if no warmer day exists.
+
+**Input**: `temperatures = [73, 74, 75, 71, 69, 72, 76, 73]`  
+**Output**: `[1, 1, 4, 2, 1, 1, 0, 0]`
+
+**Brute Force**: O(n²) - for each day, scan forward to find warmer temperature.
+
+**Optimized Approach**: Use monotonic decreasing stack of indices.
+
+**Key Insight**: 
+- If `temp[2] < temp[1] < temp[0]`, then any temperature warmer than `temp[2]` will also be warmer than `temp[1]` and `temp[0]`
+- Process in reverse order using stack - store indices of days waiting for warmer temperature
+- When we find warmer temperature, pop all cooler days from stack
+
+```csharp
+public int[] DailyTemperatures(int[] temperatures) {
+    var stack = new Stack<int>();
+    var answer = new int[temperatures.Length];
+    
+    for (int i = 0; i < temperatures.Length; i++) {
+        // Pop all days cooler than current day
+        while (stack.Count > 0 && temperatures[stack.Peek()] < temperatures[i]) {
+            int j = stack.Pop();
+            answer[j] = i - j;  // Days between
+        }
+        
+        stack.Push(i);
+    }
+    
+    return answer;
+}
+```
+
+**How it Works**:
+1. Stack holds indices of days without warmer temperature yet
+2. Stack is monotonically decreasing (temperatures at indices)
+3. When current temp is warmer, pop cooler days and calculate distance
+4. Current day won't be answered until later (or never)
+
+**Complexity**:
+- **Time**: O(n) - each element pushed/popped once
+- **Space**: O(n) - stack can hold all indices
+
+#### Example 2: Sliding Window Maximum (LeetCode 239)
+
+**Problem**: Given array `nums` and integer `k`, find the maximum element in each sliding window of size `k`.
+
+**Input**: `nums = [1, 3, -1, -3, 5, 3, 6, 7]`, `k = 3`  
+**Output**: `[3, 3, 5, 5, 6, 7]`
+
+**Challenge**: When maximum leaves window, we need to know the second maximum, and so on.
+
+**Approach**: Use monotonic decreasing deque (double-ended queue).
+
+**Key Insights**:
+1. **Monotonic Decreasing**: Largest element always at front
+2. **Remove Smaller Elements**: If new element is larger, all smaller elements behind it are useless
+3. **Remove Old Elements**: Remove front element when it's outside current window
+4. **Use Deque**: Need to add/remove from both ends efficiently
+
+```csharp
+public int[] MaxSlidingWindow(int[] nums, int k) {
+    var result = new List<int>();
+    var deque = new LinkedList<int>();  // Store indices
+    
+    for (int i = 0; i < nums.Length; i++) {
+        // Remove elements smaller than current (maintain decreasing order)
+        while (deque.Count > 0 && nums[deque.Last.Value] < nums[i]) {
+            deque.RemoveLast();
+        }
+        
+        deque.AddLast(i);
+        
+        // Remove elements outside window
+        if (deque.First.Value + k == i) {
+            deque.RemoveFirst();
+        }
+        
+        // Add to result once window is full
+        if (i >= k - 1) {
+            result.Add(nums[deque.First.Value]);
+        }
+    }
+    
+    return result.ToArray();
+}
+```
+
+**Why This Works**:
+- Deque maintains indices in **decreasing order** of their values
+- Front element is always the maximum in current window
+- When adding element, remove all smaller elements from back (they'll never be max)
+- Remove front when it's outside window
+- After processing k elements, front is always the answer
+
+**Complexity**:
+- **Time**: O(n) - each element added/removed once
+- **Space**: O(k) - deque holds at most k elements
+
+#### Example 3: Longest Continuous Subarray (LeetCode 1438)
+
+**Problem**: Return the longest subarray where the absolute difference between any two elements is ≤ `limit`.
+
+**Constraint**: `max(subarray) - min(subarray) <= limit`
+
+**Approach**: Sliding window with two monotonic deques.
+
+**Key Insight**: 
+- Use **monotonic increasing** deque for minimum element
+- Use **monotonic decreasing** deque for maximum element
+- Apply sliding window: expand right, contract left when constraint violated
+
+```csharp
+public int LongestSubarray(int[] nums, int limit) {
+    var increasing = new LinkedList<int>();  // Min at front
+    var decreasing = new LinkedList<int>();  // Max at front
+    int left = 0, ans = 0;
+    
+    for (int right = 0; right < nums.Length; right++) {
+        // Maintain monotonic increasing (min)
+        while (increasing.Count > 0 && increasing.Last.Value > nums[right]) {
+            increasing.RemoveLast();
+        }
+        
+        // Maintain monotonic decreasing (max)
+        while (decreasing.Count > 0 && decreasing.Last.Value < nums[right]) {
+            decreasing.RemoveLast();
+        }
+        
+        increasing.AddLast(nums[right]);
+        decreasing.AddLast(nums[right]);
+        
+        // Contract window if constraint violated
+        while (decreasing.First.Value - increasing.First.Value > limit) {
+            if (nums[left] == decreasing.First.Value) {
+                decreasing.RemoveFirst();
+            }
+            if (nums[left] == increasing.First.Value) {
+                increasing.RemoveFirst();
+            }
+            left++;
+        }
+        
+        ans = Math.Max(ans, right - left + 1);
+    }
+    
+    return ans;
+}
+```
+
+**How It Works**:
+1. **Two Deques**: Track both min and max in current window
+2. **Monotonic Properties**: 
+   - Increasing deque: minimum at front
+   - Decreasing deque: maximum at front
+3. **Sliding Window**: Expand right, contract left when `max - min > limit`
+4. **Maintain Deques**: Remove elements as window slides
+
+**Complexity**:
+- **Time**: O(n) - each element processed once
+- **Space**: O(n) - deques can grow to size n
+
+### Key Insights for Monotonic Structures
+
+1. **Efficient Next Element**: Find next greater/smaller in O(n) instead of O(n²)
+2. **Window Min/Max**: Track extremes as window changes in O(1) per element
+3. **Deque Flexibility**: Add/remove from both ends for maximum control
+4. **Transitive Property**: Use sorted order to eliminate useless elements
+5. **Amortized Analysis**: Despite nested loops, overall complexity is linear
+
+### Monotonic Pattern Recognition
+
+| Problem Type | Structure | Monotonic Order | Use Case |
+|--------------|-----------|-----------------|----------|
+| **Next Greater Element** | Stack | Decreasing | Find first element > current |
+| **Next Smaller Element** | Stack | Increasing | Find first element < current |
+| **Sliding Window Max** | Deque | Decreasing | Track maximum in window |
+| **Sliding Window Min** | Deque | Increasing | Track minimum in window |
+| **Stock Span** | Stack | Decreasing | Days since last higher price |
+
 ---
 
 ## Study Progress
@@ -1883,10 +2230,12 @@ private string BuildStringOptimized(string str) {
 - [x] **LinkedList Reversals** - Algorithms for reversing entire or partial linked lists
 - [x] **Stack Fundamentals** - LIFO structure, operations, and implementation
 - [x] **String Problems with Stacks** - Parentheses validation, duplicate removal, and character matching
+- [x] **Queue Fundamentals** - FIFO structure, implementations, and sliding time windows
+- [x] **Monotonic Stacks and Queues** - Maintaining sorted order for next element and window extremes problems
 
 ### 🔄 Currently Studying
 
-- Stack and Queue advanced patterns
+- Trees and Graphs fundamentals
 
 ### 📋 Next Topics
 

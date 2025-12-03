@@ -359,7 +359,7 @@ public class ReversingLinkedListTests
         ListNode? head = null;
 
         // Act
-        var result = ReversingLinkedList.OddEvenList(head);
+        var result = ReversingLinkedList.OddEvenList(head!);
 
         // Assert
         Assert.Null(result);

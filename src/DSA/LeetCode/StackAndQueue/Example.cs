@@ -1,3 +1,5 @@
+using static DSA.LeetCode.StackAndQueue.Queues;
+
 namespace DSA.LeetCode.StackAndQueue;
 
 public static class StackAndQueueExample
@@ -29,9 +31,23 @@ public static class StackAndQueueExample
         // Console.WriteLine(Stacks.SimplifyPath("/../"));
         // Console.WriteLine(Stacks.SimplifyPath("/.../a/../b/c/../d/./"));
 
-        // !=========Make The String Great=========
-        Console.WriteLine(Stacks.MakeGood("leEeetcode"));
-        Console.WriteLine(Stacks.MakeGood("abBAcC"));
-        Console.WriteLine(Stacks.MakeGood("s"));
+        // // !=========Make The String Great=========
+        // Console.WriteLine(Stacks.MakeGood("leEeetcode"));
+        // Console.WriteLine(Stacks.MakeGood("abBAcC"));
+        // Console.WriteLine(Stacks.MakeGood("s"));
+
+        // // !=========Number of Recent Calls=========
+        // var recentCounter = new RecentCounter();
+        // Console.WriteLine(recentCounter.Ping(1));
+        // Console.WriteLine(recentCounter.Ping(100));
+        // Console.WriteLine(recentCounter.Ping(3001));
+        // Console.WriteLine(recentCounter.Ping(3002));
+
+        // !=========Moving Average from Data Stream=========
+        var movingAverage = new MovingAverage(3);
+        Console.WriteLine(movingAverage.Next(1));
+        Console.WriteLine(movingAverage.Next(10));
+        Console.WriteLine(movingAverage.Next(3));
+        Console.WriteLine(movingAverage.Next(5));
     }
 }
