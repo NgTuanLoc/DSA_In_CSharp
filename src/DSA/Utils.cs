@@ -14,6 +14,15 @@ public static class Utils
         Console.WriteLine("\n====================");
     }
 
+    public static void Print(int[] list)
+    {
+        foreach (int item in list)
+        {
+            Console.Write($"{item} ");
+        }
+        Console.WriteLine("\n====================");
+    }
+
     public static string PrintLinkedList(ListNode? head)
     {
         if (head == null) return "";

@@ -3,6 +3,7 @@ namespace DSA.LeetCode.StackAndQueue;
 
 public static class Queues
 {
+    // https://leetcode.com/problems/number-of-recent-calls/description/
     public class RecentCounter
     {
         private readonly Queue<int> queue;
@@ -22,6 +23,7 @@ public static class Queues
         }
     }
 
+    // https://leetcode.com/problems/moving-average-from-data-stream/description/
     public class MovingAverage(int size)
     {
         private readonly int _size = size;

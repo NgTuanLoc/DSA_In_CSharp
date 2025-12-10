@@ -43,11 +43,24 @@ public static class StackAndQueueExample
         // Console.WriteLine(recentCounter.Ping(3001));
         // Console.WriteLine(recentCounter.Ping(3002));
 
-        // !=========Moving Average from Data Stream=========
-        var movingAverage = new MovingAverage(3);
-        Console.WriteLine(movingAverage.Next(1));
-        Console.WriteLine(movingAverage.Next(10));
-        Console.WriteLine(movingAverage.Next(3));
-        Console.WriteLine(movingAverage.Next(5));
+        // // !=========Moving Average from Data Stream=========
+        // var movingAverage = new MovingAverage(3);
+        // Console.WriteLine(movingAverage.Next(1));
+        // Console.WriteLine(movingAverage.Next(10));
+        // Console.WriteLine(movingAverage.Next(3));
+        // Console.WriteLine(movingAverage.Next(5));
+
+        // // !=========Daily Temperatures=========
+        // Utils.Print(Monotonic.DailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]));
+        // Utils.Print(Monotonic.DailyTemperatures([30, 40, 50, 60]));
+        // Utils.Print(Monotonic.DailyTemperatures([30, 60, 90]));
+
+        // // !=========Sliding Window Maximum=========
+        // Utils.Print(Monotonic.MaxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3));
+        // Utils.Print(Monotonic.MaxSlidingWindow([1], 1));
+        // !=========Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit=========
+        Console.WriteLine(Monotonic.LongestSubarray([8, 2, 4, 7], 4));
+        Console.WriteLine(Monotonic.LongestSubarray([10, 1, 2, 4, 7, 2], 5));
+        Console.WriteLine(Monotonic.LongestSubarray([4, 2, 2, 2, 4, 4, 2, 2], 0));
     }
 }
