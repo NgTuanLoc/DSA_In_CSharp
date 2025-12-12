@@ -124,6 +124,26 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
     - [Example 3: Longest Continuous Subarray (LeetCode 1438)](#example-3-longest-continuous-subarray-leetcode-1438)
   - [Key Insights for Monotonic Structures](#key-insights-for-monotonic-structures)
   - [Monotonic Pattern Recognition](#monotonic-pattern-recognition)
+- [7. Trees and Graphs](#7-trees-and-graphs)
+  - [Learning Objectives](#learning-objectives-5)
+  - [7.1 Introduction to Binary Trees](#71-introduction-to-binary-trees)
+    - [Nodes and Graphs](#nodes-and-graphs)
+    - [What is a Binary Tree?](#what-is-a-binary-tree)
+    - [Real-World Examples](#real-world-examples)
+    - [Binary Tree Terminology](#binary-tree-terminology)
+    - [Code Representation](#code-representation)
+  - [7.2 Depth-First Search (DFS)](#72-depth-first-search-dfs)
+    - [What is DFS?](#what-is-dfs)
+    - [Basic DFS Template](#basic-dfs-template)
+    - [General DFS Structure](#general-dfs-structure)
+    - [Three Types of DFS Traversal](#three-types-of-dfs-traversal)
+    - [Example 1: Maximum Depth of Binary Tree (LeetCode 104)](#example-1-maximum-depth-of-binary-tree-leetcode-104)
+    - [Example 2: Path Sum (LeetCode 112)](#example-2-path-sum-leetcode-112)
+    - [Example 3: Count Good Nodes (LeetCode 1448)](#example-3-count-good-nodes-leetcode-1448)
+    - [Example 4: Same Tree (LeetCode 100)](#example-4-same-tree-leetcode-100)
+  - [Key Insights for Tree Problems](#key-insights-for-tree-problems)
+  - [Common Time and Space Complexity](#common-time-and-space-complexity)
+  - [DFS Pattern Recognition](#dfs-pattern-recognition)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -2210,6 +2230,404 @@ public int LongestSubarray(int[] nums, int limit) {
 
 ---
 
+## 7. Trees and Graphs
+
+### Learning Objectives
+
+- Understand binary trees and their fundamental properties
+- Master Depth-First Search (DFS) traversal techniques
+- Apply recursive thinking to solve tree problems
+- Learn preorder, inorder, and postorder traversals
+- Implement both recursive and iterative solutions
+
+### 7.1 Introduction to Binary Trees
+
+#### Nodes and Graphs
+
+A **graph** is any collection of nodes and their pointers to other nodes. Linked lists and trees are both types of graphs. The nodes of a graph are also called **vertices**, and the pointers that connect them are called **edges**.
+
+A **tree** is a special type of graph. In this course, we focus on **binary trees**.
+
+#### What is a Binary Tree?
+
+A **binary tree** is a tree where each node has at most two children, referred to as the **left child** and **right child**.
+
+**Key Properties**:
+- The start of a binary tree is called the **root** (similar to the head in linked lists)
+- Every node has between 0 to 2 children
+- Every node except the root has exactly one parent
+- A node cannot have more than one parent
+
+**Example Structure**:
+```
+        3
+      /   \
+     1     2
+    / \   /
+   4   5 6
+```
+
+In this tree:
+- Node `3` is the root
+- Node `6` is the left child of node `2`
+- Node `5` is the right child of node `1`
+- Each node has exactly one parent
+
+#### Real-World Examples
+
+Trees are implemented all around us:
+
+1. **File Systems**: Root directory → subfolders/files
+2. **Comment Threads**: Original post → comments → replies
+3. **Company Organization**: CEO → C-Suite → VPs → Directors
+
+#### Binary Tree Terminology
+
+**Root Node**: The topmost node; the starting point of the tree. Usually given as input in problems.
+
+**Parent and Child**: If node A has an edge to node B (A → B), then A is the **parent** of B, and B is the **child** of A.
+
+**Leaf Node**: A node with no children. The "leaves" of the tree.
+
+**Depth**: How far a node is from the root. The root has depth 0. Each child has depth = parent's depth + 1.
+
+**Subtree**: A node and all its descendants. This is the most fundamental concept for solving tree problems!
+
+**Key Insight**: Any node can be treated as the root of its own subtree. This enables recursive problem-solving.
+
+For example, in the tree above:
+- The subtree rooted at node `1` contains nodes `1`, `4`, and `5`
+- This subtree is a binary tree itself
+- We can call this the "right subtree of the root"
+
+#### Code Representation
+
+Binary trees are implemented using a custom class:
+
+```csharp
+public class TreeNode {
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+    
+    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+```
+
+**Key Points**:
+- In problems, you'll be given a reference to the `root`
+- Access left subtree with `root.left`
+- Access right subtree with `root.right`
+- Each node carries data in `val`
+- If `node.left == null`, the node has no left child
+- If both children are `null`, the node is a leaf
+
+### 7.2 Depth-First Search (DFS)
+
+#### What is DFS?
+
+**Depth-First Search (DFS)** prioritizes depth by traversing as far down the tree as possible in one direction before exploring the other direction.
+
+**How it works**:
+1. Choose a direction (typically left)
+2. Move exclusively with `node.left` until reaching a leaf
+3. Backtrack and explore the right subtree
+
+**Implementation**: DFS is typically implemented using **recursion**, though it can also be done iteratively with a stack.
+
+#### Basic DFS Template
+
+```csharp
+public void DFS(TreeNode node) {
+    if (node == null) {
+        return;
+    }
+    
+    DFS(node.left);
+    DFS(node.right);
+    return;
+}
+```
+
+#### General DFS Structure
+
+Most tree problems follow this pattern:
+
+1. **Handle base case(s)**: Usually empty tree (`node == null`)
+2. **Do logic for current node**: Problem-specific operations
+3. **Recursively call on children**: Process left and right subtrees
+4. **Return the answer**: Each call solves for its subtree
+
+**Important Concept**: Each function call solves and returns the answer as if the subtree rooted at the current node was the entire tree.
+
+#### Three Types of DFS Traversal
+
+The three types differ only in **when** logic is performed relative to recursive calls:
+
+**1. Preorder Traversal** (Current → Left → Right)
+
+Logic is done **before** moving to children.
+
+```csharp
+public void PreorderDFS(TreeNode node) {
+    if (node == null) return;
+    
+    Console.WriteLine(node.val);    // Process current
+    PreorderDFS(node.left);         // Process left
+    PreorderDFS(node.right);        // Process right
+}
+```
+
+For the example tree above: `3, 1, 4, 5, 2, 6`
+
+**2. Inorder Traversal** (Left → Current → Right)
+
+Logic is done **between** left and right children.
+
+```csharp
+public void InorderDFS(TreeNode node) {
+    if (node == null) return;
+    
+    InorderDFS(node.left);          // Process left
+    Console.WriteLine(node.val);    // Process current
+    InorderDFS(node.right);         // Process right
+}
+```
+
+For the example tree above: `4, 1, 5, 3, 6, 2`
+
+**3. Postorder Traversal** (Left → Right → Current)
+
+Logic is done **after** processing both children.
+
+```csharp
+public void PostorderDFS(TreeNode node) {
+    if (node == null) return;
+    
+    PostorderDFS(node.left);        // Process left
+    PostorderDFS(node.right);       // Process right
+    Console.WriteLine(node.val);    // Process current
+}
+```
+
+For the example tree above: `4, 5, 1, 6, 2, 3`
+
+**Mnemonic**:
+- **Pre** → before children
+- **In** → in the middle of children
+- **Post** → after children
+
+#### Example 1: Maximum Depth of Binary Tree (LeetCode 104)
+
+**Problem**: Find the length of the longest path from root to a leaf.
+
+**Approach**: Use recursion with base case and recurrence relation.
+
+**Base Case**: Empty tree has depth 0.
+
+**Recurrence**: For any node, depth = 1 + max(left depth, right depth)
+
+```csharp
+public int MaxDepth(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    
+    int left = MaxDepth(root.left);
+    int right = MaxDepth(root.right);
+    return Math.Max(left, right) + 1;
+}
+```
+
+**How it works**:
+1. DFS reaches a leaf (both children are null)
+2. Leaf's children return 0 (base case)
+3. Leaf returns `1 + max(0, 0) = 1`
+4. Values propagate up: each parent adds 1 to max of its children
+
+**Iterative Implementation**:
+
+```csharp
+public int MaxDepth(TreeNode root) {
+    if (root == null) return 0;
+    
+    var stack = new Stack<(TreeNode node, int depth)>();
+    stack.Push((root, 1));
+    int maxDepth = 0;
+    
+    while (stack.Count > 0) {
+        var (node, depth) = stack.Pop();
+        maxDepth = Math.Max(maxDepth, depth);
+        
+        if (node.left != null) {
+            stack.Push((node.left, depth + 1));
+        }
+        if (node.right != null) {
+            stack.Push((node.right, depth + 1));
+        }
+    }
+    
+    return maxDepth;
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - visit each node once
+- **Space**: O(n) - recursion call stack (O(h) for balanced tree, where h is height)
+
+#### Example 2: Path Sum (LeetCode 112)
+
+**Problem**: Return true if there exists a path from root to leaf with sum equal to `targetSum`.
+
+**Approach**: Track cumulative sum during DFS.
+
+**Key Insight**: Keep a running sum `curr` as we traverse. At each leaf, check if `curr + node.val == targetSum`.
+
+```csharp
+public bool HasPathSum(TreeNode root, int targetSum) {
+    return DFS(root, 0, targetSum);
+}
+
+private bool DFS(TreeNode node, int curr, int targetSum) {
+    if (node == null) {
+        return false;
+    }
+    
+    // Check if leaf node
+    if (node.left == null && node.right == null) {
+        return (curr + node.val) == targetSum;
+    }
+    
+    curr += node.val;
+    bool left = DFS(node.left, curr, targetSum);
+    bool right = DFS(node.right, curr, targetSum);
+    return left || right;  // Need only ONE valid path
+}
+```
+
+**Why it works**:
+- All paths through a node must include that node
+- Each call has its own `curr` value (recursion property)
+- At leaves, we have the complete path sum
+- Use OR (`||`) because we need just one valid path
+
+**Complexity**:
+- **Time**: O(n)
+- **Space**: O(n)
+
+#### Example 3: Count Good Nodes (LeetCode 1448)
+
+**Problem**: A node is "good" if no node on the path from root has a greater value. Count all good nodes.
+
+**Approach**: Track the maximum value seen so far on the current path.
+
+```csharp
+public int GoodNodes(TreeNode root) {
+    return DFS(root, int.MinValue);
+}
+
+private int DFS(TreeNode node, int maxSoFar) {
+    if (node == null) {
+        return 0;
+    }
+    
+    int left = DFS(node.left, Math.Max(maxSoFar, node.val));
+    int right = DFS(node.right, Math.Max(maxSoFar, node.val));
+    
+    int ans = left + right;
+    if (node.val >= maxSoFar) {
+        ans++;  // Current node is good
+    }
+    
+    return ans;
+}
+```
+
+**How it works**:
+- Pass `maxSoFar` to track largest value on path
+- Update `maxSoFar` before calling children
+- Count current node if `node.val >= maxSoFar`
+- Sum counts from left and right subtrees
+
+**Complexity**:
+- **Time**: O(n)
+- **Space**: O(n)
+
+#### Example 4: Same Tree (LeetCode 100)
+
+**Problem**: Check if two binary trees are structurally identical with same values.
+
+**Recursive Definition**: Two trees are the same if:
+1. `p.val == q.val`
+2. `p.left` and `q.left` are the same tree
+3. `p.right` and `q.right` are the same tree
+
+```csharp
+public bool IsSameTree(TreeNode p, TreeNode q) {
+    // Both null - same empty tree
+    if (p == null && q == null) {
+        return true;
+    }
+    
+    // One null, one not - different
+    if (p == null || q == null) {
+        return false;
+    }
+    
+    // Values different
+    if (p.val != q.val) {
+        return false;
+    }
+    
+    // Check subtrees recursively
+    bool left = IsSameTree(p.left, q.left);
+    bool right = IsSameTree(p.right, q.right);
+    return left && right;
+}
+```
+
+**Beauty of Recursion**: The function itself answers whether subtrees are the same!
+
+**Complexity**:
+- **Time**: O(n) where n = min(nodes in p, nodes in q)
+- **Space**: O(n)
+
+### Key Insights for Tree Problems
+
+1. **Recursive Nature**: Every subtree is itself a tree
+2. **Function Returns**: Each call returns the answer for its subtree
+3. **Base Cases**: Usually `node == null` or leaf nodes
+4. **Traversal Type**: Often doesn't matter - just visit all nodes
+5. **Each Call Has Own Variables**: Recursion maintains separate state
+6. **Think Bottom-Up**: Solutions build from leaves upward
+
+### Common Time and Space Complexity
+
+**Time Complexity**: Almost always **O(n)** where n = number of nodes
+- Each node visited once
+- Constant work per node (unless specified)
+
+**Space Complexity**: **O(n)** in worst case
+- Recursion call stack depth
+- O(h) for balanced tree (h = height)
+- O(n) for skewed tree (straight line)
+
+### DFS Pattern Recognition
+
+| Problem Type | Key Indicator | Typical Approach |
+|--------------|---------------|------------------|
+| **Path Problems** | Root to leaf paths | Track running sum/path |
+| **Tree Properties** | Max depth, node count | Aggregate from children |
+| **Validation** | Check tree properties | Compare with constraints |
+| **Comparison** | Two trees | Simultaneous traversal |
+| **Transformation** | Modify tree structure | Process then recurse |
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -2232,16 +2650,18 @@ public int LongestSubarray(int[] nums, int limit) {
 - [x] **String Problems with Stacks** - Parentheses validation, duplicate removal, and character matching
 - [x] **Queue Fundamentals** - FIFO structure, implementations, and sliding time windows
 - [x] **Monotonic Stacks and Queues** - Maintaining sorted order for next element and window extremes problems
+- [x] **Binary Trees** - Tree fundamentals, terminology, and node structure
+- [x] **Depth-First Search (DFS)** - Tree traversals (preorder, inorder, postorder) and recursive problem-solving
 
 ### 🔄 Currently Studying
 
-- Trees and Graphs fundamentals
+- Trees and Graphs - Advanced patterns
 
 ### 📋 Next Topics
 
-- Binary Search Trees
-- Depth-First Search (DFS)
+- Binary Search Trees (BST)
 - Breadth-First Search (BFS)
+- Binary Tree - BFS
 - Heaps and Priority Queues
 - Dynamic Programming
 - Backtracking
@@ -2287,6 +2707,6 @@ O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)
 ---
 
 **Last Updated:** January 2025  
-**Current Focus:** Stacks and Queues Mastery
+**Current Focus:** Trees and Graphs - Binary Trees and DFS Mastery
 
 > 💡 **Remember**: The goal isn't just to solve problems, but to recognize patterns and choose the most efficient approach for each situation!
