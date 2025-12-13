@@ -1,7 +1,7 @@
 ﻿// using DSA.Algorithm.SortAlgorithm;
 // using DSA.LeetCode.ArrayAndString;
 using DSA.LeetCode.StackAndQueue;
-// using DSA.LeetCode.TreesAndGraphs;
+using DSA.LeetCode.TreesAndGraphs;
 // using DSA.Playground;
 // using DSA_In_CSharp.LeetCode.LinkedList;
 
@@ -130,9 +130,9 @@ using DSA.LeetCode.StackAndQueue;
 // ArrayAndStringExample.Run();
 // HashingExample.Run();
 // LinkedListExample.Run();
-StackAndQueueExample.Run();
+// StackAndQueueExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
-// TreesAndGraphsExample.Run_BinarySearchTree();
+TreesAndGraphsExample.Run_BinarySearchTree();
 // BacktrackingExample.Run();
 // HeapExample.Run();

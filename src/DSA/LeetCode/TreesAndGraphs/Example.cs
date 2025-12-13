@@ -248,38 +248,27 @@ public class TreesAndGraphsExample
     public static void Run_BinarySearchTree()
     {
         // !Initialize Binary Search Tree
-        TreeNode root = new(23);
-        TreeNode node8 = new(8);
-        TreeNode node37 = new(37);
-        TreeNode node6 = new(6);
-        TreeNode node17 = new(17);
-        TreeNode node29 = new(29);
-        TreeNode node50 = new(50);
-        TreeNode node9 = new(9);
-        TreeNode node20 = new(20);
-
-        root.Left = node8;
-        root.Right = node37;
-
-        node8.Left = node6;
-        node8.Right = node17;
-
-        node37.Left = node29;
-        node37.Right = node50;
-
-        node17.Left = node9;
-        node17.Right = node20;
-
-        // !Range Sum of BST
-        // Console.WriteLine(BinarySearchTree.RangeSumBST(root, 8, 17));
+        // // !Range Sum of BST
+        // Console.WriteLine(BinarySearchTree.RangeSumBST(root, 7, 15));
         // Console.WriteLine(BinarySearchTree.RangeSumBST_Iteration(root, 8, 17));
 
-        // !Minimum Absolute Difference in BST
+        // // !Minimum Absolute Difference in BST
         // Console.WriteLine(BinarySearchTree.GetMinimumDifference(root));
         // Console.WriteLine(BinarySearchTree.GetMinimumDifference_Iteration(root));
 
-        // !Validate BST
+        // // !Validate BST
         // Console.WriteLine(BinarySearchTree.IsValidBST(root));
         // Console.WriteLine(BinarySearchTree.IsValidBST_Iteration(root));
+
+        // // !Insert into a BST
+        // BinarySearchTree.InsertIntoBST(root, 5);
+        // Utils.PrintBinaryTree(root);
+
+        // !ClosestValue
+        // Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([4, 2, 5, 1, 3]), 3.714286));
+        // Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([1]), 4.428571));
+        Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([1, null, 2]), 3.428571));
+        Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([4, 2, 5, 1, 3]), 4.428571));
     }
 }
+

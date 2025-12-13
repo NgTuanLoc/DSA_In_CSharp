@@ -1,6 +1,6 @@
 ﻿namespace DSA.LeetCode.TreesAndGraphs;
 
-public class Bfs
+public static class Bfs
 {
     public static void PrintAllNodes(TreeNode root)
     {
@@ -9,7 +9,6 @@ public class Bfs
         while (queue.Count != 0)
         {
             var curr = queue.Dequeue();
-            Console.WriteLine(curr.Val);
             if (curr.Left != null) queue.Enqueue(curr.Left);
             if (curr.Right != null) queue.Enqueue(curr.Right);
         }

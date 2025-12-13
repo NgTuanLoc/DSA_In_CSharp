@@ -1,37 +1,31 @@
 ﻿namespace DSA.LeetCode.TreesAndGraphs;
 
-class State
+class State(TreeNode node, long small, long large)
 {
-    public TreeNode node;
-    public long small;
-    public long large;
-    public State(TreeNode node, long small, long large)
-    {
-        this.node = node;
-        this.small = small;
-        this.large = large;
-    }
+    public TreeNode node = node;
+    public long small = small;
+    public long large = large;
 }
 
 
-public class BinarySearchTree
+public static class BinarySearchTree
 {
     public static int RangeSumBST(TreeNode? root, int low, int high)
     {
+        // https://leetcode.com/problems/range-sum-of-bst/description/
         if (root == null) return 0;
 
         var result = 0;
         if (root.Val >= low && root.Val <= high) result += root.Val;
 
-        if (root.Val > low) result += RangeSumBST(root.Left, low, high);
+        if (root.Val >= low) result += RangeSumBST(root.Left, low, high);
 
-        if (root.Val < high) result += RangeSumBST(root.Right, low, high);
+        if (root.Val <= high) result += RangeSumBST(root.Right, low, high);
 
         return result;
     }
     public static int RangeSumBST_Iteration(TreeNode root, int low, int high)
     {
-        // https://leetcode.com/problems/range-sum-of-bst/description/
         var result = 0;
         Queue<TreeNode> queue = [];
         queue.Enqueue(root);
@@ -39,13 +33,12 @@ public class BinarySearchTree
         while (queue.Count != 0)
         {
             var currNode = queue.Dequeue();
-            Console.WriteLine(currNode.Val);
 
             if (currNode.Val >= low && currNode.Val <= high) result += currNode.Val;
 
-            if (currNode.Left != null && low < currNode.Val) queue.Enqueue(currNode.Left);
+            if (currNode.Left != null && low <= currNode.Val) queue.Enqueue(currNode.Left);
 
-            if (currNode.Right != null && high > currNode.Val) queue.Enqueue(currNode.Right);
+            if (currNode.Right != null && high >= currNode.Val) queue.Enqueue(currNode.Right);
         }
 
         return result;
@@ -53,6 +46,7 @@ public class BinarySearchTree
 
     public static int GetMinimumDifference(TreeNode root)
     {
+        // https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/
         List<TreeNode> list = [];
         GetMinimumDifference_InOrder_DFS(root, list);
         var result = int.MaxValue;
@@ -73,7 +67,6 @@ public class BinarySearchTree
 
     public static int GetMinimumDifference_Iteration(TreeNode root)
     {
-        // https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/
         List<int> list = IterativeInOrder(root);
         var result = int.MaxValue;
 
@@ -152,5 +145,60 @@ public class BinarySearchTree
         }
 
         return true;
+    }
+
+    // https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
+    public static TreeNode? InsertIntoBST(TreeNode? root, int val)
+    {
+        if (root == null) return root;
+
+        if (root.Val >= val)
+        {
+            if (root.Left != null)
+            {
+                InsertIntoBST(root.Left, val);
+            }
+            else
+            {
+                root.Left = new TreeNode(val);
+            }
+        }
+        if (root.Val < val)
+        {
+            if (root.Right != null)
+            {
+                InsertIntoBST(root.Right, val);
+            }
+            else
+            {
+                root.Right = new TreeNode(val);
+            }
+        }
+
+        return root;
+    }
+
+    // https://leetcode.com/problems/closest-binary-search-tree-value/description/
+    public static int ClosestValue(TreeNode? root, double target)
+    {
+        if (root == null) return 0;
+        var result = root.Val;
+        var min = Math.Abs(target - result);
+        const double epsilon = 1e-9;
+
+        while (root != null)
+        {
+            var temp = Math.Abs(target - root.Val);
+
+            if (temp < min || (Math.Abs(temp - min) < epsilon && root.Val < result))
+            {
+                min = temp;
+                result = root.Val;
+            }
+
+            root = target < root.Val ? root.Left : root.Right;
+        }
+
+        return result;
     }
 }

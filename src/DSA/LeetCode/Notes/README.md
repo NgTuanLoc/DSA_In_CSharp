@@ -2626,6 +2626,620 @@ public bool IsSameTree(TreeNode p, TreeNode q) {
 | **Comparison** | Two trees | Simultaneous traversal |
 | **Transformation** | Modify tree structure | Process then recurse |
 
+### 7.3 Breadth-First Search (BFS)
+
+#### What is BFS?
+
+In **Breadth-First Search (BFS)**, we prioritize breadth over depth. Instead of going as deep as possible first, we traverse all nodes at a given depth before moving to the next depth level.
+
+**Key Difference from DFS**:
+- **DFS**: Depth progression: 0, 1, 2, 3, 4, 5, 6, ...
+- **BFS**: Depth progression: 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, ...
+
+Think of each depth as a **level** or **floor** in a building:
+- Root is the top floor
+- Each level down is connected by edges (staircases)
+- BFS visits all rooms on one floor before going down
+
+#### When to Use BFS vs DFS
+
+**BFS is Better When**:
+- Need to handle nodes by their level/depth
+- Looking for shortest path in unweighted graphs
+- Want to process tree level-by-level
+- Problems explicitly mention "level" or "row"
+
+**DFS is Often Preferred Because**:
+- Easier to implement (especially with recursion)
+- Uses less code
+- For problems where BFS/DFS doesn't matter algorithmically
+
+**Complexity Trade-offs**:
+
+| Aspect | DFS | BFS |
+|--------|-----|-----|
+| **Space** | O(h) height of tree | O(w) width of tree |
+| **Best Case** | Straight line: O(1) per level | Perfect tree: O(n) at last level |
+| **Worst Case** | Perfect tree: O(n) | Straight line: O(1) |
+| **Implementation** | Stack (recursion) | Queue (iterative) |
+
+**Example**: In a perfect binary tree with 1 million nodes:
+- DFS uses O(log n) ≈ 20 nodes in memory
+- BFS uses O(n/2) = 500,000 nodes in memory (last level)
+
+But in a straight line tree (skewed):
+- DFS uses O(n) = 1 million nodes
+- BFS uses O(1) only
+
+#### BFS Implementation Pattern
+
+BFS is implemented **iteratively** using a **queue**:
+
+```csharp
+public void BFS(TreeNode root) {
+    if (root == null) return;
+    
+    Queue<TreeNode> queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    
+    while (queue.Count > 0) {
+        int nodesInCurrentLevel = queue.Count;
+        
+        // Process all nodes at current level
+        for (int i = 0; i < nodesInCurrentLevel; i++) {
+            TreeNode node = queue.Dequeue();
+            
+            // Do logic here for current node
+            Console.WriteLine(node.val);
+            
+            // Add next level to queue
+            if (node.left != null) {
+                queue.Enqueue(node.left);
+            }
+            if (node.right != null) {
+                queue.Enqueue(node.right);
+            }
+        }
+        // After this iteration, queue contains exactly the next level
+    }
+}
+```
+
+**Key Pattern Details**:
+1. **At start of while loop**: Queue contains exactly one level
+2. **Save level size**: `nodesInCurrentLevel` before processing
+3. **Process current level**: For loop handles all nodes in this level
+4. **Add children**: Queue fills with next level during iteration
+5. **Loop invariant**: After for loop, queue has exactly next level
+
+#### Example 1: Binary Tree Right Side View (LeetCode 199)
+
+**Problem**: Return values of nodes visible when viewing tree from right side (rightmost node at each level).
+
+**Approach**: Use BFS level-order traversal, take last node of each level.
+
+```csharp
+public IList<int> RightSideView(TreeNode root) {
+    if (root == null) return new List<int>();
+    
+    List<int> ans = new List<int>();
+    Queue<TreeNode> queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    
+    while (queue.Count > 0) {
+        int currentLength = queue.Count;
+        TreeNode rightmostNode = null;
+        
+        for (int i = 0; i < currentLength; i++) {
+            TreeNode node = queue.Dequeue();
+            rightmostNode = node;  // Last node processed will be rightmost
+            
+            if (node.left != null) {
+                queue.Enqueue(node.left);
+            }
+            if (node.right != null) {
+                queue.Enqueue(node.right);
+            }
+        }
+        
+        ans.Add(rightmostNode.val);
+    }
+    
+    return ans;
+}
+```
+
+**Why it Works**:
+- Since we add left before right, nodes are in left-to-right order
+- Last node processed in each level is the rightmost
+- Each while iteration handles one level
+
+**Complexity**:
+- **Time**: O(n) - visit each node once
+- **Space**: O(n) - queue can hold up to n/2 nodes (last level of perfect tree)
+
+#### Example 2: Find Largest Value in Each Tree Row (LeetCode 515)
+
+**Problem**: Return array of largest value in each row (level).
+
+**Approach**: Track maximum value while processing each level.
+
+```csharp
+public IList<int> LargestValues(TreeNode root) {
+    if (root == null) return new List<int>();
+    
+    List<int> ans = new List<int>();
+    Queue<TreeNode> queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    
+    while (queue.Count > 0) {
+        int currentLength = queue.Count;
+        int currMax = int.MinValue;
+        
+        for (int i = 0; i < currentLength; i++) {
+            TreeNode node = queue.Dequeue();
+            currMax = Math.Max(currMax, node.val);
+            
+            if (node.left != null) {
+                queue.Enqueue(node.left);
+            }
+            if (node.right != null) {
+                queue.Enqueue(node.right);
+            }
+        }
+        
+        ans.Add(currMax);
+    }
+    
+    return ans;
+}
+```
+
+**How it Works**:
+- Initialize `currMax` at start of each level
+- Update `currMax` as we process nodes
+- Add `currMax` to answer after processing complete level
+
+**Complexity**:
+- **Time**: O(n)
+- **Space**: O(n)
+
+#### Example 3: Deepest Leaves Sum (LeetCode 1302)
+
+**Problem**: Return sum of values of deepest leaves.
+
+**Approach**: Use BFS and keep updating sum for each level. Last level processed will be deepest.
+
+```csharp
+public int DeepestLeavesSum(TreeNode root) {
+    Queue<TreeNode> queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    int ans = 0;
+    
+    while (queue.Count > 0) {
+        int currentLength = queue.Count;
+        ans = 0;  // Reset for each level
+        
+        for (int i = 0; i < currentLength; i++) {
+            TreeNode node = queue.Dequeue();
+            ans += node.val;
+            
+            if (node.left != null) {
+                queue.Enqueue(node.left);
+            }
+            if (node.right != null) {
+                queue.Enqueue(node.right);
+            }
+        }
+    }
+    
+    return ans;  // Last level's sum
+}
+```
+
+**Clever Insight**: We overwrite `ans` at each level. When loop ends, `ans` holds sum of deepest level.
+
+**Complexity**:
+- **Time**: O(n)
+- **Space**: O(n)
+
+#### Example 4: Zigzag Level Order Traversal (LeetCode 103)
+
+**Problem**: Return level-order traversal alternating direction (left-to-right, then right-to-left).
+
+**Approach**: Use BFS with a boolean flag to alternate direction.
+
+```csharp
+public IList<IList<int>> ZigzagLevelOrder(TreeNode root) {
+    if (root == null) return new List<IList<int>>();
+    
+    var ans = new List<IList<int>>();
+    var queue = new Queue<TreeNode>();
+    queue.Enqueue(root);
+    bool leftToRight = true;
+    
+    while (queue.Count > 0) {
+        int currentLength = queue.Count;
+        var currentLevel = new List<int>();
+        
+        for (int i = 0; i < currentLength; i++) {
+            TreeNode node = queue.Dequeue();
+            currentLevel.Add(node.val);
+            
+            if (node.left != null) queue.Enqueue(node.left);
+            if (node.right != null) queue.Enqueue(node.right);
+        }
+        
+        if (!leftToRight) {
+            currentLevel.Reverse();
+        }
+        
+        ans.Add(currentLevel);
+        leftToRight = !leftToRight;
+    }
+    
+    return ans;
+}
+```
+
+**How it Works**:
+- Process level normally (left to right)
+- If current level should be right-to-left, reverse the list
+- Toggle direction flag after each level
+
+**Complexity**:
+- **Time**: O(n) - reverse is O(w) per level, total O(n)
+- **Space**: O(n)
+
+### Key Insights for BFS
+
+1. **Level-by-Level**: Perfect for problems that mention "level", "row", or "depth"
+2. **Queue Invariant**: At start of while loop, queue has exactly one level
+3. **For Loop Pattern**: Process exactly `queue.Count` nodes (saved before loop)
+4. **Next Level Building**: Children added during current level processing
+5. **Iterative Only**: BFS is rarely implemented recursively
+6. **Space Consideration**: Can use O(n) space for wide trees (vs DFS's O(h))
+
+### 7.4 Binary Search Trees (BST)
+
+#### What is a Binary Search Tree?
+
+A **Binary Search Tree (BST)** is a special binary tree with an ordering property:
+
+**BST Property**: For every node:
+- All values in the **left subtree** are **less than** the node's value
+- All values in the **right subtree** are **greater than** the node's value
+- This property holds for **every** node in the tree
+
+**Important Implications**:
+- All values in a BST must be **unique**
+- The ordering property applies recursively to all subtrees
+
+**Example BST**:
+```
+        23
+       /  \
+      8    37
+     / \   / \
+    6  17 29 50
+      / \
+     9  20
+```
+
+Verification:
+- All values left of 23 (8, 6, 17, 9, 20) are less than 23
+- All values right of 23 (37, 29, 50) are greater than 23
+- Same property holds for every node
+
+#### BST Operations Efficiency
+
+The BST property enables efficient operations through **binary search**:
+
+**Search for value 20**:
+1. Start at root (23): 20 < 23 → go left
+2. At 8: 20 > 8 → go right
+3. At 17: 20 > 17 → go right
+4. At 20: Found!
+
+At each step, we **eliminate half** of the remaining tree!
+
+**Time Complexity**:
+- **Average case**: O(log n) for search, insert, delete
+- **Worst case**: O(n) for unbalanced trees (like a straight line)
+
+**Best Case**: Balanced tree where height h = log n
+**Worst Case**: Skewed tree where height h = n
+
+#### Important BST Property: Inorder Traversal
+
+**Key Insight**: An **inorder DFS traversal** (left → node → right) on a BST visits nodes in **sorted ascending order**!
+
+```csharp
+public void InorderTraversal(TreeNode node, List<int> values) {
+    if (node == null) return;
+    
+    InorderTraversal(node.left, values);   // Process left (smaller values)
+    values.Add(node.val);                   // Process current
+    InorderTraversal(node.right, values);  // Process right (larger values)
+}
+```
+
+For the BST above: `6, 8, 9, 17, 20, 23, 29, 37, 50` (sorted!)
+
+#### Example 1: Range Sum of BST (LeetCode 938)
+
+**Problem**: Return sum of all node values in range `[low, high]`.
+
+**Naive Approach**: Visit every node, add to sum if in range. Time: O(n)
+
+**Optimized BST Approach**: Use BST property to prune search space!
+
+**Key Optimizations**:
+1. If `node.val < low`: All left subtree values are too small → skip left
+2. If `node.val > high`: All right subtree values are too large → skip right
+
+```csharp
+public int RangeSumBST(TreeNode root, int low, int high) {
+    if (root == null) return 0;
+    
+    int ans = 0;
+    
+    // Include current node if in range
+    if (low <= root.val && root.val <= high) {
+        ans += root.val;
+    }
+    
+    // Only search left if there might be valid values
+    if (low < root.val) {
+        ans += RangeSumBST(root.left, low, high);
+    }
+    
+    // Only search right if there might be valid values
+    if (root.val < high) {
+        ans += RangeSumBST(root.right, low, high);
+    }
+    
+    return ans;
+}
+```
+
+**Iterative Version**:
+
+```csharp
+public int RangeSumBST(TreeNode root, int low, int high) {
+    Stack<TreeNode> stack = new Stack<TreeNode>();
+    stack.Push(root);
+    int ans = 0;
+    
+    while (stack.Count > 0) {
+        TreeNode node = stack.Pop();
+        
+        if (low <= node.val && node.val <= high) {
+            ans += node.val;
+        }
+        
+        if (node.left != null && low < node.val) {
+            stack.Push(node.left);
+        }
+        
+        if (node.right != null && node.val < high) {
+            stack.Push(node.right);
+        }
+    }
+    
+    return ans;
+}
+```
+
+**Why This is Better**:
+- Still O(n) worst case (all nodes in range)
+- Average case much better - can skip entire subtrees
+- Example: If root > high, skip 500,000 nodes in right subtree instantly!
+
+**Complexity**:
+- **Time**: O(n) worst, O(log n) average for balanced BST
+- **Space**: O(h) for recursion stack
+
+#### Example 2: Minimum Absolute Difference in BST (LeetCode 530)
+
+**Problem**: Find minimum absolute difference between values of any two nodes.
+
+**Naive Approach**: 
+1. Get all values: O(n)
+2. Check all pairs: O(n²)
+Total: O(n²)
+
+**Better Approach**:
+1. Get all values: O(n)
+2. Sort array: O(n log n)
+3. Check adjacent pairs only: O(n)
+Total: O(n log n)
+
+**Optimal BST Approach**: Use inorder traversal to get sorted values in O(n)!
+
+```csharp
+public int GetMinimumDifference(TreeNode root) {
+    List<int> values = new List<int>();
+    InorderDFS(root, values);
+    
+    int ans = int.MaxValue;
+    for (int i = 1; i < values.Count; i++) {
+        ans = Math.Min(ans, values[i] - values[i - 1]);
+    }
+    
+    return ans;
+}
+
+private void InorderDFS(TreeNode node, List<int> values) {
+    if (node == null) return;
+    
+    InorderDFS(node.left, values);    // Left subtree
+    values.Add(node.val);              // Current node
+    InorderDFS(node.right, values);   // Right subtree
+}
+```
+
+**Why Inorder Works**:
+- Inorder on BST gives sorted values
+- In sorted array, minimum difference must be between adjacent elements
+- No need for O(n log n) sort!
+
+**Iterative Inorder** (more complex):
+
+```csharp
+public int GetMinimumDifference(TreeNode root) {
+    List<int> values = IterativeInorder(root);
+    
+    int ans = int.MaxValue;
+    for (int i = 1; i < values.Count; i++) {
+        ans = Math.Min(ans, values[i] - values[i - 1]);
+    }
+    
+    return ans;
+}
+
+private List<int> IterativeInorder(TreeNode root) {
+    var stack = new Stack<TreeNode>();
+    var values = new List<int>();
+    TreeNode curr = root;
+    
+    while (stack.Count > 0 || curr != null) {
+        // Go as far left as possible
+        while (curr != null) {
+            stack.Push(curr);
+            curr = curr.left;
+        }
+        
+        // Process node
+        curr = stack.Pop();
+        values.Add(curr.val);
+        
+        // Move to right subtree
+        curr = curr.right;
+    }
+    
+    return values;
+}
+```
+
+**Note**: Iterative inorder is much more complex. Use recursion when possible!
+
+**Complexity**:
+- **Time**: O(n)
+- **Space**: O(n) for values array + O(h) for recursion
+
+#### Example 3: Validate Binary Search Tree (LeetCode 98)
+
+**Problem**: Determine if a binary tree is a valid BST.
+
+**Key Insight**: Each node must satisfy:
+1. `small < node.val < large` (value range constraint)
+2. Both subtrees must also be valid BSTs
+
+**Approach**: Use DFS with valid value range `(small, large)`:
+- Root can be any value: `(-∞, +∞)`
+- Left child must be less than parent: update `large = node.val`
+- Right child must be greater than parent: update `small = node.val`
+
+```csharp
+public bool IsValidBST(TreeNode root) {
+    return DFS(root, long.MinValue, long.MaxValue);
+}
+
+private bool DFS(TreeNode node, long small, long large) {
+    if (node == null) {
+        return true;  // Empty tree is valid BST
+    }
+    
+    // Check if current node violates constraints
+    if (small >= node.val || node.val >= large) {
+        return false;
+    }
+    
+    // Check if left subtree is valid BST with updated range
+    bool left = DFS(node.left, small, node.val);
+    
+    // Check if right subtree is valid BST with updated range
+    bool right = DFS(node.right, node.val, large);
+    
+    // Both subtrees must be valid
+    return left && right;
+}
+```
+
+**Why It Works**:
+- Each recursive call maintains the valid range for its subtree
+- Left subtree: `(small, node.val)` ensures all values < parent
+- Right subtree: `(node.val, large)` ensures all values > parent
+- Recursion handles all ancestor constraints automatically
+
+**Iterative Version**:
+
+```csharp
+public bool IsValidBST(TreeNode root) {
+    var stack = new Stack<(TreeNode node, long small, long large)>();
+    stack.Push((root, long.MinValue, long.MaxValue));
+    
+    while (stack.Count > 0) {
+        var (node, small, large) = stack.Pop();
+        
+        if (small >= node.val || node.val >= large) {
+            return false;
+        }
+        
+        if (node.left != null) {
+            stack.Push((node.left, small, node.val));
+        }
+        
+        if (node.right != null) {
+            stack.Push((node.right, node.val, large));
+        }
+    }
+    
+    return true;
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - visit each node once
+- **Space**: O(h) for recursion stack
+
+### BST Key Insights
+
+1. **Inorder = Sorted**: Inorder traversal on BST gives sorted values
+2. **Binary Search**: Can eliminate half the tree at each decision
+3. **Validation Ranges**: Track valid range `(small, large)` for BST validation
+4. **Pruning Opportunity**: Use BST property to skip entire subtrees
+5. **Recursive Subtrees**: Each subtree must also be a valid BST
+
+### BST Pattern Recognition
+
+| Problem Type | Key Indicator | Approach |
+|--------------|---------------|----------|
+| **Range Queries** | Sum/count in range | Prune using BST property |
+| **Sorted Order** | Min difference, kth smallest | Inorder traversal |
+| **Validation** | Check if valid BST | Track valid ranges |
+| **Search** | Find value/closest | Binary search on tree |
+| **Insert/Delete** | Modify BST | Maintain BST property |
+
+### BFS vs DFS Summary
+
+**Choose BFS When**:
+- ✅ Problem mentions "level", "row", "depth"
+- ✅ Need shortest path (unweighted)
+- ✅ Want to handle by distance from root
+- ✅ Examples: rightmost nodes, level sums, zigzag traversal
+
+**Choose DFS When**:
+- ✅ Simpler to implement with recursion
+- ✅ Path-based problems (root to leaf)
+- ✅ Tree property validation
+- ✅ Most other tree problems where order doesn't matter
+
+**Implementation Preferences**:
+- **DFS**: Recursive (cleaner, less code)
+- **BFS**: Iterative with queue (level-by-level control)
+
 ---
 
 ## Study Progress
@@ -2652,16 +3266,17 @@ public bool IsSameTree(TreeNode p, TreeNode q) {
 - [x] **Monotonic Stacks and Queues** - Maintaining sorted order for next element and window extremes problems
 - [x] **Binary Trees** - Tree fundamentals, terminology, and node structure
 - [x] **Depth-First Search (DFS)** - Tree traversals (preorder, inorder, postorder) and recursive problem-solving
+- [x] **Breadth-First Search (BFS)** - Level-order traversal and queue-based algorithms
+- [x] **Binary Search Trees (BST)** - BST properties, inorder traversal, and optimized search operations
 
 ### 🔄 Currently Studying
 
-- Trees and Graphs - Advanced patterns
+- Trees and Graphs - Graph algorithms and advanced patterns
 
 ### 📋 Next Topics
 
-- Binary Search Trees (BST)
-- Breadth-First Search (BFS)
-- Binary Tree - BFS
+- Graphs - DFS and BFS on graphs
+- Implicit Graphs
 - Heaps and Priority Queues
 - Dynamic Programming
 - Backtracking

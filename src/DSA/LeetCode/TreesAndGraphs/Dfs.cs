@@ -35,7 +35,7 @@ public class BinaryTreeDeptFirstSearch
     }
     public static void DFS_PostOrder(TreeNode? node)
     {
-        if (node == null)return;
+        if (node == null) return;
         DFS_PostOrder(node.Left);
         DFS_PostOrder(node.Right);
         Console.WriteLine(node.Val);
@@ -63,7 +63,6 @@ public class BinaryTreeDeptFirstSearch
         {
             var currPair = stack.Pop();
             maxLength = Math.Max(maxLength, currPair.Value);
-            Console.WriteLine(currPair.Node.Val);
             if (currPair.Node.Right != null)
             {
                 Pair<int> right = new(currPair.Node.Right, currPair.Value + 1);
