@@ -46,21 +46,7 @@ public class TreesAndGraphsExample
         // Console.WriteLine(BinaryTreeDeptFirstSearch.HasPathSum(root, 4));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.HasPathSum_Iteration(root, 4));
 
-        int GoodNodeDfs(TreeNode? node, int maxSoFar)
-        {
-            if (node is null) return 0;
 
-            var left = GoodNodeDfs(node.Left, Math.Max(maxSoFar, node.Val));
-            var right = GoodNodeDfs(node.Right, Math.Max(maxSoFar, node.Val));
-
-            var result = left + right;
-
-            if (node.Val >= maxSoFar) return result + 1;
-
-            return result;
-        }
-
-        // Console.WriteLine(GoodNodes(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes(root));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.GoodNodes_Iteration(root));
 
@@ -264,11 +250,32 @@ public class TreesAndGraphsExample
         // BinarySearchTree.InsertIntoBST(root, 5);
         // Utils.PrintBinaryTree(root);
 
-        // !ClosestValue
+        // // !ClosestValue
         // Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([4, 2, 5, 1, 3]), 3.714286));
         // Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([1]), 4.428571));
-        Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([1, null, 2]), 3.428571));
-        Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([4, 2, 5, 1, 3]), 4.428571));
+        // Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([1, null, 2]), 3.428571));
+        // Console.WriteLine(BinarySearchTree.ClosestValue(Utils.BuildBinaryTree([4, 2, 5, 1, 3]), 4.428571));
+    }
+
+    public static void Run_Graph_DFS()
+    {
+        // // !Number of Provinces
+        // Console.WriteLine(new GraphDfsFindCircleNum().FindCircleNum([[1, 1, 0], [1, 1, 0], [0, 0, 1]]));
+        // Console.WriteLine(new GraphDfsFindCircleNum().FindCircleNum([[1, 0, 0], [0, 1, 0], [0, 0, 1]]));
+
+        // !Number of Islands
+        Console.WriteLine(new GraphDfsNumIslands().NumIslands([
+            ['1','1','1','1','0'],
+            ['1','1','0','1','0'],
+            ['1','1','0','0','0'],
+            ['0','0','0','0','0']
+]));
+        Console.WriteLine(new GraphDfsNumIslands().NumIslands([
+            ['1','1','0','0','0'],
+            ['1','1','0','0','0'],
+            ['0','0','1','0','0'],
+            ['0','0','0','1','1']
+]));
     }
 }
 

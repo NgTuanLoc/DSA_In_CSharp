@@ -133,6 +133,7 @@ using DSA.LeetCode.TreesAndGraphs;
 // StackAndQueueExample.Run();
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
-TreesAndGraphsExample.Run_BinarySearchTree();
+// TreesAndGraphsExample.Run_BinarySearchTree();
+TreesAndGraphsExample.Run_Graph_DFS();
 // BacktrackingExample.Run();
 // HeapExample.Run();
