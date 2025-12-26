@@ -138,4 +138,30 @@ public static class Utils
 
         return $"[{string.Join(",", result)}]";
     }
+
+    /// <summary>
+    /// Finds a TreeNode with the specified value in a binary tree using BFS.
+    /// </summary>
+    /// <param name="root">Root node of the binary tree</param>
+    /// <param name="value">Value to search for</param>
+    /// <returns>TreeNode with the specified value, or null if not found</returns>
+    public static TreeNode? FindTreeNode(TreeNode? root, int value)
+    {
+        if (root == null) return null;
+
+        Queue<TreeNode> queue = new();
+        queue.Enqueue(root);
+
+        while (queue.Count > 0)
+        {
+            TreeNode current = queue.Dequeue();
+
+            if (current.Val == value) return current;
+
+            if (current.Left != null) queue.Enqueue(current.Left);
+            if (current.Right != null) queue.Enqueue(current.Right);
+        }
+
+        return null;
+    }
 }

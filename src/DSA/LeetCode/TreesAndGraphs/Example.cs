@@ -305,9 +305,23 @@ public class TreesAndGraphsExample
         // Console.WriteLine(new MaxAreaOfIslandSolution().MaxAreaOfIsland([[0, 0, 0, 0, 0, 0, 0, 0]]));
 
         // !Reachable Nodes With Restrictions
-        Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(7, [[0, 1], [1, 2], [3, 1], [4, 0], [0, 5], [5, 6]], [4, 5]));
-        Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(7, [[0, 1], [0, 2], [0, 5], [0, 4], [3, 2], [6, 5]], [4, 2, 1]));
-        Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(2, [[0, 1]], [1]));
+        // Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(7, [[0, 1], [1, 2], [3, 1], [4, 0], [0, 5], [5, 6]], [4, 5]));
+        // Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(7, [[0, 1], [0, 2], [0, 5], [0, 4], [3, 2], [6, 5]], [4, 2, 1]));
+        // Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(2, [[0, 1]], [1]));
+    }
+
+    public static void Run_Graph_BFS()
+    {
+        // !Shortest Path Binary Matrix
+        // Console.WriteLine(new ShortestPathBinaryMatrixSolution().ShortestPathBinaryMatrix([[0, 1], [1, 0]]));
+        // Console.WriteLine(new ShortestPathBinaryMatrixSolution().ShortestPathBinaryMatrix([[0, 0, 0], [1, 1, 0], [1, 1, 0]]));
+        // Console.WriteLine(new ShortestPathBinaryMatrixSolution().ShortestPathBinaryMatrix([[1, 0, 0], [1, 1, 0], [1, 1, 0]]));
+
+        // !All Nodes Distance K in Binary Tree
+        var root1 = Utils.BuildBinaryTree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
+        Console.WriteLine(string.Join(",", new AllNodesDistanceKInBinaryTree().DistanceK(root1!, Utils.FindTreeNode(root1, 5)!, 2)));
+        var root2 = Utils.BuildBinaryTree([1]);
+        Console.WriteLine(string.Join(",", new AllNodesDistanceKInBinaryTree().DistanceK(root2!, Utils.FindTreeNode(root2, 1)!, 3)));
     }
 }
 

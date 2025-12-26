@@ -134,6 +134,7 @@ using DSA.LeetCode.TreesAndGraphs;
 // TreesAndGraphsExample.Run_DFS();
 // TreesAndGraphsExample.Run_BFS();
 // TreesAndGraphsExample.Run_BinarySearchTree();
-TreesAndGraphsExample.Run_Graph_DFS();
+// TreesAndGraphsExample.Run_Graph_DFS();
+TreesAndGraphsExample.Run_Graph_BFS();
 // BacktrackingExample.Run();
 // HeapExample.Run();

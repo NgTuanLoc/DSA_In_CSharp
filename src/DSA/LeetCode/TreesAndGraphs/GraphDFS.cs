@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace DSA.LeetCode.TreesAndGraphs;
 
 // leetcode.com/problems/number-of-provinces/
