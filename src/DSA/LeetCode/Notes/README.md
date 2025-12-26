@@ -144,6 +144,51 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
   - [Key Insights for Tree Problems](#key-insights-for-tree-problems)
   - [Common Time and Space Complexity](#common-time-and-space-complexity)
   - [DFS Pattern Recognition](#dfs-pattern-recognition)
+  - [7.3 Breadth-First Search (BFS)](#73-breadth-first-search-bfs)
+    - [What is BFS?](#what-is-bfs)
+    - [When to Use BFS vs DFS](#when-to-use-bfs-vs-dfs)
+    - [BFS Implementation Pattern](#bfs-implementation-pattern)
+    - [Example 1: Binary Tree Right Side View (LeetCode 199)](#example-1-binary-tree-right-side-view-leetcode-199)
+    - [Example 2: Find Largest Value in Each Tree Row (LeetCode 515)](#example-2-find-largest-value-in-each-tree-row-leetcode-515)
+    - [Example 3: Deepest Leaves Sum (LeetCode 1302)](#example-3-deepest-leaves-sum-leetcode-1302)
+    - [Example 4: Zigzag Level Order Traversal (LeetCode 103)](#example-4-zigzag-level-order-traversal-leetcode-103)
+  - [Key Insights for BFS](#key-insights-for-bfs)
+  - [7.4 Binary Search Trees (BST)](#74-binary-search-trees-bst)
+    - [What is a Binary Search Tree?](#what-is-a-binary-search-tree)
+    - [BST Operations Efficiency](#bst-operations-efficiency)
+    - [Important BST Property: Inorder Traversal](#important-bst-property-inorder-traversal)
+    - [Example 1: Range Sum of BST (LeetCode 938)](#example-1-range-sum-of-bst-leetcode-938)
+    - [Example 2: Minimum Absolute Difference in BST (LeetCode 530)](#example-2-minimum-absolute-difference-in-bst-leetcode-530)
+    - [Example 3: Validate Binary Search Tree (LeetCode 98)](#example-3-validate-binary-search-tree-leetcode-98)
+  - [BST Key Insights](#bst-key-insights)
+  - [BST Pattern Recognition](#bst-pattern-recognition)
+  - [BFS vs DFS Summary](#bfs-vs-dfs-summary)
+  - [7.5 Introduction to Graphs](#75-introduction-to-graphs)
+    - [What is a Graph?](#what-is-a-graph)
+    - [Real-World Graph Applications](#real-world-graph-applications)
+    - [Graph Terminology](#graph-terminology)
+    - [Graph Input Formats](#graph-input-formats)
+      - [Format 1: Array of Edges](#format-1-array-of-edges)
+      - [Format 2: Adjacency List](#format-2-adjacency-list)
+      - [Format 3: Adjacency Matrix](#format-3-adjacency-matrix)
+      - [Format 4: Matrix as Graph](#format-4-matrix-as-graph)
+    - [Graph vs Tree Code Differences](#graph-vs-tree-code-differences)
+    - [Preventing Cycles with `seen` Set](#preventing-cycles-with-seen-set)
+    - [Graph Traversal Starting Point](#graph-traversal-starting-point)
+  - [Graph Key Insights](#graph-key-insights)
+  - [7.6 Graph DFS](#76-graph-dfs)
+    - [DFS Implementation Patterns](#dfs-implementation-patterns)
+      - [Recursive DFS Template](#recursive-dfs-template)
+      - [Iterative DFS Template](#iterative-dfs-template)
+    - [Time and Space Complexity](#time-and-space-complexity)
+    - [Example 1: Number of Provinces (LeetCode 547)](#example-1-number-of-provinces-leetcode-547)
+    - [Example 2: Number of Islands (LeetCode 200)](#example-2-number-of-islands-leetcode-200)
+    - [Example 3: Reorder Routes (LeetCode 1466)](#example-3-reorder-routes-leetcode-1466)
+    - [Example 4: Keys and Rooms (LeetCode 841)](#example-4-keys-and-rooms-leetcode-841)
+    - [Example 5: Minimum Vertices to Reach All Nodes (LeetCode 1557)](#example-5-minimum-vertices-to-reach-all-nodes-leetcode-1557)
+  - [Graph DFS Key Insights](#graph-dfs-key-insights)
+  - [Graph DFS Pattern Recognition](#graph-dfs-pattern-recognition)
+  - [DFS Code Checklist](#dfs-code-checklist)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -3239,6 +3284,800 @@ public bool IsValidBST(TreeNode root) {
 **Implementation Preferences**:
 - **DFS**: Recursive (cleaner, less code)
 - **BFS**: Iterative with queue (level-by-level control)
+
+---
+
+### 7.5 Introduction to Graphs
+
+Graphs are a fundamental data structure that represent relationships between objects. While binary trees are a specific type of graph with strict constraints, general graphs offer much more flexibility and power.
+
+#### What is a Graph?
+
+**Definition**: A graph is any collection of nodes (vertices) and connections (edges) between those nodes.
+
+**Key Difference from Binary Trees**:
+- Binary trees: Each node has at most one parent and at most two children
+- Graphs: Nodes can have any number of connections, no parent-child hierarchy
+
+#### Real-World Graph Applications
+
+Graphs model countless real-world scenarios:
+- 🌐 **Social Networks**: Facebook, Twitter, Instagram (users as nodes, friendships as edges)
+- 🗺️ **Navigation**: Roads in cities (intersections as nodes, roads as edges)
+- 💻 **Internet**: Network traffic routing
+- 🔗 **Blockchain**: Cryptocurrency transaction chains
+- 🧬 **Biology**: Molecular and genetic relationships
+- 🔌 **Circuit Boards**: Electronic component connections
+
+#### Graph Terminology
+
+**Edges (Connections)**:
+- **Directed Edge**: One-way connection (A → B, but not B → A)
+  - Represented with arrows in diagrams
+  - Example: Twitter follow relationship
+- **Undirected Edge**: Two-way connection (A ↔ B)
+  - Represented with straight lines
+  - Example: Facebook friendship
+
+> 💡 **Note**: Binary trees have directed edges (parent → child only)
+
+**Connected Components**:
+- **Definition**: A group of nodes connected by edges
+- A graph can have multiple separate connected components
+- Binary trees always have exactly one connected component (all nodes reachable from root)
+
+**Node Degree**:
+- **Indegree**: Number of edges entering a node
+- **Outdegree**: Number of edges leaving a node
+- **Neighbors**: Nodes directly connected by an edge
+
+> 📊 **Binary Tree Context**: 
+> - All nodes except root have indegree = 1 (from parent)
+> - Outdegree: 0 (leaf), 1, or 2 (internal nodes)
+
+**Cycles**:
+- **Cyclic Graph**: Contains at least one cycle (path that leads back to same node)
+- **Acyclic Graph**: No cycles exist
+- **DAG**: Directed Acyclic Graph
+
+> ⚠️ **Important**: Binary trees cannot have cycles by definition
+
+#### Graph Input Formats
+
+Unlike binary trees where you're given node objects, graphs are typically described through data. You need to construct the graph representation yourself.
+
+> 🔑 **Key Insight**: With graphs, only the "idea" of the graph exists. The input gives you information, and you must determine how to represent and traverse it in code.
+
+**Common Node Labeling**: Nodes are usually numbered from `0` to `n-1`
+
+##### Format 1: Array of Edges
+
+**Structure**: 2D array where each element `[x, y]` represents an edge from `x` to `y`
+
+**Example**: `edges = [[0, 1], [1, 2], [2, 0], [2, 3]]`
+
+**Challenge**: Finding neighbors requires iterating through entire array (inefficient!)
+
+**Solution**: Pre-process into a hash map (adjacency list)
+
+```csharp
+// Build adjacency list from edge array
+Dictionary<int, List<int>> BuildGraph(int[][] edges) {
+    var graph = new Dictionary<int, List<int>>();
+    
+    foreach (var edge in edges) {
+        int x = edge[0], y = edge[1];
+        
+        if (!graph.ContainsKey(x)) {
+            graph[x] = new List<int>();
+        }
+        graph[x].Add(y);
+        
+        // For undirected graphs, also add reverse edge:
+        // if (!graph.ContainsKey(y)) {
+        //     graph[y] = new List<int>();
+        // }
+        // graph[y].Add(x);
+    }
+    
+    return graph;
+}
+```
+
+**Complexity**:
+- Pre-processing: O(E) where E = number of edges
+- Neighbor lookup after pre-processing: O(1)
+
+##### Format 2: Adjacency List
+
+**Structure**: Array where `graph[i]` contains all neighbors of node `i`
+
+**Example**: `graph = [[1], [2], [0, 3], []]`
+- Node 0 connects to: [1]
+- Node 1 connects to: [2]  
+- Node 2 connects to: [0, 3]
+- Node 3 connects to: []
+
+**Advantage**: Already in optimal format! No pre-processing needed.
+
+```csharp
+// Using adjacency list (already provided in input)
+int[][] graph = new int[][] {
+    new int[] {1},      // Node 0 neighbors
+    new int[] {2},      // Node 1 neighbors
+    new int[] {0, 3},   // Node 2 neighbors
+    new int[] {}        // Node 3 neighbors
+};
+
+// Access neighbors directly
+foreach (int neighbor in graph[node]) {
+    // Process neighbor
+}
+```
+
+##### Format 3: Adjacency Matrix
+
+**Structure**: 2D matrix where `graph[i][j] = 1` means edge from `i` to `j`
+
+**Example**:
+```
+     0  1  2  3
+  0 [0, 1, 0, 0]
+  1 [0, 0, 1, 0]
+  2 [1, 0, 0, 1]
+  3 [0, 0, 0, 0]
+```
+
+**Options**:
+1. **Direct traversal**: Check `graph[node][i]` for all `i`
+2. **Pre-process**: Convert to adjacency list (better if nodes have few neighbors and n is large)
+
+**Complexity**: O(n²) for traversal or pre-processing
+
+```csharp
+// Option 1: Direct usage (check all potential neighbors)
+for (int i = 0; i < n; i++) {
+    if (graph[node][i] == 1) {
+        // i is a neighbor of node
+    }
+}
+
+// Option 2: Pre-process to adjacency list
+Dictionary<int, List<int>> BuildGraphFromMatrix(int[][] matrix) {
+    var graph = new Dictionary<int, List<int>>();
+    int n = matrix.Length;
+    
+    for (int i = 0; i < n; i++) {
+        graph[i] = new List<int>();
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == 1) {
+                graph[i].Add(j);
+            }
+        }
+    }
+    
+    return graph;
+}
+```
+
+##### Format 4: Matrix as Graph
+
+**Structure**: 2D matrix where each cell is a node, and edges are defined by problem rules
+
+**Example**: "Villages trade with adjacent villages (up, down, left, right)"
+- Each cell `(row, col)` is a node
+- Neighbors: `(row±1, col)`, `(row, col±1)` if in bounds
+
+**Common Pattern**: Grid-based problems
+
+```csharp
+// Direction vectors for 4-directional movement
+int[][] directions = new int[][] {
+    new int[] {0, 1},   // Right
+    new int[] {1, 0},   // Down
+    new int[] {0, -1},  // Left
+    new int[] {-1, 0}   // Up
+};
+
+bool Valid(int row, int col, int rows, int cols) {
+    return row >= 0 && row < rows && col >= 0 && col < cols;
+}
+
+// Find neighbors of (row, col)
+foreach (var dir in directions) {
+    int newRow = row + dir[0];
+    int newCol = col + dir[1];
+    
+    if (Valid(newRow, newCol, rows, cols)) {
+        // (newRow, newCol) is a valid neighbor
+    }
+}
+```
+
+#### Graph vs Tree Code Differences
+
+| Aspect | Binary Tree | Graph |
+|--------|-------------|-------|
+| **Starting Point** | Given root node | May need to determine start |
+| **Node Access** | `node.left`, `node.right` | `graph[node]` or hash map lookup |
+| **Neighbor Iteration** | Fixed (2 children max) | Loop through all neighbors |
+| **Cycle Prevention** | Not needed (no cycles) | **Required** (use `seen` set) |
+| **Node Representation** | Object with pointers | Integer label (usually) |
+
+#### Preventing Cycles with `seen` Set
+
+**Problem**: In graphs with cycles or undirected edges, DFS can loop infinitely
+
+**Solution**: Track visited nodes in a `seen` set
+
+```csharp
+HashSet<int> seen = new HashSet<int>();
+
+void DFS(int node, Dictionary<int, List<int>> graph) {
+    // Mark as visited before processing
+    seen.Add(node);
+    
+    foreach (int neighbor in graph[node]) {
+        if (!seen.Contains(neighbor)) {
+            DFS(neighbor, graph);
+        }
+    }
+}
+```
+
+**Why Trees Don't Need This**:
+- Trees have directed edges pointing only downward
+- Once you leave a node, no path leads back to it
+- Graphs allow bidirectional movement (e.g., A ↔ B)
+
+**Implementation Note**: 
+- Languages like Python: `HashSet` is fast and easy
+- Languages like C++: Boolean array may be faster when node range is known (0 to n-1)
+
+```csharp
+// Alternative: Boolean array (when nodes are 0 to n-1)
+bool[] seen = new bool[n];
+
+void DFS(int node, Dictionary<int, List<int>> graph) {
+    seen[node] = true;
+    
+    foreach (int neighbor in graph[node]) {
+        if (!seen[neighbor]) {
+            DFS(neighbor, graph);
+        }
+    }
+}
+```
+
+#### Graph Traversal Starting Point
+
+Unlike trees (start at root), graphs may require you to:
+1. **Determine the start node** based on problem requirements
+2. **Traverse from multiple starts** (e.g., count connected components)
+3. **Consider all nodes** as potential starting points
+
+### Graph Key Insights
+
+1. **Flexible Structure**: Graphs can model any relationship without tree restrictions
+2. **Multiple Representations**: Choose format based on problem and efficiency needs
+3. **Cycle Awareness**: Always consider whether cycles exist and use `seen` set
+4. **Pre-processing Pays Off**: Converting to adjacency list enables O(1) neighbor lookup
+5. **Real-World Power**: Most complex systems are graphs, not trees
+
+---
+
+### 7.6 Graph DFS
+
+DFS on graphs follows similar principles to tree DFS, but with critical differences to handle cycles and flexible connections.
+
+#### DFS Implementation Patterns
+
+##### Recursive DFS Template
+
+```csharp
+void DFS(int node, Dictionary<int, List<int>> graph, HashSet<int> seen) {
+    // Process current node (optional)
+    
+    foreach (int neighbor in graph[node]) {
+        if (!seen.Contains(neighbor)) {
+            seen.Add(neighbor);  // Mark before recursion
+            DFS(neighbor, graph, seen);
+        }
+    }
+}
+
+// Usage
+var seen = new HashSet<int>();
+seen.Add(startNode);
+DFS(startNode, graph, seen);
+```
+
+##### Iterative DFS Template
+
+```csharp
+void DFS(int startNode, Dictionary<int, List<int>> graph) {
+    var seen = new HashSet<int>();
+    var stack = new Stack<int>();
+    
+    stack.Push(startNode);
+    seen.Add(startNode);
+    
+    while (stack.Count > 0) {
+        int node = stack.Pop();
+        
+        // Process node here
+        
+        foreach (int neighbor in graph[node]) {
+            if (!seen.Contains(neighbor)) {
+                seen.Add(neighbor);
+                stack.Push(neighbor);
+            }
+        }
+    }
+}
+```
+
+#### Time and Space Complexity
+
+**Time Complexity: O(n + e)**
+- `n` = number of nodes (vertices)
+- `e` = number of edges
+
+**Explanation**:
+- Each node is visited at most once: O(n)
+- Edges are traversed only when visiting their source node
+- Total edge iterations across entire algorithm: O(e)
+
+> 📊 **Worst Case**: Complete graph where every node connects to every other node: e = n²
+
+**Space Complexity: O(n + e)**
+- `graph` hash map: O(e) to store all edges
+- `seen` set: O(n) to track visited nodes  
+- Recursion stack: O(n) in worst case (linear path)
+
+#### Example 1: Number of Provinces (LeetCode 547)
+
+**Problem**: Given `n` cities and an `n x n` matrix where `isConnected[i][j] = 1` means cities `i` and `j` are connected. Find the number of provinces (connected components).
+
+**Key Insights**:
+- Each province = one connected component
+- DFS from any city visits all cities in its province
+- Use `seen` to track visited cities across all DFS calls
+- Each new DFS needed = one new province
+
+**Approach**:
+1. Convert adjacency matrix to adjacency list
+2. Iterate through all cities
+3. For each unvisited city, start DFS (new province found)
+4. DFS marks entire province as visited
+
+```csharp
+public int FindCircleNum(int[][] isConnected) {
+    int n = isConnected.Length;
+    
+    // Build graph from adjacency matrix
+    var graph = new Dictionary<int, List<int>>();
+    for (int i = 0; i < n; i++) {
+        graph[i] = new List<int>();
+    }
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (isConnected[i][j] == 1) {
+                graph[i].Add(j);
+                graph[j].Add(i);  // Undirected edge
+            }
+        }
+    }
+    
+    // DFS helper
+    void DFS(int node) {
+        foreach (int neighbor in graph[node]) {
+            if (!seen.Contains(neighbor)) {
+                seen.Add(neighbor);
+                DFS(neighbor);
+            }
+        }
+    }
+    
+    // Count connected components
+    var seen = new HashSet<int>();
+    int provinces = 0;
+    
+    for (int i = 0; i < n; i++) {
+        if (!seen.Contains(i)) {
+            provinces++;
+            seen.Add(i);
+            DFS(i);
+        }
+    }
+    
+    return provinces;
+}
+```
+
+**Iterative Version**:
+
+```csharp
+void DFS(int start) {
+    var stack = new Stack<int>();
+    stack.Push(start);
+    
+    while (stack.Count > 0) {
+        int node = stack.Pop();
+        foreach (int neighbor in graph[node]) {
+            if (!seen.Contains(neighbor)) {
+                seen.Add(neighbor);
+                stack.Push(neighbor);
+            }
+        }
+    }
+}
+```
+
+**Complexity**:
+- **Time**: O(n²) - Building graph requires checking all matrix cells
+- **Space**: O(n + e) - Graph storage and seen set
+
+#### Example 2: Number of Islands (LeetCode 200)
+
+**Problem**: Given an `m x n` grid of `'1'` (land) and `'0'` (water), count the number of islands. Islands are formed by connecting adjacent lands horizontally or vertically.
+
+**Key Insights**:
+- Matrix format: each cell is a node
+- Edges: up/down/left/right connections between land cells
+- Same problem as provinces: count connected components
+
+**Approach**:
+1. Treat each land cell as a node
+2. Neighbors = adjacent cells (4-directional)
+3. DFS from each unvisited land cell
+4. Each DFS explores one complete island
+
+```csharp
+public int NumIslands(char[][] grid) {
+    int rows = grid.Length;
+    int cols = grid[0].Length;
+    
+    // Direction vectors: right, down, left, up
+    int[][] directions = new int[][] {
+        new int[] {0, 1}, new int[] {1, 0},
+        new int[] {0, -1}, new int[] {-1, 0}
+    };
+    
+    bool Valid(int row, int col) {
+        return row >= 0 && row < rows && 
+               col >= 0 && col < cols && 
+               grid[row][col] == '1';
+    }
+    
+    void DFS(int row, int col) {
+        foreach (var dir in directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            
+            if (Valid(newRow, newCol) && !seen[newRow][newCol]) {
+                seen[newRow][newCol] = true;
+                DFS(newRow, newCol);
+            }
+        }
+    }
+    
+    // Initialize seen matrix
+    bool[][] seen = new bool[rows][];
+    for (int i = 0; i < rows; i++) {
+        seen[i] = new bool[cols];
+    }
+    
+    int islands = 0;
+    for (int row = 0; row < rows; row++) {
+        for (int col = 0; col < cols; col++) {
+            if (grid[row][col] == '1' && !seen[row][col]) {
+                islands++;
+                seen[row][col] = true;
+                DFS(row, col);
+            }
+        }
+    }
+    
+    return islands;
+}
+```
+
+**Iterative Version**:
+
+```csharp
+void DFS(int startRow, int startCol) {
+    var stack = new Stack<(int, int)>();
+    stack.Push((startRow, startCol));
+    
+    while (stack.Count > 0) {
+        var (row, col) = stack.Pop();
+        
+        foreach (var dir in directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            
+            if (Valid(newRow, newCol) && !seen[newRow][newCol]) {
+                seen[newRow][newCol] = true;
+                stack.Push((newRow, newCol));
+            }
+        }
+    }
+}
+```
+
+**Alternative**: Modify input instead of using `seen` (change `'1'` to `'0'`)
+
+```csharp
+// No seen array needed
+void DFS(int row, int col) {
+    grid[row][col] = '0';  // Mark as visited
+    
+    foreach (var dir in directions) {
+        int newRow = row + dir[0];
+        int newCol = col + dir[1];
+        
+        if (Valid(newRow, newCol)) {
+            DFS(newRow, newCol);
+        }
+    }
+}
+```
+
+**Complexity**:
+- **Time**: O(m × n) - Each cell visited at most once (4 neighbors = constant)
+- **Space**: O(m × n) - Seen matrix + recursion stack
+
+> 💡 **Note**: Unlike general graphs where nodes can have any number of edges, matrix graphs typically have a constant number of neighbors (4 or 8), making work per node O(1).
+
+#### Example 3: Reorder Routes (LeetCode 1466)
+
+**Problem**: Given `n` cities (0 to n-1) and `n-1` directed roads. All roads must point toward city 0 so every city can reach it. Count minimum swaps needed.
+
+**Key Insights**:
+- Graph is a tree (n nodes, n-1 edges, no cycles)
+- Want all edges to point toward 0
+- Traverse away from 0: any edge pointing away needs swapping
+- Convert to undirected for traversal, track original directions
+
+**Approach**:
+1. Build undirected graph (to reach all nodes from 0)
+2. Store original directed edges in a set
+3. DFS from 0 (traversing away from 0)
+4. Each edge `(node → neighbor)` in original set needs swapping
+
+```csharp
+public int MinReorder(int n, int[][] connections) {
+    // Build undirected graph
+    var graph = new Dictionary<int, List<int>>();
+    for (int i = 0; i < n; i++) {
+        graph[i] = new List<int>();
+    }
+    
+    // Store original directed edges
+    var roads = new HashSet<string>();
+    foreach (var conn in connections) {
+        int x = conn[0], y = conn[1];
+        graph[x].Add(y);
+        graph[y].Add(x);  // Undirected for traversal
+        roads.Add($"{x},{y}");  // Original direction
+    }
+    
+    int swaps = 0;
+    var seen = new HashSet<int>();
+    
+    void DFS(int node) {
+        foreach (int neighbor in graph[node]) {
+            if (!seen.Contains(neighbor)) {
+                // Check if edge points away from 0
+                if (roads.Contains($"{node},{neighbor}")) {
+                    swaps++;
+                }
+                seen.Add(neighbor);
+                DFS(neighbor);
+            }
+        }
+    }
+    
+    seen.Add(0);
+    DFS(0);
+    return swaps;
+}
+```
+
+**Iterative Version**:
+
+```csharp
+public int MinReorder(int n, int[][] connections) {
+    // Build graph and roads set (same as above)
+    var graph = new Dictionary<int, List<int>>();
+    var roads = new HashSet<string>();
+    for (int i = 0; i < n; i++) {
+        graph[i] = new List<int>();
+    }
+    foreach (var conn in connections) {
+        graph[conn[0]].Add(conn[1]);
+        graph[conn[1]].Add(conn[0]);
+        roads.Add($"{conn[0]},{conn[1]}");
+    }
+    
+    int swaps = 0;
+    var seen = new HashSet<int>();
+    var stack = new Stack<int>();
+    
+    stack.Push(0);
+    seen.Add(0);
+    
+    while (stack.Count > 0) {
+        int node = stack.Pop();
+        
+        foreach (int neighbor in graph[node]) {
+            if (!seen.Contains(neighbor)) {
+                if (roads.Contains($"{node},{neighbor}")) {
+                    swaps++;
+                }
+                seen.Add(neighbor);
+                stack.Push(neighbor);
+            }
+        }
+    }
+    
+    return swaps;
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - Tree has n nodes and n-1 edges
+- **Space**: O(n) - Graph, roads set, seen set
+
+#### Example 4: Keys and Rooms (LeetCode 841)
+
+**Problem**: Given `n` rooms (0 to n-1), all locked except room 0. `rooms[i]` contains keys found in room `i`. Can you visit all rooms?
+
+**Key Insights**:
+- Input is already an adjacency list!
+- Graph format: `rooms[i]` = neighbors of node `i`
+- Problem: Can we reach all nodes from node 0?
+- Solution: DFS from 0, check if `seen.Count == n`
+
+**Approach**:
+1. Start DFS from room 0
+2. Collect all reachable rooms in `seen`
+3. Compare `seen.Count` with `n`
+
+```csharp
+public bool CanVisitAllRooms(IList<IList<int>> rooms) {
+    int n = rooms.Count;
+    var seen = new HashSet<int>();
+    
+    void DFS(int room) {
+        foreach (int key in rooms[room]) {
+            if (!seen.Contains(key)) {
+                seen.Add(key);
+                DFS(key);
+            }
+        }
+    }
+    
+    seen.Add(0);
+    DFS(0);
+    
+    return seen.Count == n;
+}
+```
+
+**Iterative Version**:
+
+```csharp
+public bool CanVisitAllRooms(IList<IList<int>> rooms) {
+    var seen = new HashSet<int>();
+    var stack = new Stack<int>();
+    
+    stack.Push(0);
+    seen.Add(0);
+    
+    while (stack.Count > 0) {
+        int room = stack.Pop();
+        
+        foreach (int key in rooms[room]) {
+            if (!seen.Contains(key)) {
+                seen.Add(key);
+                stack.Push(key);
+            }
+        }
+    }
+    
+    return seen.Count == rooms.Count;
+}
+```
+
+**Complexity**:
+- **Time**: O(n + e) - Standard graph DFS
+- **Space**: O(n) - Seen set + recursion stack
+
+> 💡 **Adjacency List Advantage**: Input is already in optimal format - no pre-processing needed!
+
+#### Example 5: Minimum Vertices to Reach All Nodes (LeetCode 1557)
+
+**Problem**: Given a directed acyclic graph (DAG) with `n` nodes and array of edges, find the smallest set of vertices from which all nodes are reachable.
+
+**Key Insights**:
+- Smallest set = nodes that cannot be reached from other nodes
+- A node is unreachable from others if **indegree = 0**
+- Return all nodes with indegree 0
+
+> ⚠️ **Why DAG matters**: If cycles existed, we'd have ambiguity (in a cycle, all nodes have indegree > 0, but we'd need to return at least one)
+
+**Approach**:
+1. Calculate indegree for all nodes
+2. Return nodes with indegree = 0
+
+```csharp
+public IList<int> FindSmallestSetOfVertices(int n, IList<IList<int>> edges) {
+    int[] indegree = new int[n];
+    
+    // Count incoming edges for each node
+    foreach (var edge in edges) {
+        indegree[edge[1]]++;
+    }
+    
+    // Collect nodes with no incoming edges
+    var result = new List<int>();
+    for (int i = 0; i < n; i++) {
+        if (indegree[i] == 0) {
+            result.Add(i);
+        }
+    }
+    
+    return result;
+}
+```
+
+**Complexity**:
+- **Time**: O(n + e) - Process all edges + all nodes
+- **Space**: O(n) - Indegree array
+
+> 🎓 **Learning Note**: Not all graph problems require DFS/BFS. Understanding graph properties (like indegree) can lead to simpler solutions.
+
+### Graph DFS Key Insights
+
+1. **Seen Set is Critical**: Prevents infinite loops in cyclic/undirected graphs
+2. **Pre-processing Matters**: Convert input to adjacency list for O(1) neighbor lookup
+3. **Connected Components**: Each DFS explores one complete component
+4. **Matrix = Graph**: Grid problems are graph problems in disguise
+5. **Choose Format Wisely**: 
+   - Array of edges → Build adjacency list
+   - Adjacency list → Use directly
+   - Matrix → Consider space vs. time tradeoffs
+6. **Graph Properties**: Sometimes indegree/outdegree analysis is simpler than traversal
+
+### Graph DFS Pattern Recognition
+
+| Problem Type | Key Indicator | Approach |
+|--------------|---------------|----------|
+| **Connected Components** | Count islands, provinces, groups | DFS + count starts |
+| **Reachability** | Can reach all nodes? | DFS + check seen.Count |
+| **Cycle Detection** | Find cycles | DFS + track path |
+| **Path Problems** | Find/count paths | DFS with backtracking |
+| **Graph Properties** | Indegree, outdegree analysis | No traversal needed |
+
+### DFS Code Checklist
+
+✅ **Before Starting DFS**:
+- [ ] Choose appropriate graph representation
+- [ ] Build adjacency list if needed
+- [ ] Initialize `seen` set/array
+- [ ] Determine starting node(s)
+
+✅ **During DFS**:
+- [ ] Mark node as seen before visiting
+- [ ] Check `!seen.Contains(neighbor)` before recursion
+- [ ] Handle all neighbors in a loop
+
+✅ **After DFS**:
+- [ ] Verify all required nodes were visited
+- [ ] Return/accumulate results correctly
 
 ---
 

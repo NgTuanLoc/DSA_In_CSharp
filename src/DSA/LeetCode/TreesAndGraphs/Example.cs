@@ -259,23 +259,55 @@ public class TreesAndGraphsExample
 
     public static void Run_Graph_DFS()
     {
-        // // !Number of Provinces
+        // !Number of Provinces
         // Console.WriteLine(new GraphDfsFindCircleNum().FindCircleNum([[1, 1, 0], [1, 1, 0], [0, 0, 1]]));
         // Console.WriteLine(new GraphDfsFindCircleNum().FindCircleNum([[1, 0, 0], [0, 1, 0], [0, 0, 1]]));
 
         // !Number of Islands
-        Console.WriteLine(new GraphDfsNumIslands().NumIslands([
-            ['1','1','1','1','0'],
-            ['1','1','0','1','0'],
-            ['1','1','0','0','0'],
-            ['0','0','0','0','0']
-]));
-        Console.WriteLine(new GraphDfsNumIslands().NumIslands([
-            ['1','1','0','0','0'],
-            ['1','1','0','0','0'],
-            ['0','0','1','0','0'],
-            ['0','0','0','1','1']
-]));
+        //         Console.WriteLine(new GraphDfsNumIslands().NumIslands([
+        //             ['1','1','1','1','0'],
+        //             ['1','1','0','1','0'],
+        //             ['1','1','0','0','0'],
+        //             ['0','0','0','0','0']
+        // ]));
+        //         Console.WriteLine(new GraphDfsNumIslands().NumIslands([
+        //             ['1','1','0','0','0'],
+        //             ['1','1','0','0','0'],
+        //             ['0','0','1','0','0'],
+        //             ['0','0','0','1','1']
+        // ]));
+
+        // !Reorder Routes to Make All Paths Lead to the City Zero
+        // Console.WriteLine(new MinReorderToTheCityZero().MinReorder(6, [[0, 1], [1, 3], [2, 3], [4, 0], [4, 5]]));
+        // Console.WriteLine(new MinReorderToTheCityZero().MinReorder(5, [[1, 0], [1, 2], [3, 2], [3, 4]]));
+        // Console.WriteLine(new MinReorderToTheCityZero().MinReorder(3, [[1, 0], [2, 0]]));
+
+        // !Keys and Rooms
+        // Console.WriteLine(new KeysAndRooms().CanVisitAllRooms([[1], [2], [3], []]));
+        // Console.WriteLine(new KeysAndRooms().CanVisitAllRooms([[1, 3], [3, 0, 1], [2], [0]]));
+
+        // !Minimum Number of Vertices to Reach All Nodes
+        // Console.WriteLine(string.Join(",", new MiniumNumberOfVerticesToReachAllNodes().FindSmallestSetOfVertices(6, [[0, 1], [0, 2], [2, 5], [3, 4], [4, 2]])));
+        // Console.WriteLine(string.Join(",", new MiniumNumberOfVerticesToReachAllNodes().FindSmallestSetOfVertices(5, [[0, 1], [2, 1], [3, 1], [1, 4], [2, 4]])));
+        // Console.WriteLine(string.Join(",", MiniumNumberOfVerticesToReachAllNodes.FindSmallestSetOfVerticesWithInDegreeApproach(6, [[0, 1], [0, 2], [2, 5], [3, 4], [4, 2]])));
+        // Console.WriteLine(string.Join(",", MiniumNumberOfVerticesToReachAllNodes.FindSmallestSetOfVerticesWithInDegreeApproach(5, [[0, 1], [2, 1], [3, 1], [1, 4], [2, 4]])));
+
+        // !Find if Path Exists in Graph
+        // Console.WriteLine(new FindExistedPathInGraph().ValidPath(3, [[0, 1], [1, 2], [2, 0]], 0, 2));
+        // Console.WriteLine(new FindExistedPathInGraph().ValidPath(6, [[0, 1], [0, 2], [3, 5], [5, 4], [4, 3]], 0, 5));
+
+        // !Number Of Connected Components In An Undirected Graph
+        // Console.WriteLine(new ConnectedComponentsInAUnDirectedGraph().CountComponents(5, [[0, 1], [1, 2], [3, 4]]));
+        // Console.WriteLine(new ConnectedComponentsInAUnDirectedGraph().CountComponents(5, [[0, 1], [1, 2], [2, 3], [3, 4]]));
+
+        // !Max Area of Island
+        // Console.WriteLine(new MaxAreaOfIslandSolution().MaxAreaOfIsland([[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]));
+        // Console.WriteLine(new MaxAreaOfIslandSolution().MaxAreaOfIsland([[0, 0, 0, 0, 0, 0, 0, 0]]));
+
+        // !Reachable Nodes With Restrictions
+        Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(7, [[0, 1], [1, 2], [3, 1], [4, 0], [0, 5], [5, 6]], [4, 5]));
+        Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(7, [[0, 1], [0, 2], [0, 5], [0, 4], [3, 2], [6, 5]], [4, 2, 1]));
+        Console.WriteLine(new ReachableNodesWithRestrictions().ReachableNodes(2, [[0, 1]], [1]));
     }
 }
 
