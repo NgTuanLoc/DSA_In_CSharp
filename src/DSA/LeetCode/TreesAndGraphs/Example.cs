@@ -318,10 +318,34 @@ public class TreesAndGraphsExample
         // Console.WriteLine(new ShortestPathBinaryMatrixSolution().ShortestPathBinaryMatrix([[1, 0, 0], [1, 1, 0], [1, 1, 0]]));
 
         // !All Nodes Distance K in Binary Tree
-        var root1 = Utils.BuildBinaryTree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
-        Console.WriteLine(string.Join(",", new AllNodesDistanceKInBinaryTree().DistanceK(root1!, Utils.FindTreeNode(root1, 5)!, 2)));
-        var root2 = Utils.BuildBinaryTree([1]);
-        Console.WriteLine(string.Join(",", new AllNodesDistanceKInBinaryTree().DistanceK(root2!, Utils.FindTreeNode(root2, 1)!, 3)));
+        // var root1 = Utils.BuildBinaryTree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
+        // Console.WriteLine(string.Join(",", new AllNodesDistanceKInBinaryTree().DistanceK(root1!, Utils.FindTreeNode(root1, 5)!, 2)));
+        // var root2 = Utils.BuildBinaryTree([1]);
+        // Console.WriteLine(string.Join(",", new AllNodesDistanceKInBinaryTree().DistanceK(root2!, Utils.FindTreeNode(root2, 1)!, 3)));
+
+        // !01 Matrix
+        // new Matrix01().UpdateMatrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]]).ToList().ForEach(item =>
+        // {
+        //     Console.WriteLine(string.Join(",", item));
+        // });
+        // Console.WriteLine("=================");
+        // new Matrix01().UpdateMatrix([[0, 0, 0], [0, 1, 0], [1, 1, 1]]).ToList().ForEach(item =>
+        // {
+        //     Console.WriteLine(string.Join(",", item));
+        // });
+        // Console.WriteLine("=================");
+        // new Matrix01().UpdateMatrix([[1, 1, 0, 0, 1, 0, 0, 1, 1, 0], [1, 0, 0, 1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 1, 1, 1, 1, 0], [0, 1, 1, 1, 0, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 0, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 0, 0, 1], [1, 1, 1, 1, 1, 0, 0, 1, 1, 1], [0, 1, 0, 1, 1, 0, 1, 1, 1, 1], [1, 1, 1, 0, 1, 0, 1, 1, 1, 1]]).ToList().ForEach(item =>
+        // {
+        //     Console.WriteLine(string.Join(",", item));
+        // });
+
+        // !Shortest Path in a Grid with Obstacles Elimination
+        // Console.WriteLine(new ShortestPathInAGridWithObstaclesElimination().ShortestPath([[0, 0, 0], [1, 1, 0], [0, 0, 0], [0, 1, 1], [0, 0, 0]], 1));
+        // Console.WriteLine(new ShortestPathInAGridWithObstaclesElimination().ShortestPath([[0, 1, 1], [1, 1, 1], [1, 0, 0]], 1));
+
+        // !Shortest Path with Alternating Colors
+        Console.WriteLine(string.Join(",", new ShortestAlternatingPathsSolution().ShortestAlternatingPaths(3, [[0, 1], [1, 2]], []).ToList()));
+        Console.WriteLine(string.Join(",", new ShortestAlternatingPathsSolution().ShortestAlternatingPaths(3, [[0, 1]], [[2, 1]]).ToList()));
     }
 }
 
