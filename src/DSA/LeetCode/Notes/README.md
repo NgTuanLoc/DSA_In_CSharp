@@ -189,6 +189,37 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
   - [Graph DFS Key Insights](#graph-dfs-key-insights)
   - [Graph DFS Pattern Recognition](#graph-dfs-pattern-recognition)
   - [DFS Code Checklist](#dfs-code-checklist)
+  - [7.7 Graph BFS](#77-graph-bfs)
+    - [When to Use BFS vs DFS on Graphs](#when-to-use-bfs-vs-dfs-on-graphs)
+    - [BFS vs DFS Implementation Difference](#bfs-vs-dfs-implementation-difference)
+    - [BFS Template for Graphs](#bfs-template-for-graphs)
+    - [Time and Space Complexity](#time-and-space-complexity-1)
+    - [Example 1: Shortest Path in Binary Matrix (LeetCode 1091)](#example-1-shortest-path-in-binary-matrix-leetcode-1091)
+    - [Example 2: All Nodes Distance K in Binary Tree (LeetCode 863)](#example-2-all-nodes-distance-k-in-binary-tree-leetcode-863)
+    - [Example 3: 01 Matrix (LeetCode 542)](#example-3-01-matrix-leetcode-542)
+    - [State Variables in BFS](#state-variables-in-bfs)
+    - [Example 4: Shortest Path with Obstacles Elimination (LeetCode 1293)](#example-4-shortest-path-with-obstacles-elimination-leetcode-1293)
+    - [Example 5: Shortest Path with Alternating Colors (LeetCode 1129)](#example-5-shortest-path-with-alternating-colors-leetcode-1129)
+  - [Graph BFS Key Insights](#graph-bfs-key-insights)
+  - [BFS Pattern Recognition](#bfs-pattern-recognition)
+  - [BFS Code Checklist](#bfs-code-checklist)
+  - [BFS Implementation Tips](#bfs-implementation-tips)
+  - [7.8 Implicit Graphs](#78-implicit-graphs)
+    - [What Are Implicit Graphs?](#what-are-implicit-graphs)
+    - [When to Recognize Implicit Graphs](#when-to-recognize-implicit-graphs)
+    - [Implicit Graph vs Explicit Graph](#implicit-graph-vs-explicit-graph)
+    - [Building Implicit Graphs](#building-implicit-graphs)
+    - [Example 1: Open the Lock (LeetCode 752)](#example-1-open-the-lock-leetcode-752)
+    - [Example 2: Evaluate Division (LeetCode 399)](#example-2-evaluate-division-leetcode-399)
+  - [Implicit Graph Key Insights](#implicit-graph-key-insights)
+  - [Implicit Graph Pattern Recognition](#implicit-graph-pattern-recognition)
+  - [Common Implicit Graph Scenarios](#common-implicit-graph-scenarios)
+    - [1. **Combinatorial States** (Lock, Puzzle)](#1-combinatorial-states-lock-puzzle)
+    - [2. **String Transformations** (Word Ladder)](#2-string-transformations-word-ladder)
+    - [3. **Mathematical Relationships** (Equations, Ratios)](#3-mathematical-relationships-equations-ratios)
+    - [4. **Game States** (Chess, Tic-Tac-Toe)](#4-game-states-chess-tic-tac-toe)
+  - [Implicit Graph Implementation Tips](#implicit-graph-implementation-tips)
+  - [Implicit Graph Checklist](#implicit-graph-checklist)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -4081,6 +4112,947 @@ public IList<int> FindSmallestSetOfVertices(int n, IList<IList<int>> edges) {
 
 ---
 
+### 7.7 Graph BFS
+
+BFS on graphs follows the same principles as BFS on trees, but with additional considerations for cycles, multiple paths, and finding shortest paths.
+
+#### When to Use BFS vs DFS on Graphs
+
+**Use BFS When**:
+- ✅ Problem asks for **shortest path** (unweighted graphs)
+- ✅ Need to explore nodes by **distance from source**
+- ✅ Want **minimum steps/moves** to reach target
+- ✅ Multiple starting points (multi-source BFS)
+
+**Use DFS When**:
+- ✅ Simpler implementation preferred
+- ✅ Path length doesn't matter
+- ✅ Exploring all possibilities
+- ✅ Most other scenarios
+
+> 🔑 **Key Principle**: BFS visits nodes in order of their distance from the starting point. The first time you reach a node with BFS, you've reached it in the **minimum possible steps**.
+
+#### BFS vs DFS Implementation Difference
+
+| Aspect | DFS | BFS |
+|--------|-----|-----|
+| **Data Structure** | Stack (or recursion) | Queue |
+| **Visit Order** | Depth-first | Level-by-level |
+| **Shortest Path** | ❌ Not guaranteed | ✅ Guaranteed |
+| **Implementation** | Often recursive | Almost always iterative |
+
+#### BFS Template for Graphs
+
+```csharp
+void BFS(int startNode, Dictionary<int, List<int>> graph) {
+    var seen = new HashSet<int>();
+    var queue = new Queue<int>();
+    
+    queue.Enqueue(startNode);
+    seen.Add(startNode);
+    int steps = 0;
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        
+        for (int i = 0; i < levelSize; i++) {
+            int node = queue.Dequeue();
+            
+            // Process node
+            // If target found, return steps
+            
+            foreach (int neighbor in graph[node]) {
+                if (!seen.Contains(neighbor)) {
+                    seen.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+        
+        steps++;
+    }
+}
+```
+
+**Alternative**: Store steps with each node instead of using levels
+
+```csharp
+void BFS(int startNode, Dictionary<int, List<int>> graph) {
+    var seen = new HashSet<int>();
+    var queue = new Queue<(int node, int steps)>();
+    
+    queue.Enqueue((startNode, 0));
+    seen.Add(startNode);
+    
+    while (queue.Count > 0) {
+        var (node, steps) = queue.Dequeue();
+        
+        // Process node with steps
+        
+        foreach (int neighbor in graph[node]) {
+            if (!seen.Contains(neighbor)) {
+                seen.Add(neighbor);
+                queue.Enqueue((neighbor, steps + 1));
+            }
+        }
+    }
+}
+```
+
+#### Time and Space Complexity
+
+**Time Complexity: O(n + e)**
+- Same as DFS
+- Each node visited at most once
+- Each edge traversed at most once
+
+**Space Complexity: O(n + e)**
+- `graph`: O(e) for edge storage
+- `seen`: O(n) for tracking visited nodes
+- `queue`: O(n) worst case (all nodes in queue)
+
+#### Example 1: Shortest Path in Binary Matrix (LeetCode 1091)
+
+**Problem**: Given an `n x n` binary matrix, find the length of the shortest clear path from top-left `(0,0)` to bottom-right `(n-1, n-1)`. Can move 8-directionally. Clear path means all visited cells are `0`.
+
+**Key Insights**:
+- Matrix graph with 8-directional movement
+- Need **shortest** path → Use BFS
+- DFS might find a longer path first
+- First time BFS reaches bottom-right = minimum steps
+
+**Why BFS, Not DFS?**
+- DFS might explore a longer path and mark cells as visited
+- Those cells won't be available for the shorter path
+- BFS guarantees shortest path because it explores by distance
+
+**Approach**:
+1. Check if start or end is blocked (`grid[0][0] == 1` or `grid[n-1][n-1] == 1`)
+2. BFS from `(0,0)` with 8 directions
+3. Track distance/steps for each level
+4. Return distance when reaching `(n-1, n-1)`
+
+```csharp
+public int ShortestPathBinaryMatrix(int[][] grid) {
+    int n = grid.Length;
+    
+    if (grid[0][0] == 1 || grid[n-1][n-1] == 1) return -1;
+    
+    int[][] directions = new int[][] {
+        new int[] {-1, -1}, new int[] {-1, 0}, new int[] {-1, 1},
+        new int[] {0, 1}, new int[] {1, 1}, new int[] {1, 0},
+        new int[] {1, -1}, new int[] {0, -1}
+    };
+    
+    bool Valid(int row, int col) {
+        return row >= 0 && row < n && col >= 0 && col < n && grid[row][col] == 0;
+    }
+    
+    var queue = new Queue<(int row, int col)>();
+    bool[][] seen = new bool[n][];
+    for (int i = 0; i < n; i++) seen[i] = new bool[n];
+    
+    queue.Enqueue((0, 0));
+    seen[0][0] = true;
+    int distance = 1; // Starting cell counts
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        
+        for (int i = 0; i < levelSize; i++) {
+            var (row, col) = queue.Dequeue();
+            
+            if (row == n - 1 && col == n - 1) return distance;
+            
+            foreach (var dir in directions) {
+                int newRow = row + dir[0];
+                int newCol = col + dir[1];
+                
+                if (Valid(newRow, newCol) && !seen[newRow][newCol]) {
+                    seen[newRow][newCol] = true;
+                    queue.Enqueue((newRow, newCol));
+                }
+            }
+        }
+        
+        distance++;
+    }
+    
+    return -1;
+}
+```
+
+**Complexity**:
+- **Time**: O(n²) - Visit each cell at most once, constant neighbors (8)
+- **Space**: O(n²) - Seen array and queue
+
+#### Example 2: All Nodes Distance K in Binary Tree (LeetCode 863)
+
+**Problem**: Given a binary tree root, a target node, and integer `k`, return all nodes at distance `k` from target.
+
+**Key Insights**:
+- Binary trees only have parent → child pointers
+- Need to traverse **in all directions** (up to parent, down to children)
+- Convert tree to **undirected graph** by adding parent pointers
+- BFS from target for exactly `k` steps
+
+**Approach**:
+1. DFS to assign parent pointers (create undirected graph)
+2. BFS from target node
+3. Treat parent, left child, right child as neighbors
+4. After `k` levels, return all nodes in queue
+
+```csharp
+public IList<int> DistanceK(TreeNode root, TreeNode target, int k) {
+    // Build parent pointers
+    var parents = new Dictionary<TreeNode, TreeNode>();
+    
+    void DFS(TreeNode node, TreeNode parent) {
+        if (node == null) return;
+        if (parent != null) parents[node] = parent;
+        DFS(node.Left, node);
+        DFS(node.Right, node);
+    }
+    
+    DFS(root, null);
+    
+    // BFS from target
+    var queue = new Queue<TreeNode>();
+    var seen = new HashSet<TreeNode>();
+    
+    queue.Enqueue(target);
+    seen.Add(target);
+    int distance = 0;
+    
+    while (queue.Count > 0 && distance < k) {
+        int levelSize = queue.Count;
+        
+        for (int i = 0; i < levelSize; i++) {
+            var node = queue.Dequeue();
+            
+            // Check all three neighbors: left, right, parent
+            TreeNode[] neighbors = new TreeNode[] { 
+                node.Left, 
+                node.Right, 
+                parents.GetValueOrDefault(node) 
+            };
+            
+            foreach (var neighbor in neighbors) {
+                if (neighbor != null && !seen.Contains(neighbor)) {
+                    seen.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+        
+        distance++;
+    }
+    
+    // Return all nodes at distance k
+    return queue.Select(node => node.Val).ToList();
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - DFS visits all nodes, BFS visits each node at most once
+- **Space**: O(n) - Parent map, queue, and seen set
+
+#### Example 3: 01 Matrix (LeetCode 542)
+
+**Problem**: Given an `m x n` binary matrix, find the distance of the nearest `0` for each cell.
+
+**Key Insights**:
+- Naive approach: BFS from each `1` → O(m² × n²) if matrix is mostly `1`
+- Better approach: **Multi-source BFS** from all `0`s simultaneously
+- Distance from `x` → `y` = Distance from `y` → `x`
+- BFS from all `0`s ensures minimum distance to any `1`
+
+**Multi-Source BFS**:
+- Initialize queue with **all `0` cells** (level 0)
+- These form the "source" together
+- BFS explores outward from all sources simultaneously
+- First time reaching a `1` = shortest distance from any `0`
+
+**Approach**:
+1. Add all `0` cells to initial queue
+2. BFS to find all `1` cells
+3. Distance increases by level
+4. Update matrix with distances
+
+```csharp
+public int[][] UpdateMatrix(int[][] mat) {
+    int m = mat.Length;
+    int n = mat[0].Length;
+    
+    int[][] directions = new int[][] {
+        new int[] {0, 1}, new int[] {1, 0},
+        new int[] {0, -1}, new int[] {-1, 0}
+    };
+    
+    bool Valid(int row, int col) {
+        return row >= 0 && row < m && col >= 0 && col < n && mat[row][col] == 1;
+    }
+    
+    var queue = new Queue<(int row, int col)>();
+    bool[][] seen = new bool[m][];
+    for (int i = 0; i < m; i++) seen[i] = new bool[n];
+    
+    // Initialize queue with all 0 cells (multi-source BFS)
+    for (int row = 0; row < m; row++) {
+        for (int col = 0; col < n; col++) {
+            if (mat[row][col] == 0) {
+                queue.Enqueue((row, col));
+                seen[row][col] = true;
+            }
+        }
+    }
+    
+    int distance = 0;
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        distance++;
+        
+        for (int i = 0; i < levelSize; i++) {
+            var (row, col) = queue.Dequeue();
+            
+            foreach (var dir in directions) {
+                int newRow = row + dir[0];
+                int newCol = col + dir[1];
+                
+                if (Valid(newRow, newCol) && !seen[newRow][newCol]) {
+                    seen[newRow][newCol] = true;
+                    mat[newRow][newCol] = distance;
+                    queue.Enqueue((newRow, newCol));
+                }
+            }
+        }
+    }
+    
+    return mat;
+}
+```
+
+**Complexity**:
+- **Time**: O(m × n) - Each cell visited once
+- **Space**: O(m × n) - Queue and seen array
+
+> 💡 **Multi-Source BFS**: When you need distances from multiple sources, initialize the queue with all source nodes at level 0.
+
+#### State Variables in BFS
+
+Sometimes nodes alone don't describe the complete state. We need additional variables.
+
+**Common State Variables**:
+1. **Steps/Distance**: How many steps taken to reach node
+2. **Remaining Resources**: Moves, removals, keys left
+3. **Previous Action**: Last color used, direction taken
+4. **Path Information**: Cells visited, constraints satisfied
+
+**Important**: When adding state variables, include them in `seen`!
+
+```csharp
+// State = (node, remainingMoves)
+var seen = new HashSet<(int node, int remaining)>();
+// OR
+bool[,] seen = new bool[n, maxRemaining];
+```
+
+#### Example 4: Shortest Path with Obstacles Elimination (LeetCode 1293)
+
+**Problem**: Given `m x n` grid with obstacles (`1`) and empty cells (`0`), find shortest path from top-left to bottom-right. Can eliminate at most `k` obstacles.
+
+**Key Insights**:
+- State = `(row, col, remainingRemovals)`
+- Can walk on `1` if we have removals left
+- Same position with different remainingRemovals = different states
+- Track `(position, remaining)` in seen
+
+**Approach**:
+1. Start at `(0, 0, k)`
+2. For each neighbor:
+   - If `0`: move without using removal
+   - If `1` and `remain > 0`: move and decrement remain
+3. Track `(row, col, remain)` states in seen
+
+```csharp
+public int ShortestPath(int[][] grid, int k) {
+    int m = grid.Length;
+    int n = grid[0].Length;
+    
+    int[][] directions = new int[][] {
+        new int[] {0, 1}, new int[] {1, 0},
+        new int[] {0, -1}, new int[] {-1, 0}
+    };
+    
+    bool Valid(int row, int col) {
+        return row >= 0 && row < m && col >= 0 && col < n;
+    }
+    
+    // State: (row, col, remainingRemovals)
+    var queue = new Queue<(int row, int col, int remain)>();
+    int[,] seen = new int[m, n]; // Stores max remain seen at each position
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            seen[i, j] = -1;
+        }
+    }
+    
+    queue.Enqueue((0, 0, k));
+    int steps = 0;
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        
+        for (int i = 0; i < levelSize; i++) {
+            var (row, col, remain) = queue.Dequeue();
+            
+            if (row == m - 1 && col == n - 1) return steps;
+            
+            // If current cell is obstacle, use a removal
+            if (grid[row][col] == 1) {
+                if (remain == 0) continue;
+                remain--;
+            }
+            
+            // Skip if we've been here with more removals
+            if (seen[row, col] >= remain) continue;
+            seen[row, col] = remain;
+            
+            foreach (var dir in directions) {
+                int newRow = row + dir[0];
+                int newCol = col + dir[1];
+                
+                if (Valid(newRow, newCol)) {
+                    queue.Enqueue((newRow, newCol, remain));
+                }
+            }
+        }
+        
+        steps++;
+    }
+    
+    return -1;
+}
+```
+
+**Complexity**:
+- **Time**: O(m × n × k) - Number of states = positions × remaining values
+- **Space**: O(m × n × k) - Seen array and queue
+
+> ⚠️ **State Space**: With `s` state variables, complexity becomes O(states) where states = product of all variable ranges.
+
+#### Example 5: Shortest Path with Alternating Colors (LeetCode 1129)
+
+**Problem**: Directed graph with red/blue edges. Find shortest path from node `0` to all other nodes where edge colors must alternate. Return array where `ans[i]` = shortest alternating path to node `i`, or `-1` if impossible.
+
+**Key Insights**:
+- State = `(node, lastColor)`
+- Need to track what color edge we just used
+- Start BFS from both `(0, RED)` and `(0, BLUE)`
+- Only traverse edges of alternating color
+- May visit same node twice (once per color)
+
+**Approach**:
+1. Build separate graphs for red and blue edges
+2. Multi-source BFS starting from `(0, RED)` and `(0, BLUE)`
+3. For each state `(node, color)`, only traverse edges of `1 - color`
+4. Track `seen[node][color]` as 2D array
+
+```csharp
+public int[] ShortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
+    const int RED = 0;
+    const int BLUE = 1;
+    
+    // Build separate graphs for each color
+    var graph = new Dictionary<int, List<int>>[2];
+    graph[RED] = new Dictionary<int, List<int>>();
+    graph[BLUE] = new Dictionary<int, List<int>>();
+    
+    for (int i = 0; i < n; i++) {
+        graph[RED][i] = new List<int>();
+        graph[BLUE][i] = new List<int>();
+    }
+    
+    foreach (var edge in redEdges) {
+        graph[RED][edge[0]].Add(edge[1]);
+    }
+    
+    foreach (var edge in blueEdges) {
+        graph[BLUE][edge[0]].Add(edge[1]);
+    }
+    
+    // BFS with state (node, color)
+    var queue = new Queue<(int node, int color)>();
+    bool[][] seen = new bool[n][];
+    for (int i = 0; i < n; i++) seen[i] = new bool[2];
+    
+    int[] ans = new int[n];
+    Array.Fill(ans, int.MaxValue);
+    
+    // Start from node 0 with both colors
+    queue.Enqueue((0, RED));
+    queue.Enqueue((0, BLUE));
+    seen[0][RED] = true;
+    seen[0][BLUE] = true;
+    
+    int steps = 0;
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        
+        for (int i = 0; i < levelSize; i++) {
+            var (node, color) = queue.Dequeue();
+            ans[node] = Math.Min(ans[node], steps);
+            
+            // Traverse edges of opposite color
+            int nextColor = 1 - color;
+            foreach (int neighbor in graph[nextColor][node]) {
+                if (!seen[neighbor][nextColor]) {
+                    seen[neighbor][nextColor] = true;
+                    queue.Enqueue((neighbor, nextColor));
+                }
+            }
+        }
+        
+        steps++;
+    }
+    
+    // Convert unreachable nodes to -1
+    for (int i = 0; i < n; i++) {
+        if (ans[i] == int.MaxValue) ans[i] = -1;
+    }
+    
+    return ans;
+}
+```
+
+**Complexity**:
+- **Time**: O(n + e) - Color range is constant (2)
+- **Space**: O(n + e) - Graphs, seen array, and queue
+
+> 💡 **Color Switching Trick**: To flip between 0 and 1, use `1 - color`. Works because `1 - 0 = 1` and `1 - 1 = 0`.
+
+### Graph BFS Key Insights
+
+1. **Shortest Path Guarantee**: BFS always finds shortest path in unweighted graphs
+2. **Level-by-Level Exploration**: Each while loop iteration = one level/distance
+3. **Multi-Source BFS**: Initialize queue with multiple starting nodes for multiple sources
+4. **State Variables**: Include additional data beyond node when needed
+5. **Seen Must Match State**: If state = `(node, x)`, seen should track `(node, x)` pairs
+6. **Queue vs Stack**: Queue (BFS) for shortest path, Stack/Recursion (DFS) for exploration
+
+### BFS Pattern Recognition
+
+| Problem Type | Key Indicator | Approach |
+|--------------|---------------|----------|
+| **Shortest Path** | Minimum steps, shortest distance | BFS from source |
+| **Multi-Source** | Distance from multiple points | Initialize queue with all sources |
+| **State Tracking** | Constraints, resources, colors | Add state variables to BFS |
+| **Level Processing** | Same-level operations | Use level-size loop |
+| **Alternating Constraints** | Must alternate actions | Track last action in state |
+
+### BFS Code Checklist
+
+✅ **Before Starting BFS**:
+- [ ] Identify all state variables needed
+- [ ] Choose queue element structure `(node)` or `(node, state...)`
+- [ ] Initialize queue with starting state(s)
+- [ ] Set up seen structure matching state
+- [ ] Determine if you need level-by-level processing
+
+✅ **During BFS**:
+- [ ] Mark states as seen before adding to queue
+- [ ] Process entire level if needed (level-size loop)
+- [ ] Check if target reached (can return early)
+- [ ] Validate neighbors before adding to queue
+
+✅ **After BFS**:
+- [ ] Handle unreachable nodes (return -1 or special value)
+- [ ] Verify all required nodes were processed
+- [ ] Return correct result format
+
+### BFS Implementation Tips
+
+```csharp
+// Tip 1: Level-by-level processing
+while (queue.Count > 0) {
+    int levelSize = queue.Count; // Capture current level size
+    for (int i = 0; i < levelSize; i++) {
+        // Process one node
+    }
+    steps++; // Increment after each level
+}
+
+// Tip 2: Storing steps with each node
+var queue = new Queue<(int node, int steps)>();
+queue.Enqueue((start, 0));
+while (queue.Count > 0) {
+    var (node, steps) = queue.Dequeue();
+    // Use steps directly, no level tracking needed
+    queue.Enqueue((neighbor, steps + 1));
+}
+
+// Tip 3: Multi-source initialization
+foreach (var source in allSources) {
+    queue.Enqueue(source);
+    seen.Add(source);
+}
+
+// Tip 4: State in seen
+// If state = (node, color, remaining)
+var seen = new HashSet<(int, int, int)>();
+// Or use multi-dimensional array
+bool[,,] seen = new bool[n, colors, maxRemaining];
+```
+
+---
+
+### 7.8 Implicit Graphs
+
+Implicit graphs are problems where the graph structure isn't explicitly given in the input. Instead, you need to recognize that states and transitions can be modeled as nodes and edges.
+
+#### What Are Implicit Graphs?
+
+**Definition**: A graph that exists conceptually based on problem rules, but isn't directly provided in standard graph formats (adjacency list, matrix, edge array).
+
+**Key Recognition Signs**:
+- Problem involves **transitioning between states**
+- Asks for **minimum steps/operations/moves**
+- No obvious graph in the input format
+- Need to figure out what nodes and edges represent
+
+> 🔑 **Remember**: A graph is ANY collection of elements (nodes) connected by relationships (edges). If you can define states and transitions, you have a graph!
+
+#### When to Recognize Implicit Graphs
+
+| Problem Characteristic | Graph Element | Example |
+|------------------------|---------------|---------|
+| **States/Configurations** | Nodes | Lock combinations, board positions |
+| **Transitions/Rules** | Edges | Moving between states, transformations |
+| **"Minimum steps to..."** | BFS needed | Shortest path in state space |
+| **"Can we reach..."** | DFS/BFS | Reachability in state space |
+
+#### Implicit Graph vs Explicit Graph
+
+| Aspect | Explicit Graph | Implicit Graph |
+|--------|----------------|----------------|
+| **Input Format** | Adjacency list, matrix, edges | Problem description, rules |
+| **Nodes Given** | ✅ Yes | ❌ Must identify |
+| **Edges Given** | ✅ Yes | ❌ Must determine |
+| **Graph Construction** | Direct from input | Infer from problem logic |
+| **Neighbor Function** | Read from structure | Generate dynamically |
+
+#### Building Implicit Graphs
+
+**Step-by-Step Approach**:
+1. **Identify Nodes**: What are the possible states?
+2. **Define Edges**: What transitions are allowed between states?
+3. **Determine Start**: What's the initial state?
+4. **Determine Goal**: What's the target state or condition?
+5. **Choose Traversal**: BFS for shortest path, DFS for exploration
+
+#### Example 1: Open the Lock (LeetCode 752)
+
+**Problem**: 4-wheel lock, each wheel has digits 0-9 (circular). Start at "0000", one move = turn one wheel by ±1. Given `deadends` (forbidden states) and `target`, return minimum moves to reach target, or -1.
+
+**Implicit Graph Recognition**:
+- **Nodes**: All possible lock combinations "0000" to "9999" (10,000 states)
+- **Edges**: Two combinations are neighbors if they differ by exactly 1 in exactly 1 position
+- **Start**: "0000"
+- **Goal**: `target` string
+- **Constraint**: Cannot visit `deadends`
+
+**Why BFS?**: Need minimum number of moves → shortest path problem
+
+**Neighbor Generation**:
+- For each of 4 positions:
+  - Increment digit: `(digit + 1) % 10` (handles 9→0 wrap)
+  - Decrement digit: `(digit - 1 + 10) % 10` (handles 0→9 wrap)
+- Each node has exactly 8 neighbors (4 positions × 2 directions)
+
+**Approach**:
+1. Initialize `seen` with all `deadends` (can't visit these)
+2. BFS from "0000"
+3. For each state, generate 8 neighbors
+4. Return steps when reaching `target`
+
+```csharp
+public int OpenLock(string[] deadends, string target) {
+    // Check if start is blocked
+    if (deadends.Contains("0000")) return -1;
+    
+    // Helper: Generate all neighbors of a lock state
+    List<string> GetNeighbors(string node) {
+        var neighbors = new List<string>();
+        
+        for (int i = 0; i < 4; i++) {
+            int digit = node[i] - '0';
+            
+            // Try incrementing and decrementing
+            foreach (int change in new int[] { -1, 1 }) {
+                int newDigit = (digit + change + 10) % 10;
+                string neighbor = node.Substring(0, i) + newDigit + node.Substring(i + 1);
+                neighbors.Add(neighbor);
+            }
+        }
+        
+        return neighbors;
+    }
+    
+    // BFS
+    var queue = new Queue<string>();
+    var seen = new HashSet<string>(deadends);
+    
+    queue.Enqueue("0000");
+    seen.Add("0000");
+    int steps = 0;
+    
+    while (queue.Count > 0) {
+        int levelSize = queue.Count;
+        
+        for (int i = 0; i < levelSize; i++) {
+            string node = queue.Dequeue();
+            
+            if (node == target) return steps;
+            
+            foreach (string neighbor in GetNeighbors(node)) {
+                if (!seen.Contains(neighbor)) {
+                    seen.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+        
+        steps++;
+    }
+    
+    return -1;
+}
+```
+
+**Complexity**:
+- **Time**: O(10^n × n²) where n = number of wheels (4)
+  - 10^n possible states
+  - O(n²) work per state (n wheels, O(n) string operations)
+  - With n=4: O(10,000 × 16) ≈ O(160,000) = O(1) practically
+- **Space**: O(10^n) for queue and seen
+
+> 💡 **String Immutability**: In C#/Java, string concatenation is O(n). With mutable strings (StringBuilder), it's O(n) total instead of O(n²) per state.
+
+#### Example 2: Evaluate Division (LeetCode 399)
+
+**Problem**: Given equations like `a/b = 2` and `b/c = 3`, answer queries like "what is `a/c`?". Return -1 if can't determine.
+
+**Implicit Graph Recognition**:
+- **Nodes**: Variables (a, b, c, etc.)
+- **Edges**: Equations define relationships with **weights**
+- **Edge Weight**: The division value
+- **Goal**: Find path from numerator to denominator, multiply weights along path
+
+**Key Insight**: 
+- If `a/b = 2`, then `a` is 2 times bigger than `b`
+- Edge `a → b` has weight 2
+- Edge `b → a` has weight 1/2 (reciprocal, since `b/a = 0.5`)
+- Edges are **undirected** (bidirectional with reciprocal weights)
+
+**Graph as Weighted Relationships**:
+```
+Given: a/b = 5, b/c = 2
+
+Graph:
+  a --5--> b --2--> c
+  a <--0.2-- b <--0.5-- c
+
+Path a → b → c:
+  Start: ratio = 1
+  a → b: ratio = 1 × 5 = 5
+  b → c: ratio = 5 × 2 = 10
+  Answer: a/c = 10
+```
+
+**Approach**:
+1. Build weighted graph: for each `x/y = val`, add:
+   - `graph[x][y] = val`
+   - `graph[y][x] = 1/val`
+2. For each query `(a, b)`:
+   - Traverse from `a` to `b` (DFS or BFS)
+   - Track cumulative ratio (multiply weights along path)
+   - Return ratio if `b` reached, else -1
+
+```csharp
+public double[] CalcEquation(IList<IList<string>> equations, double[] values, IList<IList<string>> queries) {
+    // Build weighted graph
+    var graph = new Dictionary<string, Dictionary<string, double>>();
+    
+    for (int i = 0; i < equations.Count; i++) {
+        string numerator = equations[i][0];
+        string denominator = equations[i][1];
+        double value = values[i];
+        
+        if (!graph.ContainsKey(numerator)) {
+            graph[numerator] = new Dictionary<string, double>();
+        }
+        if (!graph.ContainsKey(denominator)) {
+            graph[denominator] = new Dictionary<string, double>();
+        }
+        
+        graph[numerator][denominator] = value;
+        graph[denominator][numerator] = 1.0 / value;
+    }
+    
+    // Answer each query with DFS
+    double AnswerQuery(string start, string end) {
+        if (!graph.ContainsKey(start)) return -1.0;
+        
+        var seen = new HashSet<string>();
+        var stack = new Stack<(string node, double ratio)>();
+        
+        stack.Push((start, 1.0));
+        seen.Add(start);
+        
+        while (stack.Count > 0) {
+            var (node, ratio) = stack.Pop();
+            
+            if (node == end) return ratio;
+            
+            if (graph.ContainsKey(node)) {
+                foreach (var (neighbor, weight) in graph[node]) {
+                    if (!seen.Contains(neighbor)) {
+                        seen.Add(neighbor);
+                        stack.Push((neighbor, ratio * weight));
+                    }
+                }
+            }
+        }
+        
+        return -1.0;
+    }
+    
+    var result = new double[queries.Count];
+    for (int i = 0; i < queries.Count; i++) {
+        result[i] = AnswerQuery(queries[i][0], queries[i][1]);
+    }
+    
+    return result;
+}
+```
+
+**Complexity**:
+- **Time**: O(q × (n + e)) where q = queries, n = variables, e = equations
+  - Each query does one graph traversal: O(n + e)
+  - q queries total
+- **Space**: O(n + e) for graph, seen, and stack
+
+> 🎓 **Weighted Graphs**: This is a simple weighted graph problem. More complex weighted graph algorithms (Dijkstra, Bellman-Ford) are typically out of scope for most interviews.
+
+### Implicit Graph Key Insights
+
+1. **State Space = Graph**: Any problem with states and transitions can be a graph
+2. **Generate Don't Store**: For large state spaces, generate neighbors on-the-fly
+3. **BFS for Shortest Path**: When asking "minimum X to reach Y", use BFS
+4. **Define Clear Rules**: Clearly define what constitutes a node and an edge
+5. **Watch State Size**: State space can grow exponentially (10^n for n-digit lock)
+6. **Seen is Critical**: Even more important in implicit graphs to avoid revisiting states
+
+### Implicit Graph Pattern Recognition
+
+| Problem Keywords | Graph Elements | Likely Approach |
+|------------------|----------------|-----------------|
+| "Minimum moves/steps to" | States as nodes, moves as edges | BFS |
+| "Transform A to B" | Configurations as nodes | BFS/DFS |
+| "Can we reach/achieve" | States and transitions | DFS/BFS |
+| "Shortest sequence" | Steps as nodes | BFS |
+| "Given rules/operations" | Operations define edges | Generate neighbors |
+| "Word ladder", "gene mutation" | Strings as nodes, 1-change as edge | BFS |
+
+### Common Implicit Graph Scenarios
+
+#### 1. **Combinatorial States** (Lock, Puzzle)
+- Nodes: All possible configurations
+- Edges: Valid moves/transformations
+- Example: Rubik's cube, sliding puzzle, lock combinations
+
+#### 2. **String Transformations** (Word Ladder)
+- Nodes: Valid strings
+- Edges: Single character change
+- Example: "hit" → "hot" → "dot" → "dog" → "cog"
+
+#### 3. **Mathematical Relationships** (Equations, Ratios)
+- Nodes: Variables or numbers
+- Edges: Mathematical operations or relationships
+- Example: Equation chains, number transformations
+
+#### 4. **Game States** (Chess, Tic-Tac-Toe)
+- Nodes: Board configurations
+- Edges: Valid moves
+- Example: Chess positions, game trees
+
+### Implicit Graph Implementation Tips
+
+```csharp
+// Tip 1: Neighbor generation function
+List<State> GetNeighbors(State current) {
+    var neighbors = new List<State>();
+    // Generate all valid next states based on problem rules
+    foreach (var operation in validOperations) {
+        State next = ApplyOperation(current, operation);
+        if (IsValid(next)) {
+            neighbors.Add(next);
+        }
+    }
+    return neighbors;
+}
+
+// Tip 2: Use appropriate data structure for states
+// Simple states: strings, integers
+var seen = new HashSet<string>();
+
+// Complex states: tuples, custom classes with GetHashCode/Equals
+var seen = new HashSet<(int x, int y, int z)>();
+
+// Tip 3: Optimize string operations
+// Instead of: s.Substring(0, i) + digit + s.Substring(i + 1)
+// Use: char[] array, modify, then new string(array)
+char[] arr = s.ToCharArray();
+arr[i] = newDigit;
+string neighbor = new string(arr);
+
+// Tip 4: Early termination
+if (current == target) {
+    return steps; // Found answer, stop immediately
+}
+
+// Tip 5: Validate before adding to queue
+if (IsValid(neighbor) && !seen.Contains(neighbor)) {
+    seen.Add(neighbor);
+    queue.Enqueue(neighbor);
+}
+```
+
+### Implicit Graph Checklist
+
+✅ **Problem Analysis**:
+- [ ] Does problem involve states/configurations?
+- [ ] Are there transitions/operations between states?
+- [ ] Is there a starting state and goal state?
+- [ ] Does "minimum/shortest" appear in the problem?
+
+✅ **Graph Design**:
+- [ ] What represents a node? (state definition)
+- [ ] What represents an edge? (transition rules)
+- [ ] How to generate neighbors? (operation logic)
+- [ ] What's the state space size? (feasibility check)
+
+✅ **Implementation**:
+- [ ] Choose BFS (shortest path) or DFS (exploration)
+- [ ] Implement neighbor generation function
+- [ ] Handle invalid/blocked states
+- [ ] Use appropriate data structure for seen
+- [ ] Track steps/distance appropriately
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -4107,10 +5079,14 @@ public IList<int> FindSmallestSetOfVertices(int n, IList<IList<int>> edges) {
 - [x] **Depth-First Search (DFS)** - Tree traversals (preorder, inorder, postorder) and recursive problem-solving
 - [x] **Breadth-First Search (BFS)** - Level-order traversal and queue-based algorithms
 - [x] **Binary Search Trees (BST)** - BST properties, inorder traversal, and optimized search operations
+- [x] **Graph Introduction** - Graph fundamentals, terminology, and representations
+- [x] **Graph DFS** - Depth-first search on graphs, connected components, and cycle detection
+- [x] **Graph BFS** - Breadth-first search, shortest paths, and multi-source BFS
+- [x] **Implicit Graphs** - State space search and recognizing hidden graph structures
 
 ### 🔄 Currently Studying
 
-- Trees and Graphs - Graph algorithms and advanced patterns
+- Trees and Graphs - Advanced topics and practice problems
 
 ### 📋 Next Topics
 
