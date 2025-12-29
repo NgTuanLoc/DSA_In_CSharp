@@ -1,5 +1,6 @@
 ﻿// using DSA.Algorithm.SortAlgorithm;
 // using DSA.LeetCode.ArrayAndString;
+using DSA.LeetCode.DynamicProgramming;
 using DSA.LeetCode.StackAndQueue;
 using DSA.LeetCode.TreesAndGraphs;
 // using DSA.Playground;
@@ -136,5 +137,6 @@ using DSA.LeetCode.TreesAndGraphs;
 // TreesAndGraphsExample.Run_BinarySearchTree();
 // TreesAndGraphsExample.Run_Graph_DFS();
 // TreesAndGraphsExample.Run_Graph_BFS();
-HeapExample.Run();
+// HeapExample.Run();
+DynamicProgrammingExample.Run();
 // BacktrackingExample.Run();

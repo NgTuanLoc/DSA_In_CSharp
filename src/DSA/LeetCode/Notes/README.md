@@ -244,6 +244,33 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
   - [Top K Key Insights](#top-k-key-insights)
   - [Top K Pattern Recognition](#top-k-pattern-recognition)
   - [Top K Checklist](#top-k-checklist)
+- [9. Dynamic Programming](#9-dynamic-programming)
+  - [Learning Objectives](#learning-objectives-7)
+  - [9.1 Introduction to Dynamic Programming](#91-introduction-to-dynamic-programming)
+    - [What is Dynamic Programming?](#what-is-dynamic-programming)
+    - [Core Concept](#core-concept-2)
+    - [Classic Example: Fibonacci Numbers](#classic-example-fibonacci-numbers)
+    - [When Should I Use DP?](#when-should-i-use-dp)
+    - [Example: House Robber (Why Not Greedy?)](#example-house-robber-why-not-greedy)
+    - [State Variables](#state-variables)
+    - [Dimensionality](#dimensionality)
+    - [Top-Down vs Bottom-Up](#top-down-vs-bottom-up)
+    - [Time and Space Complexity](#time-and-space-complexity-2)
+  - [9.2 Framework for DP Problems](#92-framework-for-dp-problems)
+    - [The Three Components](#the-three-components)
+    - [Step 1: Define the Function/Array](#step-1-define-the-functionarray)
+    - [Step 2: Find the Recurrence Relation](#step-2-find-the-recurrence-relation)
+    - [Step 3: Determine Base Cases](#step-3-determine-base-cases)
+    - [Implementation: Top-Down](#implementation-top-down)
+    - [Converting Top-Down to Bottom-Up](#converting-top-down-to-bottom-up)
+    - [Implementation: Bottom-Up](#implementation-bottom-up)
+  - [9.3 One-Dimensional DP Problems](#93-one-dimensional-dp-problems)
+    - [Example 1: House Robber (LeetCode 198)](#example-1-house-robber-leetcode-198)
+    - [Example 2: Longest Increasing Subsequence (LeetCode 300)](#example-2-longest-increasing-subsequence-leetcode-300)
+    - [Example 3: Solving Questions With Brainpower (LeetCode 2140)](#example-3-solving-questions-with-brainpower-leetcode-2140)
+  - [DP Key Insights Summary](#dp-key-insights-summary)
+  - [DP Pattern Recognition](#dp-pattern-recognition)
+  - [DP Problem-Solving Checklist](#dp-problem-solving-checklist)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -5671,6 +5698,743 @@ public IList<int> FindClosestElements(int[] arr, int k, int x) {
 
 ---
 
+## 9. Dynamic Programming
+
+### Learning Objectives
+
+- Understand dynamic programming fundamentals and when to apply DP
+- Master top-down (memoization) and bottom-up (tabulation) approaches
+- Learn the 3-component framework for solving DP problems
+- Recognize state variables and recurrence relations
+- Solve 1D and multi-dimensional DP problems efficiently
+
+### 9.1 Introduction to Dynamic Programming
+
+#### What is Dynamic Programming?
+
+**Dynamic Programming (DP)** is an optimization technique that solves problems by breaking them down into overlapping subproblems and storing their results to avoid redundant computation.
+
+> 🔑 **Key Insight**: DP = Recursion + Memoization. It's just optimized recursion!
+
+#### Core Concept
+
+Traditional recursion often recalculates the same subproblems multiple times, leading to exponential time complexity. DP eliminates this inefficiency by:
+
+1. **Computing each subproblem once**
+2. **Storing (memoizing) the result**
+3. **Reusing stored results** when the same subproblem appears again
+
+#### Classic Example: Fibonacci Numbers
+
+**Formula**: F(n) = F(n-1) + F(n-2), where F(0) = 0, F(1) = 1
+
+**Naive Recursion** (Without Memoization):
+
+```csharp
+public int Fibonacci(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+```
+
+**Problem**: Exponential time complexity O(2^n)
+
+**Recursion Tree for F(6)**:
+```
+                    F(6)
+                  /      \
+              F(5)        F(4)
+             /    \      /    \
+         F(4)   F(3)  F(3)  F(2)
+        /   \   /  \  /  \  /  \
+      F(3) F(2)...
+```
+
+**Notice**: F(4) calculated 2 times, F(3) calculated 3 times, F(2) calculated 5 times!
+
+**Optimized with Memoization**:
+
+```csharp
+private Dictionary<int, int> memo = new Dictionary<int, int>();
+
+public int Fibonacci(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    
+    if (memo.ContainsKey(n)) {
+        return memo[n];  // Return cached result
+    }
+    
+    memo[n] = Fibonacci(n - 1) + Fibonacci(n - 2);
+    return memo[n];
+}
+```
+
+**Improvement**: Time complexity O(n) - each state calculated exactly once!
+
+#### When Should I Use DP?
+
+DP problems typically have **two key characteristics**:
+
+**1. Optimal Substructure**
+- Problem asks for an **optimal value** (max/min)
+- Examples:
+  - "What is the **minimum cost** of doing..."
+  - "What is the **maximum profit** from..."
+  - "How many **ways** are there to..."
+  - "What is the **longest possible**..."
+
+**2. Overlapping Subproblems**
+- At each step, you make a **decision**
+- Decisions **affect future decisions**
+- Example: "If you take element X, you cannot take element Y in the future"
+
+> ⚠️ **DP vs Greedy**: The second characteristic differentiates DP from greedy algorithms. Greedy makes local optimal choices without considering future impact. DP considers how current decisions affect all future possibilities.
+
+#### Example: House Robber (Why Not Greedy?)
+
+**Problem**: Rob houses for maximum money, but can't rob adjacent houses.
+
+**Input**: `nums = [2, 7, 9, 3, 1]`
+
+**Greedy Approach** (Always take maximum available):
+- Choose 7 (largest so far)
+- Skip 9 (adjacent to 7)
+- Result: 7 + 3 + 1 = 11 ❌
+
+**Optimal DP Approach**:
+- Take 2, skip 7, take 9, skip 3, take 1
+- Result: 2 + 9 + 1 = 12 ✅
+
+**Why greedy fails**: Local decision (taking 7) prevented us from taking 9, leading to suboptimal result.
+
+---
+
+#### State Variables
+
+**State** = A set of variables that fully describe a scenario at any point in the problem.
+
+> 🔑 **Key Principle**: A call to `dp(state)` should return the answer to the original problem as if `state` was the input.
+
+**Common State Variables**:
+
+| State Variable | Description | Example |
+|----------------|-------------|---------|
+| **Index `i`** | Position along input array/string | Most common, used in ~90% of problems |
+| **Two indices `i, j`** | Range `[i, j]` in array/string | Substring problems, range queries |
+| **Constraint `k`** | Numerical limit from problem | "Remove at most k obstacles" |
+| **Boolean flag** | Binary status | "Currently holding package: true/false" |
+| **Count** | Accumulated quantity | "Items picked so far" |
+
+#### Dimensionality
+
+**Dimensionality** = Number of state variables
+
+- **1D DP**: Single variable (e.g., index `i`)
+- **2D DP**: Two variables (e.g., `i, j` or `i, k`)
+- **3D+ DP**: Three or more variables (e.g., `i, j, k`)
+
+---
+
+#### Top-Down vs Bottom-Up
+
+| Aspect | Top-Down (Memoization) | Bottom-Up (Tabulation) |
+|--------|------------------------|------------------------|
+| **Approach** | Recursive with caching | Iterative with array |
+| **Direction** | Start from problem → base cases | Start from base cases → problem |
+| **Implementation** | Function + hash map/array | Loops + DP array |
+| **Order** | States visited as needed | Must determine order explicitly |
+| **Speed** | Slower (recursion overhead) | Faster (no function calls) |
+| **Ease** | Easier to write | Requires careful loop ordering |
+| **Space** | O(n) cache + O(n) stack | O(n) array only |
+
+**Top-Down Example** (Fibonacci):
+
+```csharp
+private Dictionary<int, int> memo = new Dictionary<int, int>();
+
+public int Fib(int n) {
+    if (n <= 1) return n;
+    if (memo.ContainsKey(n)) return memo[n];
+    
+    memo[n] = Fib(n - 1) + Fib(n - 2);
+    return memo[n];
+}
+```
+
+**Bottom-Up Example** (Fibonacci):
+
+```csharp
+public int Fib(int n) {
+    if (n <= 1) return n;
+    
+    int[] dp = new int[n + 1];
+    dp[0] = 0;
+    dp[1] = 1;
+    
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    
+    return dp[n];
+}
+```
+
+---
+
+#### Time and Space Complexity
+
+**General Formula**:
+
+If there are **N** possible states and each state requires **F** work:
+- **Time Complexity**: O(N × F)
+- **Space Complexity**: O(N)
+
+**Calculating N (Number of States)**:
+- Multiply the range of each state variable
+- Example: `dp[i][k][holding]` where i ∈ [0, n), k ∈ [0, maxK], holding ∈ {true, false}
+- N = n × maxK × 2
+
+**Example**: Array problem with index `i` and constraint `k`
+- States: n × k
+- If each state is O(1) work → Time: O(n × k), Space: O(n × k)
+
+---
+
+### 9.2 Framework for DP Problems
+
+A systematic 3-step approach for solving any DP problem.
+
+#### The Three Components
+
+Every DP algorithm requires:
+
+1. **Function or Data Structure** - What does it compute/store?
+2. **Recurrence Relation** - How to transition between states?
+3. **Base Cases** - Where does recursion stop?
+
+Let's apply this framework to **Min Cost Climbing Stairs (LeetCode 746)**:
+
+**Problem**: Given array `cost` where `cost[i]` is the cost of i-th step. Can start at index 0 or 1, and can climb 1 or 2 steps after paying cost. Return minimum cost to reach the top (past the array).
+
+---
+
+#### Step 1: Define the Function/Array
+
+**What should it return?** Minimum cost to climb stairs.
+
+**What state variables?** Index `i` (current step position).
+
+**Definition**: `dp(i)` = minimum cost to climb to step `i` (considering stairs from index 0 to i).
+
+> 💡 **Tip**: Think about what information you need to 100% describe a scenario. The step number? Yes. The color of your socks? No (irrelevant to cost).
+
+---
+
+#### Step 2: Find the Recurrence Relation
+
+**Question**: How do we get to step `i`?
+
+**Answer**: From step `i-1` (1 step) or step `i-2` (2 steps)
+
+**Cost Calculation**:
+- From `i-1`: `dp(i-1) + cost[i-1]`
+- From `i-2`: `dp(i-2) + cost[i-2]`
+
+**Recurrence Relation**:
+```
+dp(i) = min(dp(i-1) + cost[i-1], dp(i-2) + cost[i-2])
+```
+
+> 🔑 **Key Insight**: To get to step 100, we must have come from step 99 or 98. Choose the cheaper path!
+
+---
+
+#### Step 3: Determine Base Cases
+
+**Question**: When does recursion stop?
+
+**Answer**: We can start at step 0 or 1 for free.
+
+**Base Cases**:
+```
+dp(0) = 0
+dp(1) = 0
+```
+
+> 📝 **Note**: Without base cases, recurrence would continue infinitely: dp(100) → dp(99) → dp(98) → ... → dp(-∞)
+
+---
+
+#### Implementation: Top-Down
+
+```csharp
+public class Solution {
+    private Dictionary<int, int> memo = new Dictionary<int, int>();
+    
+    public int MinCostClimbingStairs(int[] cost) {
+        return Dp(cost.Length, cost);
+    }
+    
+    private int Dp(int i, int[] cost) {
+        // Step 3: Base cases
+        if (i <= 1) return 0;
+        
+        // Check memo
+        if (memo.ContainsKey(i)) return memo[i];
+        
+        // Step 2: Recurrence relation
+        int result = Math.Min(
+            Dp(i - 1, cost) + cost[i - 1],
+            Dp(i - 2, cost) + cost[i - 2]
+        );
+        
+        memo[i] = result;
+        return result;
+    }
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - Each state computed once
+- **Space**: O(n) - Memoization map + recursion stack
+
+---
+
+#### Converting Top-Down to Bottom-Up
+
+**5-Step Process**:
+
+1. **Implement top-down first** (as shown above)
+
+2. **Initialize DP array** sized according to state variables
+   ```csharp
+   int[] dp = new int[cost.Length + 1];
+   ```
+
+3. **Set base cases** (same as top-down)
+   ```csharp
+   dp[0] = 0;
+   dp[1] = 0;
+   ```
+
+4. **Write for-loops** starting from base cases toward answer
+   ```csharp
+   for (int i = 2; i <= cost.Length; i++) {
+       // Loop represents states
+   }
+   ```
+
+5. **Copy recurrence relation** from top-down, replace function calls with array access
+   ```csharp
+   dp[i] = Math.Min(dp[i-1] + cost[i-1], dp[i-2] + cost[i-2]);
+   ```
+
+#### Implementation: Bottom-Up
+
+```csharp
+public int MinCostClimbingStairs(int[] cost) {
+    int n = cost.Length;
+    
+    // Step 2: Initialize DP array
+    int[] dp = new int[n + 1];
+    
+    // Step 3: Base cases
+    dp[0] = 0;
+    dp[1] = 0;
+    
+    // Step 4 & 5: Loop with recurrence relation
+    for (int i = 2; i <= n; i++) {
+        dp[i] = Math.Min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+    }
+    
+    // Step 6: Return answer
+    return dp[n];
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - Single loop through n states
+- **Space**: O(n) - DP array only (no recursion stack!)
+
+---
+
+### 9.3 One-Dimensional DP Problems
+
+Problems solvable with a single state variable (typically an index).
+
+---
+
+#### Example 1: House Robber (LeetCode 198)
+
+**Problem**: Rob houses for maximum money. Can't rob adjacent houses. Return maximum money.
+
+**Input**: `nums = [2, 7, 9, 3, 1]`
+
+**Step 1: Define Function**
+
+`dp(i)` = maximum money that can be robbed from houses 0 to i
+
+**Step 2: Recurrence Relation**
+
+At house `i`, we have two choices:
+
+1. **Rob house i**: 
+   - Gain `nums[i]` money
+   - Can't rob house `i-1`, so must come from `i-2`
+   - Total: `dp(i-2) + nums[i]`
+
+2. **Skip house i**:
+   - Gain 0 money
+   - Could have robbed house `i-1`
+   - Total: `dp(i-1)`
+
+**Recurrence**:
+```
+dp(i) = max(dp(i-1), dp(i-2) + nums[i])
+```
+
+**Step 3: Base Cases**
+
+```
+dp(0) = nums[0]  // Only one house, rob it
+dp(1) = max(nums[0], nums[1])  // Two houses, rob the richer one
+```
+
+**Top-Down Implementation**:
+
+```csharp
+public class Solution {
+    private Dictionary<int, int> memo = new Dictionary<int, int>();
+    
+    public int Rob(int[] nums) {
+        return Dp(nums.Length - 1, nums);
+    }
+    
+    private int Dp(int i, int[] nums) {
+        // Base cases
+        if (i == 0) return nums[0];
+        if (i == 1) return Math.Max(nums[0], nums[1]);
+        
+        // Check memo
+        if (memo.ContainsKey(i)) return memo[i];
+        
+        // Recurrence relation
+        memo[i] = Math.Max(Dp(i - 1, nums), Dp(i - 2, nums) + nums[i]);
+        return memo[i];
+    }
+}
+```
+
+**Bottom-Up Implementation**:
+
+```csharp
+public int Rob(int[] nums) {
+    if (nums.Length == 1) return nums[0];
+    
+    int n = nums.Length;
+    int[] dp = new int[n];
+    
+    // Base cases
+    dp[0] = nums[0];
+    dp[1] = Math.Max(nums[0], nums[1]);
+    
+    // Fill DP array
+    for (int i = 2; i < n; i++) {
+        dp[i] = Math.Max(dp[i - 1], dp[i - 2] + nums[i]);
+    }
+    
+    return dp[n - 1];
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - Visit each house once
+- **Space**: O(n) - DP array
+
+---
+
+**Space Optimization**: O(1) Space!
+
+Since we only need the previous two states, use two variables instead of an array:
+
+```csharp
+public int Rob(int[] nums) {
+    if (nums.Length == 1) return nums[0];
+    
+    int twoBack = nums[0];
+    int oneBack = Math.Max(nums[0], nums[1]);
+    
+    for (int i = 2; i < nums.Length; i++) {
+        int current = Math.Max(oneBack, twoBack + nums[i]);
+        twoBack = oneBack;
+        oneBack = current;
+    }
+    
+    return oneBack;
+}
+```
+
+**Optimized Complexity**:
+- **Time**: O(n) - Same
+- **Space**: O(1) - Only 3 variables! 🚀
+
+> 💡 **When Can We Optimize Space?** When the recurrence relation is **static** (doesn't change) and only depends on a **fixed number** of previous states. Unfortunately, this optimization only works for bottom-up, not top-down (recursion stack still uses O(n)).
+
+---
+
+#### Example 2: Longest Increasing Subsequence (LeetCode 300)
+
+**Problem**: Given array `nums`, return length of longest strictly increasing subsequence.
+
+**Input**: `nums = [10, 9, 2, 5, 3, 7, 101, 18]`
+**Output**: `4` (subsequence: `[2, 3, 7, 101]`)
+
+**Step 1: Define Function**
+
+`dp(i)` = length of longest increasing subsequence (LIS) **ending at index i**
+
+> 🔑 **Key**: We define it as "ending at i" so we can build upon previous results.
+
+**Step 2: Recurrence Relation**
+
+To find LIS ending at `i`:
+1. Look at all previous indices `j` where `j < i`
+2. If `nums[j] < nums[i]`, we can extend the LIS ending at `j`
+3. Length would be `dp(j) + 1`
+4. Take the maximum over all valid `j`
+
+**Recurrence**:
+```
+dp(i) = max(dp(j) + 1) for all j in [0, i) where nums[j] < nums[i]
+```
+
+**Step 3: Base Cases**
+
+Every single element is an increasing subsequence of length 1:
+```
+dp(i) = 1 for all i
+```
+
+**Walkthrough Example**:
+
+For `nums = [10, 9, 2, 5, 3, 7]`, let's find `dp[5]` (LIS ending at 7):
+
+- Check index 0: `nums[0] = 10 > 7` ❌ Can't extend
+- Check index 1: `nums[1] = 9 > 7` ❌ Can't extend
+- Check index 2: `nums[2] = 2 < 7` ✅ `dp[2] = 1` → candidate: 1 + 1 = 2
+- Check index 3: `nums[3] = 5 < 7` ✅ `dp[3] = 2` → candidate: 2 + 1 = 3
+- Check index 4: `nums[4] = 3 < 7` ✅ `dp[4] = 2` → candidate: 2 + 1 = 3
+
+`dp[5] = max(2, 3, 3) = 3`
+
+**Top-Down Implementation**:
+
+```csharp
+public class Solution {
+    private Dictionary<int, int> memo = new Dictionary<int, int>();
+    
+    public int LengthOfLIS(int[] nums) {
+        int maxLen = 0;
+        for (int i = 0; i < nums.Length; i++) {
+            maxLen = Math.Max(maxLen, Dp(i, nums));
+        }
+        return maxLen;
+    }
+    
+    private int Dp(int i, int[] nums) {
+        if (memo.ContainsKey(i)) return memo[i];
+        
+        int maxLen = 1;  // Base case: single element
+        
+        for (int j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                maxLen = Math.Max(maxLen, Dp(j, nums) + 1);
+            }
+        }
+        
+        memo[i] = maxLen;
+        return maxLen;
+    }
+}
+```
+
+**Bottom-Up Implementation**:
+
+```csharp
+public int LengthOfLIS(int[] nums) {
+    int[] dp = new int[nums.Length];
+    Array.Fill(dp, 1);  // Base case: all elements have LIS = 1
+    
+    for (int i = 0; i < nums.Length; i++) {
+        for (int j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                dp[i] = Math.Max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    
+    return dp.Max();  // Maximum over all dp[i]
+}
+```
+
+**Complexity**:
+- **Time**: O(n²) - Nested loop: n states × O(n) work per state
+- **Space**: O(n) - DP array
+
+> 📝 **Note**: There's an O(n log n) solution using binary search, but we're focusing on the DP approach here.
+
+---
+
+#### Example 3: Solving Questions With Brainpower (LeetCode 2140)
+
+**Problem**: Given `questions[i] = [points_i, brainpower_i]`. Solving question `i` earns `points_i` but prevents solving next `brainpower_i` questions. Skipping allows deciding on next question. Return maximum points.
+
+**Input**: `questions = [[3,2], [4,3], [4,4], [2,5]]`
+
+**Step 1: Define Function**
+
+`dp(i)` = maximum points achievable starting from question `i` onward
+
+> 🔑 **Direction**: We're moving **forward** through the array (not backward like House Robber).
+
+**Step 2: Recurrence Relation**
+
+At question `i`, two choices:
+
+1. **Solve question i**:
+   - Gain `questions[i][0]` points
+   - Skip next `questions[i][1]` questions
+   - Next question: `j = i + questions[i][1] + 1`
+   - Total: `questions[i][0] + dp(j)`
+
+2. **Skip question i**:
+   - Gain 0 points
+   - Move to next question
+   - Total: `dp(i + 1)`
+
+**Recurrence**:
+```
+dp(i) = max(questions[i][0] + dp(j), dp(i + 1))
+where j = i + questions[i][1] + 1
+```
+
+**Step 3: Base Cases**
+
+Since we're moving forward, base case is at the end:
+```
+dp(i) = 0 when i >= n  // No more questions
+```
+
+**Top-Down Implementation**:
+
+```csharp
+public class Solution {
+    private Dictionary<int, long> memo = new Dictionary<int, long>();
+    
+    public long MostPoints(int[][] questions) {
+        return Dp(0, questions);
+    }
+    
+    private long Dp(int i, int[][] questions) {
+        // Base case: past the end
+        if (i >= questions.Length) return 0;
+        
+        if (memo.ContainsKey(i)) return memo[i];
+        
+        // Option 1: Solve question i
+        int j = i + questions[i][1] + 1;
+        long solve = questions[i][0] + Dp(j, questions);
+        
+        // Option 2: Skip question i
+        long skip = Dp(i + 1, questions);
+        
+        memo[i] = Math.Max(solve, skip);
+        return memo[i];
+    }
+}
+```
+
+**Bottom-Up Implementation**:
+
+```csharp
+public long MostPoints(int[][] questions) {
+    int n = questions.Length;
+    long[] dp = new long[n + 1];
+    
+    // Base case: dp[n] = 0 (implicitly initialized)
+    
+    // Iterate backward from n-1 to 0
+    for (int i = n - 1; i >= 0; i--) {
+        int j = i + questions[i][1] + 1;
+        long solve = questions[i][0] + (j < n ? dp[j] : 0);
+        long skip = dp[i + 1];
+        
+        dp[i] = Math.Max(solve, skip);
+    }
+    
+    return dp[0];
+}
+```
+
+**Complexity**:
+- **Time**: O(n) - Each question processed once
+- **Space**: O(n) - DP array
+
+> 💡 **Note**: Can't optimize space here because recurrence relation is **not static** - it depends on `questions[i][1]` which varies.
+
+---
+
+### DP Key Insights Summary
+
+1. **Recognition**: Look for optimal value questions where decisions affect future decisions
+2. **State Design**: Choose minimal state variables that fully describe each scenario
+3. **Recurrence Relation**: Usually the hardest part - think about choices at each step
+4. **Base Cases**: Often straightforward - read problem carefully
+5. **Top-Down vs Bottom-Up**: Both have same complexity, but bottom-up can sometimes optimize space
+6. **Space Optimization**: Possible when recurrence is static and uses fixed previous states
+
+### DP Pattern Recognition
+
+| Problem Characteristic | DP Signal | Example |
+|------------------------|-----------|---------|
+| "Maximum/minimum..." | Optimization problem | House Robber, Min Cost Stairs |
+| "How many ways..." | Counting problem | Climbing Stairs, Coin Change |
+| "Longest/shortest..." | Subsequence/substring | LIS, LCS |
+| Can't rob adjacent | Decision affects future | House Robber |
+| Limited resources (k) | Constraint in state | Knapsack, k obstacles |
+
+### DP Problem-Solving Checklist
+
+✅ **Step 1: Recognize DP**
+- [ ] Problem asks for optimal value or count?
+- [ ] Decisions affect future decisions?
+- [ ] Overlapping subproblems exist?
+
+✅ **Step 2: Define State**
+- [ ] What does `dp(state)` represent?
+- [ ] What state variables needed?
+- [ ] Does state fully describe scenario?
+
+✅ **Step 3: Find Recurrence**
+- [ ] What choices exist at each state?
+- [ ] How do choices relate to subproblems?
+- [ ] Does recurrence cover all cases?
+
+✅ **Step 4: Determine Base Cases**
+- [ ] When does recursion stop?
+- [ ] Are base cases correct and complete?
+
+✅ **Step 5: Implement**
+- [ ] Start with top-down (easier)
+- [ ] Add memoization
+- [ ] Convert to bottom-up if needed
+- [ ] Consider space optimization
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -5704,14 +6468,17 @@ public IList<int> FindClosestElements(int[] arr, int k, int x) {
 - [x] **Heaps Fundamentals** - Priority queues, heap operations, and complexity
 - [x] **Heap Examples** - Last stone weight, halving sum, and median finding with two heaps
 - [x] **Top K Pattern** - Efficient k-largest/smallest element selection with bounded heaps
+- [x] **Dynamic Programming Introduction** - DP fundamentals, memoization, and when to use DP
+- [x] **DP Framework** - 3-component approach: state, recurrence, base cases
+- [x] **1D DP Problems** - House Robber, LIS, and single-variable state problems
 
 ### 🔄 Currently Studying
 
-- Heaps - Practice problems and advanced patterns
+- Dynamic Programming - Multi-dimensional problems and advanced patterns
 
 ### 📋 Next Topics
 
-- Dynamic Programming
+- 2D Dynamic Programming
 - Backtracking
 - Greedy Algorithms
 - Binary Search
@@ -5736,7 +6503,9 @@ O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)
 | "Connected", "Path", "Tree" | DFS/BFS | O(V + E) |
 | "Top k", "k largest", "k smallest" | Heap | O(n log k) |
 | "Median", "Running median" | Two Heaps | O(log n) per add |
-| "Optimal", "Maximum", "Minimum" | Dynamic Programming | Varies |
+| "Maximum profit", "Minimum cost" | Dynamic Programming | O(n) to O(n³) |
+| "How many ways", "Count possibilities" | Dynamic Programming | O(n) to O(n²) |
+| "Longest/shortest subsequence" | Dynamic Programming | O(n²) |
 
 ### Debugging Tips
 
