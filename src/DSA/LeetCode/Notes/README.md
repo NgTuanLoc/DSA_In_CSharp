@@ -220,6 +220,30 @@ Welcome to my comprehensive guide for learning Data Structures and Algorithms! T
     - [4. **Game States** (Chess, Tic-Tac-Toe)](#4-game-states-chess-tic-tac-toe)
   - [Implicit Graph Implementation Tips](#implicit-graph-implementation-tips)
   - [Implicit Graph Checklist](#implicit-graph-checklist)
+- [8. Heaps](#8-heaps)
+  - [Learning Objectives](#learning-objectives-6)
+  - [8.1 Introduction to Heaps](#81-introduction-to-heaps)
+    - [What is a Heap?](#what-is-a-heap)
+    - [Heap Operations and Complexity](#heap-operations-and-complexity)
+    - [Min Heap vs Max Heap](#min-heap-vs-max-heap)
+    - [Why Use Heaps?](#why-use-heaps)
+    - [Common Use Cases](#common-use-cases-1)
+    - [How Heaps Work (Implementation Overview)](#how-heaps-work-implementation-overview)
+    - [Heap Interface in C#](#heap-interface-in-c)
+  - [8.2 Heap Examples](#82-heap-examples)
+    - [Example 1: Last Stone Weight (LeetCode 1046)](#example-1-last-stone-weight-leetcode-1046)
+    - [Example 2: Minimum Operations to Halve Array Sum (LeetCode 2208)](#example-2-minimum-operations-to-halve-array-sum-leetcode-2208)
+    - [Example 3: Find Median from Data Stream (LeetCode 295)](#example-3-find-median-from-data-stream-leetcode-295)
+  - [8.3 Top K Pattern](#83-top-k-pattern)
+    - [Naive Approach](#naive-approach)
+    - [Optimized Heap Approach](#optimized-heap-approach)
+    - [The Counterintuitive Rule](#the-counterintuitive-rule)
+    - [Top K Template](#top-k-template)
+    - [Example 1: Top K Frequent Elements (LeetCode 347)](#example-1-top-k-frequent-elements-leetcode-347)
+    - [Example 2: K Closest Elements (LeetCode 658)](#example-2-k-closest-elements-leetcode-658)
+  - [Top K Key Insights](#top-k-key-insights)
+  - [Top K Pattern Recognition](#top-k-pattern-recognition)
+  - [Top K Checklist](#top-k-checklist)
 - [Study Progress](#study-progress)
   - [✅ Completed Sections](#-completed-sections)
   - [🔄 Currently Studying](#-currently-studying)
@@ -5053,6 +5077,600 @@ if (IsValid(neighbor) && !seen.Contains(neighbor)) {
 
 ---
 
+## 8. Heaps
+
+### Learning Objectives
+
+- Understand heap data structure and priority queue concepts
+- Master heap operations and their time complexities
+- Recognize when to use heaps for optimization
+- Implement top-k patterns and multi-heap solutions
+- Solve streaming data and median finding problems
+
+### 8.1 Introduction to Heaps
+
+#### What is a Heap?
+
+A **heap** is a data structure that implements a **priority queue** - a container that efficiently maintains and retrieves the maximum or minimum element.
+
+> 🔑 **Key Distinction**: "Priority Queue" is an abstract data structure (interface), while "Heap" is a concrete implementation. However, the terms are often used interchangeably.
+
+#### Heap Operations and Complexity
+
+| Operation | Time Complexity | Description |
+|-----------|----------------|-------------|
+| **Add element** | O(log n) | Insert new element and maintain heap property |
+| **Remove min/max** | O(log n) | Extract and remove the top element |
+| **Find min/max** | O(1) | Peek at the top element without removing |
+| **Build heap** | O(n) | Convert array to heap (heapify) |
+
+#### Min Heap vs Max Heap
+
+| Heap Type | Top Element | Property |
+|-----------|-------------|----------|
+| **Min Heap** | Smallest | `parent.val ≤ child.val` for all nodes |
+| **Max Heap** | Largest | `parent.val ≥ child.val` for all nodes |
+
+> 💡 **Tip**: If a problem asks for minimum elements, use a **max heap**. If it asks for maximum elements, use a **min heap**. This seems counterintuitive but allows you to pop unwanted elements efficiently!
+
+#### Why Use Heaps?
+
+**Problem**: Find the maximum or minimum element repeatedly as data changes.
+
+**Naive Approach**: 
+- Sort array → O(n log n)
+- For each insertion → Re-sort → O(n log n) per operation
+- **Total**: O(n² log n) for n insertions
+
+**Heap Approach**:
+- Build heap → O(n)
+- For each operation → O(log n)
+- **Total**: O(n log n) for n operations
+
+**Improvement**: From O(n² log n) to O(n log n) - that's **50,000x faster** for n = 1,000,000!
+
+#### Common Use Cases
+
+✅ Use a heap when you need to:
+- Find the k largest/smallest elements
+- Repeatedly find max/min from changing data
+- Implement a priority-based task scheduler
+- Find medians in a data stream
+- Merge k sorted lists efficiently
+
+#### How Heaps Work (Implementation Overview)
+
+Heaps are typically implemented as **binary heaps** using an array:
+
+**Array to Tree Mapping**:
+```
+Array: [1, 3, 5, 4, 8, 9, 6]
+       
+       1          (index 0)
+      / \
+     3   5        (indices 1, 2)
+    / \ / \
+   4  8 9  6      (indices 3, 4, 5, 6)
+```
+
+**Index Relationships**:
+- Node at index `i`:
+  - Left child: `2*i + 1`
+  - Right child: `2*i + 2`
+  - Parent: `(i - 1) / 2`
+
+**Heap Property Maintenance**:
+- Insertions/deletions → "Bubble up" or "Bubble down" operations
+- Process scales logarithmically: O(log n)
+- Tree height = log₂(n)
+
+> 📝 **Note**: You don't need to implement heaps yourself - all major languages provide built-in heap support. Focus on understanding the **interface** and **when to use them**.
+
+#### Heap Interface in C#
+
+**Min Heap** (using `PriorityQueue` - .NET 6+):
+```csharp
+// Min heap by default
+var minHeap = new PriorityQueue<int, int>();
+
+// Add elements
+minHeap.Enqueue(5, 5);  // (element, priority)
+minHeap.Enqueue(3, 3);
+minHeap.Enqueue(8, 8);
+
+// Peek minimum (O(1))
+int min = minHeap.Peek();  // 3
+
+// Remove minimum (O(log n))
+int removed = minHeap.Dequeue();  // 3
+
+// Check if empty
+bool isEmpty = minHeap.Count == 0;
+```
+
+**Max Heap**:
+```csharp
+// Max heap: Reverse the priority
+var maxHeap = new PriorityQueue<int, int>(
+    Comparer<int>.Create((a, b) => b.CompareTo(a))
+);
+
+// Or negate values for numbers
+var maxHeap2 = new PriorityQueue<int, int>();
+maxHeap2.Enqueue(value, -value);  // Negate priority
+```
+
+**Custom Comparator**:
+```csharp
+// Min heap by absolute difference from target
+int target = 10;
+var heap = new PriorityQueue<int, int>(
+    Comparer<int>.Create((a, b) => 
+        Math.Abs(a - target).CompareTo(Math.Abs(b - target))
+    )
+);
+```
+
+---
+
+### 8.2 Heap Examples
+
+#### Example 1: Last Stone Weight (LeetCode 1046)
+
+**Problem**: Given an array of stone weights, repeatedly smash the two heaviest stones together. If weights are `x ≤ y`, both destroyed if equal, otherwise `y - x` remains. Return the final stone weight (or 0).
+
+**Key Insights**:
+- Need to **repeatedly find** the two maximum elements
+- Elements added back after operations → Can't just sort once
+- Perfect use case for max heap!
+
+**Why Heap Over Sorting?**
+- Sorting once: O(n log n), but stones are added back
+- Re-sorting each turn: O(n log n) per turn → O(n² log n) total
+- Heap approach: O(log n) per operation → O(n log n) total
+
+**Approach**:
+1. Convert all stones into a max heap
+2. While more than 1 stone exists:
+   - Pop the two heaviest stones
+   - If different, push difference back to heap
+3. Return remaining stone (or 0 if none)
+
+```csharp
+public int LastStoneWeight(int[] stones) {
+    // Create max heap (negate values for min heap structure)
+    var heap = new PriorityQueue<int, int>();
+    foreach (int stone in stones) {
+        heap.Enqueue(stone, -stone);  // Negate for max heap
+    }
+    
+    while (heap.Count > 1) {
+        int first = heap.Dequeue();   // Heaviest
+        int second = heap.Dequeue();  // Second heaviest
+        
+        if (first != second) {
+            int remaining = first - second;
+            heap.Enqueue(remaining, -remaining);
+        }
+    }
+    
+    return heap.Count == 0 ? 0 : heap.Dequeue();
+}
+```
+
+**Complexity**:
+- **Time**: O(n log n) - Each smash removes at least 1 stone, max n iterations, each with O(log n) heap operations
+- **Space**: O(n) - Heap stores up to n stones
+
+---
+
+#### Example 2: Minimum Operations to Halve Array Sum (LeetCode 2208)
+
+**Problem**: Given an array of positive integers, in each operation you can halve any number. Return minimum operations needed to reduce the total sum by at least half.
+
+**Key Insights**:
+- To minimize steps, **maximize reduction per step**
+- Always halve the **current largest** element
+- Need repeated max-finding as values change → Use max heap!
+
+**Why Not Sort?**
+- Sorting descending: O(n log n)
+- After halving, new value needs to be re-positioned
+- Halved values may still be largest → Can't just iterate sorted array
+
+**Approach**:
+1. Calculate target = sum / 2
+2. Build max heap from all elements
+3. Repeatedly:
+   - Pop maximum value `x`
+   - Reduce target by `x / 2`
+   - Push `x / 2` back to heap
+4. Count operations until target ≤ 0
+
+```csharp
+public int HalveArray(int[] nums) {
+    double target = 0;
+    var heap = new PriorityQueue<double, double>();
+    
+    // Build heap and calculate target
+    foreach (double num in nums) {
+        heap.Enqueue(num, -num);  // Max heap
+        target += num;
+    }
+    
+    target /= 2;
+    int operations = 0;
+    
+    while (target > 0) {
+        double max = heap.Dequeue();
+        double halved = max / 2;
+        
+        target -= halved;
+        heap.Enqueue(halved, -halved);
+        operations++;
+    }
+    
+    return operations;
+}
+```
+
+**Complexity**:
+- **Time**: O(n log n) - Operations bounded by n (could halve each element once)
+- **Space**: O(n) - Heap stores all elements
+
+> 💡 **Why operations ≤ n**: Even if a huge number needs many halvings, each halving reduces sum significantly. You could always just halve each number once to reduce sum by exactly half.
+
+---
+
+#### Example 3: Find Median from Data Stream (LeetCode 295)
+
+**Problem**: Design a data structure that supports:
+- `addNum(int num)`: Add integer to data structure
+- `findMedian()`: Return median of all elements
+
+**Median Definition**:
+- Odd count: Middle element
+- Even count: Average of two middle elements
+
+**Key Insights**:
+- Need to find **middle element** repeatedly
+- Naive: Store in array, sort each time → O(n log n) per findMedian
+- Better: Use **two heaps** to track median position!
+
+**Two Heap Strategy**:
+
+Imagine splitting sorted data into two halves:
+```
+[1, 3, 5] | [7, 9, 11, 13]
+ Max Heap   Min Heap
+```
+
+- **Max heap**: Stores smaller half (left side)
+- **Min heap**: Stores larger half (right side)
+- **Median location**: Where the heaps "touch"!
+
+**Properties Maintained**:
+1. All elements in max heap ≤ all elements in min heap
+2. Heap sizes differ by at most 1
+3. Max heap has extra element if odd count (arbitrary choice)
+
+**Finding Median**:
+- Even count: Average of both heap tops
+- Odd count: Top of max heap (has extra element)
+
+**Adding Elements Algorithm**:
+1. Push `num` to max heap
+2. Pop from max heap, push to min heap
+3. If min heap larger, pop from min and push to max
+
+> 🔑 **Why Step 2?** Ensures all max heap elements ≤ all min heap elements. Even if we initially add to wrong heap, this step corrects it.
+
+**Walkthrough Example**:
+
+Add 50 to dataset `[1, 3, 7, 13, 36, 100]`:
+
+```
+Initial state:
+Max heap: [7, 3, 1]
+Min heap: [13, 36, 100]
+
+Step 1: Add 50 to max heap
+Max heap: [50, 7, 3, 1]
+Min heap: [13, 36, 100]
+(Wrong! 50 > 13, violates property)
+
+Step 2: Pop max (50), push to min heap
+Max heap: [7, 3, 1]
+Min heap: [13, 36, 50, 100]
+(Now correct, but unbalanced)
+
+Step 3: Min heap larger, pop min (13), push to max
+Max heap: [13, 7, 3, 1]
+Min heap: [36, 50, 100]
+(Balanced! Median = 13)
+```
+
+```csharp
+public class MedianFinder {
+    private PriorityQueue<int, int> minHeap;  // Larger half
+    private PriorityQueue<int, int> maxHeap;  // Smaller half
+    
+    public MedianFinder() {
+        minHeap = new PriorityQueue<int, int>();
+        maxHeap = new PriorityQueue<int, int>(
+            Comparer<int>.Create((a, b) => b.CompareTo(a))
+        );
+    }
+    
+    public void AddNum(int num) {
+        // Step 1: Add to max heap
+        maxHeap.Enqueue(num, num);
+        
+        // Step 2: Balance property (all max ≤ all min)
+        int val = maxHeap.Dequeue();
+        minHeap.Enqueue(val, val);
+        
+        // Step 3: Balance sizes (max heap has extra if odd)
+        if (minHeap.Count > maxHeap.Count) {
+            val = minHeap.Dequeue();
+            maxHeap.Enqueue(val, val);
+        }
+    }
+    
+    public double FindMedian() {
+        if (maxHeap.Count > minHeap.Count) {
+            return maxHeap.Peek();  // Odd count
+        }
+        return (maxHeap.Peek() + minHeap.Peek()) / 2.0;  // Even count
+    }
+}
+```
+
+**Complexity**:
+- **addNum**: O(log n) - 2-3 heap operations
+- **findMedian**: O(1) - Just peek at tops
+- **Space**: O(n) - Both heaps combined store all elements
+
+> 🎓 **Advanced Note**: This two-heap pattern is rare but powerful. Similar to monotonic stacks, don't be discouraged if it takes time to understand!
+
+---
+
+### 8.3 Top K Pattern
+
+One of the most common heap patterns is finding the **k best elements** according to some criteria.
+
+#### Naive Approach
+
+**Sort the entire input**:
+- Sort by problem criteria → O(n log n)
+- Return first k elements
+- **Time Complexity**: O(n log n)
+
+#### Optimized Heap Approach
+
+**Use a bounded heap**:
+- Create heap of size k
+- Iterate through input: O(n)
+- Push element to heap: O(log k)
+- If size > k, pop worst element: O(log k)
+- **Time Complexity**: O(n log k)
+
+**Why It's Better**:
+- Since k < n, log k < log n
+- For k = 100, n = 1,000,000: **3,000x fewer operations**!
+- Heap size bounded by k, not n → Better space too
+
+#### The Counterintuitive Rule
+
+> 🔑 **Key Rule**: To find k **maximum** elements, use a **min heap**. To find k **minimum** elements, use a **max heap**.
+
+**Why?**
+- We want to keep k best elements
+- When heap exceeds size k, pop the **worst** of the k elements
+- Min heap pops smallest → Removes worst when finding maximums
+- Max heap pops largest → Removes worst when finding minimums
+
+#### Top K Template
+
+```csharp
+// Find k largest elements
+var minHeap = new PriorityQueue<int, int>();
+
+foreach (int num in nums) {
+    minHeap.Enqueue(num, num);
+    
+    if (minHeap.Count > k) {
+        minHeap.Dequeue();  // Remove smallest
+    }
+}
+// minHeap now contains k largest elements
+```
+
+---
+
+#### Example 1: Top K Frequent Elements (LeetCode 347)
+
+**Problem**: Given an integer array and integer k, return the k most frequent elements.
+
+**Key Insights**:
+- First: Count frequencies → Hash map
+- Then: Find k elements with highest frequencies
+- Frequency is the "score" to optimize
+
+**Naive Approach**: O(n log n)
+```csharp
+// Count frequencies: O(n)
+// Sort keys by frequency: O(n log n)
+// Return first k: O(k)
+// Total: O(n log n)
+```
+
+**Optimized Approach**: O(n log k)
+```csharp
+// Count frequencies: O(n)
+// Heap iterations: n elements × O(log k) operations
+// Total: O(n log k)
+```
+
+**Implementation**:
+
+```csharp
+public int[] TopKFrequent(int[] nums, int k) {
+    // Step 1: Count frequencies
+    var counts = new Dictionary<int, int>();
+    foreach (int num in nums) {
+        counts[num] = counts.GetValueOrDefault(num, 0) + 1;
+    }
+    
+    // Step 2: Min heap by frequency (to keep k most frequent)
+    var minHeap = new PriorityQueue<int, int>();
+    
+    foreach (var kvp in counts) {
+        int num = kvp.Key;
+        int freq = kvp.Value;
+        
+        minHeap.Enqueue(num, freq);  // Priority = frequency
+        
+        if (minHeap.Count > k) {
+            minHeap.Dequeue();  // Remove least frequent
+        }
+    }
+    
+    // Step 3: Extract result
+    int[] result = new int[k];
+    for (int i = 0; i < k; i++) {
+        result[i] = minHeap.Dequeue();
+    }
+    
+    return result;
+}
+```
+
+**Why It Works**:
+- Element x is in the answer (one of top k frequent)
+- x will never be popped from heap
+- If x was popped → heap size > k and x is least frequent in heap
+- That means ≥ k elements more frequent than x
+- Contradiction! x must remain in heap
+
+**Complexity**:
+- **Time**: O(n log k) - Counting O(n) + heap operations O(n log k)
+- **Space**: O(n + k) - Hash map O(n) + heap O(k)
+
+---
+
+#### Example 2: K Closest Elements (LeetCode 658)
+
+**Problem**: Given sorted array `arr`, integers k and x, return the k closest integers to x. If tie, take smaller element.
+
+**Key Insights**:
+- Want **minimum** distances → Use **max heap**
+- Score each element by distance from x
+- Handle ties: If distances equal, prefer smaller element
+
+**Handling Ties with Heap**:
+
+Different languages handle ties differently:
+
+**Option 1: Tuple/Pair (Python/C++)**:
+```python
+# Python compares tuples element by element
+heap.push((distance, value))
+# (2, 3) vs (2, 7): equal distance → compares values → 3 preferred
+```
+
+**Option 2: Custom Comparator (C#/Java)**:
+```csharp
+var heap = new PriorityQueue<int, (int dist, int val)>(
+    Comparer<(int dist, int val)>.Create((a, b) => {
+        if (a.dist != b.dist) return b.dist.CompareTo(a.dist);  // Max heap by distance
+        return b.val.CompareTo(a.val);  // If tie, larger value first (to pop)
+    })
+);
+```
+
+**Implementation**:
+
+```csharp
+public IList<int> FindClosestElements(int[] arr, int k, int x) {
+    // Max heap: Larger distance/value at top (to remove)
+    var heap = new PriorityQueue<int, (int dist, int val)>(
+        Comparer<(int dist, int val)>.Create((a, b) => {
+            // Compare distances first
+            if (a.dist != b.dist) {
+                return b.dist.CompareTo(a.dist);  // Max heap
+            }
+            // Tie: Compare values (larger first to be removed)
+            return b.val.CompareTo(a.val);
+        })
+    );
+    
+    foreach (int num in arr) {
+        int dist = Math.Abs(num - x);
+        heap.Enqueue(num, (dist, num));
+        
+        if (heap.Count > k) {
+            heap.Dequeue();  // Remove farthest (or larger if tied)
+        }
+    }
+    
+    // Extract and sort result
+    var result = new List<int>();
+    while (heap.Count > 0) {
+        result.Add(heap.Dequeue());
+    }
+    result.Sort();
+    
+    return result;
+}
+```
+
+**Complexity**:
+- **Time**: O((n + k) log k) - n iterations with O(log k) heap ops + O(k log k) sorting
+- **Space**: O(k) - Heap bounded by k
+
+> 📝 **Note**: This approach doesn't exploit that input is sorted. Binary search + two pointers would be O(log n + k), but we're demonstrating heap patterns here.
+
+---
+
+### Top K Key Insights
+
+1. **Bounded Heap Size**: Limiting to k elements → O(log k) instead of O(log n)
+2. **Opposite Heap Type**: Use min heap for k largest, max heap for k smallest
+3. **Frequency Patterns**: Hash map for counting + heap for top k
+4. **Custom Comparators**: Handle ties and complex scoring criteria
+5. **Trade-offs**: Heap approach great for unsorted data, but may not be optimal if input has special properties
+
+### Top K Pattern Recognition
+
+| Problem Keywords | Heap Type | Why |
+|------------------|-----------|-----|
+| "k largest/most/highest" | Min Heap | Pop smallest to keep largest |
+| "k smallest/least/lowest" | Max Heap | Pop largest to keep smallest |
+| "k most frequent" | Min Heap by frequency | Keep highest frequencies |
+| "k closest to x" | Max Heap by distance | Keep smallest distances |
+
+### Top K Checklist
+
+✅ **Before Coding**:
+- [ ] Identify the "score" or criteria (frequency, distance, value)
+- [ ] Determine if you need k maximum or k minimum
+- [ ] Choose opposite heap type (min for max, max for min)
+- [ ] Consider if ties need special handling
+
+✅ **Implementation**:
+- [ ] Count/calculate scores first if needed (hash map)
+- [ ] Iterate through all elements
+- [ ] Push to heap with appropriate priority
+- [ ] Pop when size exceeds k
+- [ ] Extract final k elements from heap
+
+✅ **Optimization Check**:
+- [ ] Is O(n log k) better than O(n log n) for your k and n?
+- [ ] Does input have special properties (sorted, etc.) for better approach?
+
+---
+
 ## Study Progress
 
 ### ✅ Completed Sections
@@ -5083,18 +5701,20 @@ if (IsValid(neighbor) && !seen.Contains(neighbor)) {
 - [x] **Graph DFS** - Depth-first search on graphs, connected components, and cycle detection
 - [x] **Graph BFS** - Breadth-first search, shortest paths, and multi-source BFS
 - [x] **Implicit Graphs** - State space search and recognizing hidden graph structures
+- [x] **Heaps Fundamentals** - Priority queues, heap operations, and complexity
+- [x] **Heap Examples** - Last stone weight, halving sum, and median finding with two heaps
+- [x] **Top K Pattern** - Efficient k-largest/smallest element selection with bounded heaps
 
 ### 🔄 Currently Studying
 
-- Trees and Graphs - Advanced topics and practice problems
+- Heaps - Practice problems and advanced patterns
 
 ### 📋 Next Topics
 
-- Graphs - DFS and BFS on graphs
-- Implicit Graphs
-- Heaps and Priority Queues
 - Dynamic Programming
 - Backtracking
+- Greedy Algorithms
+- Binary Search
 
 ---
 
@@ -5114,6 +5734,8 @@ O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)
 | "Subarray", "Substring", "Window" | Sliding Window | O(n) |
 | "Range sum", "Subarray sum" | Prefix Sum | O(n) preprocessing, O(1) query |
 | "Connected", "Path", "Tree" | DFS/BFS | O(V + E) |
+| "Top k", "k largest", "k smallest" | Heap | O(n log k) |
+| "Median", "Running median" | Two Heaps | O(log n) per add |
 | "Optimal", "Maximum", "Minimum" | Dynamic Programming | Varies |
 
 ### Debugging Tips
