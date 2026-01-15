@@ -344,8 +344,17 @@ public class TreesAndGraphsExample
         // Console.WriteLine(new ShortestPathInAGridWithObstaclesElimination().ShortestPath([[0, 1, 1], [1, 1, 1], [1, 0, 0]], 1));
 
         // !Shortest Path with Alternating Colors
-        Console.WriteLine(string.Join(",", new ShortestAlternatingPathsSolution().ShortestAlternatingPaths(3, [[0, 1], [1, 2]], []).ToList()));
-        Console.WriteLine(string.Join(",", new ShortestAlternatingPathsSolution().ShortestAlternatingPaths(3, [[0, 1]], [[2, 1]]).ToList()));
+        // Console.WriteLine(string.Join(",", new ShortestAlternatingPathsSolution().ShortestAlternatingPaths(3, [[0, 1], [1, 2]], []).ToList()));
+        // Console.WriteLine(string.Join(",", new ShortestAlternatingPathsSolution().ShortestAlternatingPaths(3, [[0, 1]], [[2, 1]]).ToList()));
+
+        // !Nearest Exit from Entrance in Maze
+        // Console.WriteLine(new NearestExitFromEntranceInMaze().NearestExit([['+', '+', '.', '+'], ['.', '.', '.', '+'], ['+', '+', '+', '.']], [1, 2]));
+        // Console.WriteLine(new NearestExitFromEntranceInMaze().NearestExit([['+', '+', '+'], ['.', '.', '.'], ['+', '+', '+']], [1, 0]));
+        // Console.WriteLine(new NearestExitFromEntranceInMaze().NearestExit([['.', '+']], [0, 0]));
+
+        // !Snake And The Ladders
+        Console.WriteLine(new SnakeAndTheLaddersSolution().SnakesAndLadders([[-1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1], [-1, 35, -1, -1, 13, -1], [-1, -1, -1, -1, -1, -1], [-1, 15, -1, -1, -1, -1]]));
+        Console.WriteLine(new SnakeAndTheLaddersSolution().SnakesAndLadders([[-1, -1], [-1, 3]]));
     }
 }
 

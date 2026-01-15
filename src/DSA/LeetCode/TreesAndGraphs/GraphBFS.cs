@@ -392,3 +392,148 @@ public class ShortestAlternatingPathsSolution
         return ans;
     }
 }
+
+// https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/description/
+public class NearestExitFromEntranceInMaze
+{
+    private const char WALL = '+';
+    private readonly List<List<int>> directions = [[0, 1], [1, 0], [-1, 0], [0, -1]];
+    private static bool IsValid(char[][] maze, int row, int col)
+    {
+        var m = maze.Length;
+        var n = maze[0].Length;
+
+        return row >= 0 && row < m && col >= 0 && col < n && maze[row][col] != WALL;
+    }
+
+    private static bool IsBorderReached(char[][] maze, int row, int col, int[] entrance)
+    {
+        var m = maze.Length;
+        var n = maze[0].Length;
+        if (row == entrance[0] && col == entrance[1] || maze[row][col] == WALL) return false;
+        return row == m - 1 || col == n - 1 || row == 0 || col == 0;
+    }
+
+    public int NearestExit(char[][] maze, int[] entrance)
+    {
+        HashSet<(int row, int col)> seen = [];
+        Queue<(int row, int col, int step)> queue = [];
+        var entranceRow = entrance[0];
+        var entranceCol = entrance[1];
+        seen.Add((entranceRow, entranceCol));
+        queue.Enqueue((entranceRow, entranceCol, 0));
+
+        while (queue.Count != 0)
+        {
+            var levelSize = queue.Count;
+            for (int i = 0; i < levelSize; i++)
+            {
+                var curr = queue.Dequeue();
+                var (row, col, step) = curr;
+
+                if (IsBorderReached(maze, row, col, entrance)) return step;
+
+                foreach (var direction in directions)
+                {
+                    var neighborRow = row + direction[0];
+                    var neighborCol = col + direction[1];
+
+                    if (!IsValid(maze, neighborRow, neighborCol) || !seen.Add((neighborRow, neighborCol))) continue;
+                    queue.Enqueue((neighborRow, neighborCol, step + 1));
+                }
+            }
+        }
+
+        return -1;
+    }
+}
+
+// https://leetcode.com/problems/snakes-and-ladders/description/
+/*
+ * The board is numbered from 1 to n² in Boustrophedon style (alternating direction):
+ * - Bottom row goes left to right
+ * - Next row up goes right to left
+ * - And so on...
+ * 
+ * Example for n=6:
+ * [36][35][34][33][32][31]
+ * [25][26][27][28][29][30]
+ * [24][23][22][21][20][19]
+ * [13][14][15][16][17][18]
+ * [12][11][10][09][08][07]
+ * [01][02][03][04][05][06]
+ * 
+ * Use BFS to find shortest path from square 1 to n²
+ */
+public class SnakeAndTheLaddersSolution
+{
+    // Convert square number to board coordinates (row, col)
+    private static (int row, int col) GetPosition(int square, int n)
+    {
+        // Squares are numbered 1 to n², but we need 0-indexed position
+        square--; // Convert to 0-indexed
+
+        // Calculate row from bottom (board is given top to bottom)
+        int row = n - 1 - (square / n);
+
+        // Calculate column based on whether row goes left-to-right or right-to-left
+        int col;
+        int rowFromBottom = square / n;
+        if (rowFromBottom % 2 == 0)
+        {
+            // Even rows (from bottom) go left to right
+            col = square % n;
+        }
+        else
+        {
+            // Odd rows (from bottom) go right to left
+            col = n - 1 - (square % n);
+        }
+
+        return (row, col);
+    }
+
+    public int SnakesAndLadders(int[][] board)
+    {
+        int n = board.Length;
+        int target = n * n;
+
+        Queue<(int square, int moves)> queue = [];
+        HashSet<int> seen = [];
+
+        queue.Enqueue((1, 0)); // Start at square 1 with 0 moves
+        seen.Add(1);
+
+        while (queue.Count > 0)
+        {
+            var (currSquare, moves) = queue.Dequeue();
+
+            // Try all possible dice rolls (1 to 6)
+            for (int dice = 1; dice <= 6; dice++)
+            {
+                int nextSquare = currSquare + dice;
+
+                // Can't go beyond the target
+                if (nextSquare > target) break;
+
+                // Check if there's a snake or ladder at this position
+                var (row, col) = GetPosition(nextSquare, n);
+                if (board[row][col] != -1)
+                {
+                    nextSquare = board[row][col]; // Take the snake or ladder
+                }
+
+                // Check if we reached the target
+                if (nextSquare == target) return moves + 1;
+
+                // Add to queue if not visited
+                if (seen.Add(nextSquare))
+                {
+                    queue.Enqueue((nextSquare, moves + 1));
+                }
+            }
+        }
+
+        return -1; // Target not reachable
+    }
+}

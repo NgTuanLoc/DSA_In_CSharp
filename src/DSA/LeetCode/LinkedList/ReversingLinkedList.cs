@@ -27,11 +27,7 @@ public static class ReversingLinkedList
 
         while (head != null && head.Next != null)
         {
-            if (prev != null)
-            {
-                prev.Next = head.Next;
-            }
-
+            prev?.Next = head.Next;
             prev = head;
             var nextNode = head.Next.Next;
             head.Next.Next = head;
