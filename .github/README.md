@@ -2,7 +2,12 @@
 
 This repository uses GitHub Actions for continuous integration and deployment.
 
-## Workflow
+## Workflows
+
+### Claude Code Review (`claude-review.yml`)
+Runs on every pull request targeting `master` or `main`. Claude reviews the diff and posts an inline comment covering algorithm correctness, time/space complexity, C# conventions, and test coverage.
+
+**Setup required:** Add your Anthropic API key as a repository secret named `ANTHROPIC_API_KEY` (Settings → Secrets and variables → Actions).
 
 ### .NET CI (`dotnet-ci.yml`)
 Single unified workflow that runs on every push and pull request to `master`, `main`, or `develop` branches.

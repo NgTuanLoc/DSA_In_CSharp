@@ -1,0 +1,33 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    branches: [ master, main ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            Review this pull request for a C# (.NET 10) Data Structures and Algorithms learning repository.
+
+            Focus on:
+            - Correctness of algorithm implementations and LeetCode solutions
+            - Time and space complexity — flag any that can be improved
+            - C# idioms and conventions (static methods, proper use of collections, LINQ where appropriate)
+            - Test coverage: are edge cases covered in xUnit tests?
+            - Naming consistency with the existing codebase (Arrange/Act/Assert in tests, PascalCase methods)
+
+            Be concise and educational — this is a learning repo, so brief explanations of *why* something is better are welcome.
