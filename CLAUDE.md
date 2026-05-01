@@ -102,8 +102,12 @@ src/DSA/
 src/DSA.Tests/
 ├── LeetCode/              # Tests mirror LeetCode structure
 │   ├── ArrayAndString/    # TwoPointersTests, SlidingWindowTests, etc.
-│   └── LinkedList/        # FastAndSlowPointersTests, etc.
-└── DataStructure/         # Tests for core DS implementations
+│   ├── LinkedList/        # FastAndSlowPointersTests, etc.
+│   ├── TreesAndGraphs/    # GraphBfsTests (42 tests covering all BFS problems)
+│   ├── Heap/              # HeapSolutionTests (23 tests), TopKTests (41 tests)
+│   └── [other patterns]   # StackAndQueue, Hashing, etc.
+├── Algorithm/             # SearchAlgorithmTests (20 tests for Binary/Linear search)
+└── DataStructure/         # LinkedListTests (22 tests)
 ```
 
 ## Key Patterns & Organization
@@ -136,10 +140,28 @@ Toggle examples by commenting/uncommenting in `Program.cs`.
 ### Test Coverage
 
 - Minimum **80%** code coverage required (enforced by CI)
+- **Current Coverage** (as of latest update):
+  - Line Coverage: **69.46%** (2,751 lines covered / 3,960 total)
+  - Branch Coverage: **71.89%** (1,177 branches covered / 1,637 total)
 - Each public method should have multiple test cases covering:
   - Happy path scenarios
   - Edge cases (empty, single element, null)
   - Boundary conditions
+  - Error paths and exceptional cases
+
+### Test Expansion Strategy
+
+When expanding test coverage, prioritize:
+1. **Data Structure tests** - LinkedList, Heap, Graph, Tree operations (Push, Pop, Insert, Remove, etc.)
+2. **Algorithm edge cases** - Empty arrays, single elements, boundary values, negative numbers
+3. **LeetCode solutions** - Multiple input scenarios, invalid inputs, large datasets
+4. **Branch coverage** - Conditional paths, loops with different counts, null checks
+
+Recent expansions (March 2026):
+- Added 113 new tests across 5 files
+- Increased line coverage from 55.95% → 69.46% (+13.51%)
+- Increased branch coverage from 57.36% → 71.89% (+14.53%)
+- Full coverage achieved for: LinkedList, SearchAlgorithm, HeapSolution, TopK, GraphBFS
 
 ### Code Organization
 
@@ -192,3 +214,40 @@ dotnet test --filter "Name~TestName" --logger "detailed"
 - Sorting algorithms use `SortDemo.cs` for comparative benchmarking
 - Pattern solutions include comments on time/space complexity
 - Heap visualization in `Program.cs` shows internal structure after operations
+
+### Expanding Test Coverage
+
+When using the unit-test-expand skill to increase coverage:
+
+1. **Identify gaps** - Run `dotnet test --collect:"XPlat Code Coverage"` and review the coverage report
+2. **Target high-impact areas** - Focus on classes with 0% coverage and complex algorithms
+3. **Write comprehensive tests**:
+   - **Constructors**: Initial state validation
+   - **Core operations**: Add, Remove, Insert, Find, Update
+   - **Edge cases**: Empty collections, single element, boundary values
+   - **State transitions**: Operations that change internal structure
+   - **Error conditions**: Invalid inputs, out-of-bounds access
+4. **Follow naming convention**: `{Method}_{Condition}_{Expected}`
+   - Example: `Insert_AtPosition0_InsertsAtHead()`
+5. **Use AAA pattern**:
+   ```csharp
+   [Fact]
+   public void Method_Scenario_ExpectedOutcome()
+   {
+       // Arrange
+       var list = new DSA_In_CSharp.DataStructure.LinkedList();
+       list.Push(10);
+       
+       // Act
+       var length = list.GetLinkedListLength();
+       
+       // Assert
+       Assert.Equal(1, length);
+   }
+   ```
+
+### Coverage Goals
+
+- **Short term**: Reach 80% line coverage (current: 69.46%)
+- **Long term**: Reach 85%+ branch coverage for all critical paths
+- **Maintenance**: Add tests for any new algorithm implementations before merging
