@@ -51,4 +51,23 @@ public class DoublyLinkedList
         }
         return current!.Value;
     }
+
+    public int? Pop()
+    {
+        if (_tail == null) return null;
+
+        var value = _tail.Value;
+        if (_length == 1)
+        {
+            _head = null;
+            _tail = null;
+        }
+        else
+        {
+            _tail = _tail.Prev;
+            _tail!.Next = null;
+        }
+        _length--;
+        return value;
+    }
 }

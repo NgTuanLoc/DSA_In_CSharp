@@ -47,4 +47,42 @@ public class DoublyLinkedListTests
         Assert.Null(list.Get(5));
         Assert.Null(list.Get(-1));
     }
+
+    [Fact]
+    public void Pop_OnEmptyList_ReturnsNull()
+    {
+        var list = new DoublyLinkedList();
+
+        Assert.Null(list.Pop());
+        Assert.Equal(0, list.GetLength());
+    }
+
+    [Fact]
+    public void Pop_OnSingleElementList_EmptiesList()
+    {
+        var list = new DoublyLinkedList();
+        list.Push(42);
+
+        var popped = list.Pop();
+
+        Assert.Equal(42, popped);
+        Assert.Equal(0, list.GetLength());
+        Assert.Null(list.Get(0));
+    }
+
+    [Fact]
+    public void Pop_OnMultiElementList_RemovesAndReturnsTail()
+    {
+        var list = new DoublyLinkedList();
+        list.Push(1);
+        list.Push(2);
+        list.Push(3);
+
+        var popped = list.Pop();
+
+        Assert.Equal(3, popped);
+        Assert.Equal(2, list.GetLength());
+        Assert.Equal(2, list.Get(1));
+        Assert.Null(list.Get(2));
+    }
 }
