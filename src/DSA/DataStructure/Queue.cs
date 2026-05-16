@@ -38,4 +38,17 @@ public class Queue
 
         return _head.Value;
     }
+
+    public int Dequeue()
+    {
+        if (_head == null)
+            throw new InvalidOperationException("Queue is empty");
+
+        var value = _head.Value;
+        _head = _head.Next;
+        if (_head == null)
+            _tail = null;
+        _count--;
+        return value;
+    }
 }

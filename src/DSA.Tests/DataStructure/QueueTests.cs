@@ -51,4 +51,42 @@ public class QueueTests
 
         Assert.Throws<InvalidOperationException>(() => queue.Peek());
     }
+
+    [Fact]
+    public void Dequeue_OnEmptyQueue_ThrowsInvalidOperationException()
+    {
+        var queue = new Queue();
+
+        Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
+    }
+
+    [Fact]
+    public void Dequeue_ReturnsFirstEnqueued_FIFO()
+    {
+        var queue = new Queue();
+        queue.Enqueue(1);
+        queue.Enqueue(2);
+        queue.Enqueue(3);
+
+        var first = queue.Dequeue();
+        var second = queue.Dequeue();
+
+        Assert.Equal(1, first);
+        Assert.Equal(2, second);
+        Assert.Equal(1, queue.Count);
+        Assert.Equal(3, queue.Peek());
+    }
+
+    [Fact]
+    public void Dequeue_UntilEmpty_ResetsHeadAndTail()
+    {
+        var queue = new Queue();
+        queue.Enqueue(99);
+
+        queue.Dequeue();
+
+        Assert.True(queue.IsEmpty);
+        Assert.Equal(0, queue.Count);
+        Assert.Throws<InvalidOperationException>(() => queue.Peek());
+    }
 }
