@@ -106,4 +106,60 @@ public class DoublyLinkedList
         _length--;
         return value;
     }
+
+    public bool Set(int index, int value)
+    {
+        if (index < 0 || index >= _length) return false;
+
+        var current = _head;
+        for (var i = 0; i < index; i++)
+            current = current!.Next;
+        current!.Value = value;
+        return true;
+    }
+
+    public bool Insert(int index, int value)
+    {
+        if (index < 0 || index > _length) return false;
+        if (index == 0)
+        {
+            Unshift(value);
+            return true;
+        }
+        if (index == _length)
+        {
+            Push(value);
+            return true;
+        }
+
+        var current = _head;
+        for (var i = 0; i < index; i++)
+            current = current!.Next;
+
+        var node = new DoublyNode(value)
+        {
+            Prev = current!.Prev,
+            Next = current
+        };
+        current.Prev!.Next = node;
+        current.Prev = node;
+        _length++;
+        return true;
+    }
+
+    public int? Remove(int index)
+    {
+        if (index < 0 || index >= _length) return null;
+        if (index == 0) return Shift();
+        if (index == _length - 1) return Pop();
+
+        var current = _head;
+        for (var i = 0; i < index; i++)
+            current = current!.Next;
+
+        current!.Prev!.Next = current.Next;
+        current.Next!.Prev = current.Prev;
+        _length--;
+        return current.Value;
+    }
 }
