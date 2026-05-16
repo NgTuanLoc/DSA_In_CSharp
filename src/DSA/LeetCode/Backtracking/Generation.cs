@@ -31,7 +31,7 @@ public class Permutation_Solution
     }
 }
 
-class Subsets_Solution
+public class Subsets_Solution
 {
 
     public static IList<IList<int>> Subsets(int[] nums)
