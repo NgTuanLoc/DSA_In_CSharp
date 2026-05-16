@@ -41,4 +41,73 @@ public class GraphTests
 
         Assert.False(graph.HasVertex("ghost"));
     }
+
+    [Fact]
+    public void AddEdge_BetweenExistingVertices_LinksBothDirections()
+    {
+        var graph = new Graph();
+        graph.AddVertex("A");
+        graph.AddVertex("B");
+
+        graph.AddEdge("A", "B");
+
+        Assert.True(graph.HasEdge("A", "B"));
+        Assert.True(graph.HasEdge("B", "A"));
+    }
+
+    [Fact]
+    public void AddEdge_AutoCreatesMissingVertices()
+    {
+        var graph = new Graph();
+
+        graph.AddEdge("X", "Y");
+
+        Assert.True(graph.HasVertex("X"));
+        Assert.True(graph.HasVertex("Y"));
+        Assert.True(graph.HasEdge("X", "Y"));
+    }
+
+    [Fact]
+    public void AddEdge_DuplicateEdge_DoesNotDuplicateNeighbor()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+
+        graph.AddEdge("A", "B");
+
+        Assert.Single(graph.GetNeighbors("A"));
+        Assert.Single(graph.GetNeighbors("B"));
+    }
+
+    [Fact]
+    public void HasEdge_NonExistentVertices_ReturnsFalse()
+    {
+        var graph = new Graph();
+        graph.AddVertex("A");
+
+        Assert.False(graph.HasEdge("A", "Z"));
+        Assert.False(graph.HasEdge("Z", "A"));
+    }
+
+    [Fact]
+    public void GetNeighbors_UnknownVertex_ReturnsEmpty()
+    {
+        var graph = new Graph();
+
+        Assert.Empty(graph.GetNeighbors("ghost"));
+    }
+
+    [Fact]
+    public void GetNeighbors_KnownVertex_ReturnsLinkedVertices()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddEdge("A", "C");
+
+        var neighbors = graph.GetNeighbors("A");
+
+        Assert.Equal(2, neighbors.Count);
+        Assert.Contains("B", neighbors);
+        Assert.Contains("C", neighbors);
+    }
 }
