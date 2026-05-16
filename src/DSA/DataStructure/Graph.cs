@@ -80,4 +80,23 @@ public class Graph
 
         return result;
     }
+
+    public List<string> Dfs(string start)
+    {
+        var result = new List<string>();
+        if (!_adjacency.ContainsKey(start)) return result;
+
+        var visited = new HashSet<string>();
+        DfsVisit(start, visited, result);
+        return result;
+    }
+
+    private void DfsVisit(string vertex, HashSet<string> visited, List<string> result)
+    {
+        if (!visited.Add(vertex)) return;
+        result.Add(vertex);
+
+        foreach (var neighbor in _adjacency[vertex])
+            DfsVisit(neighbor, visited, result);
+    }
 }

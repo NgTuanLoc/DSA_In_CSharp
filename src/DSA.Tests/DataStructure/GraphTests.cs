@@ -231,4 +231,69 @@ public class GraphTests
         Assert.Contains("B", result);
         Assert.Contains("C", result);
     }
+
+    [Fact]
+    public void Dfs_FromUnknownStart_ReturnsEmpty()
+    {
+        var graph = new Graph();
+
+        Assert.Empty(graph.Dfs("ghost"));
+    }
+
+    [Fact]
+    public void Dfs_SingleVertex_ReturnsThatVertex()
+    {
+        var graph = new Graph();
+        graph.AddVertex("A");
+
+        var result = graph.Dfs("A");
+
+        Assert.Equal(new[] { "A" }, result);
+    }
+
+    [Fact]
+    public void Dfs_VisitsAllReachableVerticesDepthFirst()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddEdge("B", "C");
+        graph.AddEdge("A", "D");
+
+        var result = graph.Dfs("A");
+
+        Assert.Equal(4, result.Count);
+        Assert.Equal("A", result[0]);
+        Assert.Contains("B", result);
+        Assert.Contains("C", result);
+        Assert.Contains("D", result);
+        var bIndex = result.IndexOf("B");
+        var cIndex = result.IndexOf("C");
+        Assert.True(cIndex == bIndex + 1, "DFS should visit C immediately after B");
+    }
+
+    [Fact]
+    public void Dfs_DisconnectedComponent_NotVisited()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddVertex("X");
+
+        var result = graph.Dfs("A");
+
+        Assert.Equal(2, result.Count);
+        Assert.DoesNotContain("X", result);
+    }
+
+    [Fact]
+    public void Dfs_CycleGraph_VisitsEachVertexOnce()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddEdge("B", "C");
+        graph.AddEdge("C", "A");
+
+        var result = graph.Dfs("A");
+
+        Assert.Equal(3, result.Count);
+    }
 }
