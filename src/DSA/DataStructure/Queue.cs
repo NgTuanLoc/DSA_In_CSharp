@@ -14,4 +14,28 @@ public class Queue
 
     public int Count => _count;
     public bool IsEmpty => _count == 0;
+
+    public void Enqueue(int value)
+    {
+        var node = new QueueNode(value);
+        if (_tail == null)
+        {
+            _head = node;
+            _tail = node;
+        }
+        else
+        {
+            _tail.Next = node;
+            _tail = node;
+        }
+        _count++;
+    }
+
+    public int Peek()
+    {
+        if (_head == null)
+            throw new InvalidOperationException("Queue is empty");
+
+        return _head.Value;
+    }
 }
