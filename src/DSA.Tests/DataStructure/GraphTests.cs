@@ -110,4 +110,58 @@ public class GraphTests
         Assert.Contains("B", neighbors);
         Assert.Contains("C", neighbors);
     }
+
+    [Fact]
+    public void RemoveEdge_ExistingEdge_RemovesBothDirections()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+
+        graph.RemoveEdge("A", "B");
+
+        Assert.False(graph.HasEdge("A", "B"));
+        Assert.False(graph.HasEdge("B", "A"));
+        Assert.True(graph.HasVertex("A"));
+        Assert.True(graph.HasVertex("B"));
+    }
+
+    [Fact]
+    public void RemoveEdge_NonExistentEdge_IsNoOp()
+    {
+        var graph = new Graph();
+        graph.AddVertex("A");
+        graph.AddVertex("B");
+
+        graph.RemoveEdge("A", "B");
+
+        Assert.True(graph.HasVertex("A"));
+        Assert.True(graph.HasVertex("B"));
+    }
+
+    [Fact]
+    public void RemoveVertex_RemovesVertexAndAllItsEdges()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddEdge("A", "C");
+        graph.AddEdge("B", "C");
+
+        graph.RemoveVertex("A");
+
+        Assert.False(graph.HasVertex("A"));
+        Assert.False(graph.HasEdge("B", "A"));
+        Assert.False(graph.HasEdge("C", "A"));
+        Assert.True(graph.HasEdge("B", "C"));
+    }
+
+    [Fact]
+    public void RemoveVertex_Unknown_IsNoOp()
+    {
+        var graph = new Graph();
+        graph.AddVertex("A");
+
+        graph.RemoveVertex("ghost");
+
+        Assert.True(graph.HasVertex("A"));
+    }
 }

@@ -36,4 +36,23 @@ public class Graph
             ? neighbors
             : Array.Empty<string>();
     }
+
+    public void RemoveEdge(string a, string b)
+    {
+        if (_adjacency.TryGetValue(a, out var aNeighbors))
+            aNeighbors.Remove(b);
+        if (_adjacency.TryGetValue(b, out var bNeighbors))
+            bNeighbors.Remove(a);
+    }
+
+    public void RemoveVertex(string vertex)
+    {
+        if (!_adjacency.TryGetValue(vertex, out var neighbors))
+            return;
+
+        foreach (var neighbor in neighbors.ToList())
+            _adjacency[neighbor].Remove(vertex);
+
+        _adjacency.Remove(vertex);
+    }
 }
