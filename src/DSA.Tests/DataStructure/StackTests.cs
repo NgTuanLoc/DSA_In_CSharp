@@ -43,4 +43,40 @@ public class StackTests
         Assert.Equal(3, stack.Count);
         Assert.Equal(3, stack.Peek());
     }
+
+    [Fact]
+    public void Pop_OnEmptyStack_ThrowsInvalidOperationException()
+    {
+        var stack = new Stack();
+
+        Assert.Throws<InvalidOperationException>(() => stack.Pop());
+    }
+
+    [Fact]
+    public void Pop_OnNonEmptyStack_ReturnsTopAndDecrementsCount()
+    {
+        var stack = new Stack();
+        stack.Push(10);
+        stack.Push(20);
+
+        var popped = stack.Pop();
+
+        Assert.Equal(20, popped);
+        Assert.Equal(1, stack.Count);
+        Assert.Equal(10, stack.Peek());
+    }
+
+    [Fact]
+    public void Pop_UntilEmpty_LeavesStackEmpty()
+    {
+        var stack = new Stack();
+        stack.Push(1);
+        stack.Push(2);
+
+        stack.Pop();
+        stack.Pop();
+
+        Assert.True(stack.IsEmpty);
+        Assert.Equal(0, stack.Count);
+    }
 }

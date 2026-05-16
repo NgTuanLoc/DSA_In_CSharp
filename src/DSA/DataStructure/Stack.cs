@@ -28,4 +28,15 @@ public class Stack
 
         return _top.Value;
     }
+
+    public int Pop()
+    {
+        if (_top == null)
+            throw new InvalidOperationException("Stack is empty");
+
+        var value = _top.Value;
+        _top = _top.Next;
+        _count--;
+        return value;
+    }
 }
