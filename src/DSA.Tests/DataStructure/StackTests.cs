@@ -79,4 +79,24 @@ public class StackTests
         Assert.True(stack.IsEmpty);
         Assert.Equal(0, stack.Count);
     }
+
+    [Fact]
+    public void Peek_OnEmptyStack_ThrowsInvalidOperationException()
+    {
+        var stack = new Stack();
+
+        Assert.Throws<InvalidOperationException>(() => stack.Peek());
+    }
+
+    [Fact]
+    public void Peek_DoesNotModifyStack()
+    {
+        var stack = new Stack();
+        stack.Push(42);
+
+        stack.Peek();
+
+        Assert.Equal(1, stack.Count);
+        Assert.Equal(42, stack.Peek());
+    }
 }
