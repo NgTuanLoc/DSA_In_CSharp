@@ -55,4 +55,29 @@ public class Graph
 
         _adjacency.Remove(vertex);
     }
+
+    public List<string> Bfs(string start)
+    {
+        var result = new List<string>();
+        if (!_adjacency.ContainsKey(start)) return result;
+
+        var visited = new HashSet<string>();
+        var queue = new System.Collections.Generic.Queue<string>();
+        queue.Enqueue(start);
+        visited.Add(start);
+
+        while (queue.Count > 0)
+        {
+            var vertex = queue.Dequeue();
+            result.Add(vertex);
+
+            foreach (var neighbor in _adjacency[vertex])
+            {
+                if (visited.Add(neighbor))
+                    queue.Enqueue(neighbor);
+            }
+        }
+
+        return result;
+    }
 }

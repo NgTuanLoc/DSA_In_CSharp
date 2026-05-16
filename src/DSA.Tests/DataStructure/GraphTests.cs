@@ -164,4 +164,71 @@ public class GraphTests
 
         Assert.True(graph.HasVertex("A"));
     }
+
+    [Fact]
+    public void Bfs_FromUnknownStart_ReturnsEmpty()
+    {
+        var graph = new Graph();
+
+        Assert.Empty(graph.Bfs("ghost"));
+    }
+
+    [Fact]
+    public void Bfs_SingleVertex_ReturnsThatVertex()
+    {
+        var graph = new Graph();
+        graph.AddVertex("A");
+
+        var result = graph.Bfs("A");
+
+        Assert.Equal(new[] { "A" }, result);
+    }
+
+    [Fact]
+    public void Bfs_VisitsAllReachableVerticesLevelByLevel()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddEdge("A", "C");
+        graph.AddEdge("B", "D");
+        graph.AddEdge("C", "E");
+
+        var result = graph.Bfs("A");
+
+        Assert.Equal(5, result.Count);
+        Assert.Equal("A", result[0]);
+        Assert.Contains("B", result.GetRange(1, 2));
+        Assert.Contains("C", result.GetRange(1, 2));
+        Assert.Contains("D", result.GetRange(3, 2));
+        Assert.Contains("E", result.GetRange(3, 2));
+    }
+
+    [Fact]
+    public void Bfs_DisconnectedComponent_NotVisited()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddVertex("X");
+
+        var result = graph.Bfs("A");
+
+        Assert.Equal(2, result.Count);
+        Assert.DoesNotContain("X", result);
+    }
+
+    [Fact]
+    public void Bfs_CycleGraph_VisitsEachVertexOnce()
+    {
+        var graph = new Graph();
+        graph.AddEdge("A", "B");
+        graph.AddEdge("B", "C");
+        graph.AddEdge("C", "A");
+
+        var result = graph.Bfs("A");
+
+        Assert.Equal(3, result.Count);
+        Assert.Contains("A", result);
+        Assert.Contains("B", result);
+        Assert.Contains("C", result);
+    }
 }
