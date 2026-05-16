@@ -31,6 +31,11 @@ public class Trie
         return node != null && node.IsEndOfWord;
     }
 
+    public bool StartsWith(string prefix)
+    {
+        return FindNode(prefix) != null;
+    }
+
     private TrieNode? FindNode(string prefix)
     {
         var current = _root;

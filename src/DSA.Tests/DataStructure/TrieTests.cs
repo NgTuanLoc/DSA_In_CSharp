@@ -66,4 +66,42 @@ public class TrieTests
 
         Assert.True(trie.Search("hello"));
     }
+
+    [Fact]
+    public void StartsWith_OnEmptyTrie_ReturnsFalse()
+    {
+        var trie = new Trie();
+
+        Assert.False(trie.StartsWith("app"));
+    }
+
+    [Fact]
+    public void StartsWith_ExistingPrefix_ReturnsTrue()
+    {
+        var trie = new Trie();
+        trie.Insert("apple");
+
+        Assert.True(trie.StartsWith("app"));
+        Assert.True(trie.StartsWith("apple"));
+        Assert.True(trie.StartsWith("a"));
+    }
+
+    [Fact]
+    public void StartsWith_NonExistentPrefix_ReturnsFalse()
+    {
+        var trie = new Trie();
+        trie.Insert("apple");
+
+        Assert.False(trie.StartsWith("apz"));
+        Assert.False(trie.StartsWith("banana"));
+    }
+
+    [Fact]
+    public void StartsWith_EmptyPrefix_ReturnsTrue()
+    {
+        var trie = new Trie();
+        trie.Insert("apple");
+
+        Assert.True(trie.StartsWith(""));
+    }
 }
