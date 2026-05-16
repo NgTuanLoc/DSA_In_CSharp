@@ -13,4 +13,19 @@ public class Stack
 
     public int Count => _count;
     public bool IsEmpty => _count == 0;
+
+    public void Push(int value)
+    {
+        var node = new StackNode(value) { Next = _top };
+        _top = node;
+        _count++;
+    }
+
+    public int Peek()
+    {
+        if (_top == null)
+            throw new InvalidOperationException("Stack is empty");
+
+        return _top.Value;
+    }
 }
