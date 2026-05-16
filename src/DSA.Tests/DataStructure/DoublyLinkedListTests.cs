@@ -85,4 +85,64 @@ public class DoublyLinkedListTests
         Assert.Equal(2, list.Get(1));
         Assert.Null(list.Get(2));
     }
+
+    [Fact]
+    public void Unshift_OnEmptyList_SetsHeadAndTail()
+    {
+        var list = new DoublyLinkedList();
+
+        list.Unshift(10);
+
+        Assert.Equal(1, list.GetLength());
+        Assert.Equal(10, list.Get(0));
+    }
+
+    [Fact]
+    public void Unshift_OnNonEmptyList_PrependsToHead()
+    {
+        var list = new DoublyLinkedList();
+        list.Push(2);
+        list.Push(3);
+
+        list.Unshift(1);
+
+        Assert.Equal(3, list.GetLength());
+        Assert.Equal(1, list.Get(0));
+        Assert.Equal(2, list.Get(1));
+    }
+
+    [Fact]
+    public void Shift_OnEmptyList_ReturnsNull()
+    {
+        var list = new DoublyLinkedList();
+
+        Assert.Null(list.Shift());
+    }
+
+    [Fact]
+    public void Shift_RemovesAndReturnsHead()
+    {
+        var list = new DoublyLinkedList();
+        list.Push(1);
+        list.Push(2);
+        list.Push(3);
+
+        var shifted = list.Shift();
+
+        Assert.Equal(1, shifted);
+        Assert.Equal(2, list.GetLength());
+        Assert.Equal(2, list.Get(0));
+    }
+
+    [Fact]
+    public void Shift_OnSingleElementList_EmptiesList()
+    {
+        var list = new DoublyLinkedList();
+        list.Push(42);
+
+        list.Shift();
+
+        Assert.Equal(0, list.GetLength());
+        Assert.Null(list.Get(0));
+    }
 }

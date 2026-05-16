@@ -70,4 +70,40 @@ public class DoublyLinkedList
         _length--;
         return value;
     }
+
+    public void Unshift(int value)
+    {
+        var node = new DoublyNode(value);
+        if (_head == null)
+        {
+            _head = node;
+            _tail = node;
+        }
+        else
+        {
+            node.Next = _head;
+            _head.Prev = node;
+            _head = node;
+        }
+        _length++;
+    }
+
+    public int? Shift()
+    {
+        if (_head == null) return null;
+
+        var value = _head.Value;
+        if (_length == 1)
+        {
+            _head = null;
+            _tail = null;
+        }
+        else
+        {
+            _head = _head.Next;
+            _head!.Prev = null;
+        }
+        _length--;
+        return value;
+    }
 }
