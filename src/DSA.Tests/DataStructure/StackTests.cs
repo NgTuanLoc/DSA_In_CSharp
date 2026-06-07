@@ -1,0 +1,102 @@
+using DSA.DataStructure;
+
+namespace DSA.Tests.DataStructure;
+
+public class StackTests
+{
+    [Fact]
+    public void IsEmpty_OnNewStack_ReturnsTrue()
+    {
+        var stack = new Stack();
+
+        Assert.True(stack.IsEmpty);
+    }
+
+    [Fact]
+    public void Count_OnNewStack_ReturnsZero()
+    {
+        var stack = new Stack();
+
+        Assert.Equal(0, stack.Count);
+    }
+
+    [Fact]
+    public void Push_OnEmptyStack_IncrementsCountToOne()
+    {
+        var stack = new Stack();
+
+        stack.Push(10);
+
+        Assert.Equal(1, stack.Count);
+        Assert.False(stack.IsEmpty);
+    }
+
+    [Fact]
+    public void Push_MultipleValues_StoresInLIFOOrder()
+    {
+        var stack = new Stack();
+
+        stack.Push(1);
+        stack.Push(2);
+        stack.Push(3);
+
+        Assert.Equal(3, stack.Count);
+        Assert.Equal(3, stack.Peek());
+    }
+
+    [Fact]
+    public void Pop_OnEmptyStack_ThrowsInvalidOperationException()
+    {
+        var stack = new Stack();
+
+        Assert.Throws<InvalidOperationException>(() => stack.Pop());
+    }
+
+    [Fact]
+    public void Pop_OnNonEmptyStack_ReturnsTopAndDecrementsCount()
+    {
+        var stack = new Stack();
+        stack.Push(10);
+        stack.Push(20);
+
+        var popped = stack.Pop();
+
+        Assert.Equal(20, popped);
+        Assert.Equal(1, stack.Count);
+        Assert.Equal(10, stack.Peek());
+    }
+
+    [Fact]
+    public void Pop_UntilEmpty_LeavesStackEmpty()
+    {
+        var stack = new Stack();
+        stack.Push(1);
+        stack.Push(2);
+
+        stack.Pop();
+        stack.Pop();
+
+        Assert.True(stack.IsEmpty);
+        Assert.Equal(0, stack.Count);
+    }
+
+    [Fact]
+    public void Peek_OnEmptyStack_ThrowsInvalidOperationException()
+    {
+        var stack = new Stack();
+
+        Assert.Throws<InvalidOperationException>(() => stack.Peek());
+    }
+
+    [Fact]
+    public void Peek_DoesNotModifyStack()
+    {
+        var stack = new Stack();
+        stack.Push(42);
+
+        stack.Peek();
+
+        Assert.Equal(1, stack.Count);
+        Assert.Equal(42, stack.Peek());
+    }
+}
