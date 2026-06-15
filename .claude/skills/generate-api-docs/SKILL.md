@@ -1,5 +1,6 @@
 ---
 description: Create comprehensive API documentation from source code
+user-invocable: true
 ---
 
 # API Documentation Generator
@@ -14,9 +15,11 @@ Generate API documentation by:
 6. Adding error documentation
 
 Output format:
+
 - Markdown file in `/docs/api.md`
 - Include curl examples for all endpoints
 - Add TypeScript types
 
 ---
+
 **Last Updated**: April 9, 2026

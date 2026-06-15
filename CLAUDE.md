@@ -169,6 +169,14 @@ Recent expansions (March 2026):
 - **Pattern folders**: Group related techniques together (e.g., all two-pointer solutions in ArrayAndString)
 - **Helpers**: Utility methods in `SortHelper.cs` for common operations (printing, validation)
 
+### Namespaces (gotcha)
+
+Two root namespaces coexist in the same `DSA` project assembly:
+- `DSA.*` — the dominant, current convention (most files). **Use this for new code.**
+- `DSA_In_CSharp.*` — legacy convention still used by a handful of files: `DataStructure/LinkedList.cs`, `Algorithm/SearchAlgorithm/{BinarySearch,LinearSearch}.cs`, `DynamicProgramming/DynamicFibonacciSequence.cs`, and `LeetCode/LinkedList/*`.
+
+When adding `using` statements or referencing these types (e.g. `DSA_In_CSharp.DataStructure.LinkedList` in tests), match the namespace the target file actually declares rather than assuming `DSA.*`.
+
 ### Dependencies
 
 - **Testing**: xUnit, coverlet for coverage
