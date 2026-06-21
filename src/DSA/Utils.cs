@@ -140,6 +140,34 @@ public static class Utils
     }
 
     /// <summary>
+    /// Builds a BST by inserting each value using standard BST ordering rules.
+    /// Example: [5,3,7,1,4] creates:
+    ///       5
+    ///      / \
+    ///     3   7
+    ///    / \
+    ///   1   4
+    /// </summary>
+    public static TreeNode? BuildBinarySearchTree(int[] values)
+    {
+        if (values.Length == 0) return null;
+
+        TreeNode? root = null;
+        foreach (int val in values)
+            root = InsertBST(root, val);
+
+        return root;
+    }
+
+    private static TreeNode InsertBST(TreeNode? node, int val)
+    {
+        if (node == null) return new TreeNode(val);
+        if (val < node.Val) node.Left = InsertBST(node.Left, val);
+        else if (val > node.Val) node.Right = InsertBST(node.Right, val);
+        return node;
+    }
+
+    /// <summary>
     /// Finds a TreeNode with the specified value in a binary tree using BFS.
     /// </summary>
     /// <param name="root">Root node of the binary tree</param>
