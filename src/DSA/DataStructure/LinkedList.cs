@@ -1,4 +1,5 @@
 namespace DSA_In_CSharp.DataStructure;
+
 public class Node
 {
     public int Value { get; set; }
@@ -37,7 +38,6 @@ public class LinkedList
     {
         if (_head == null)
         {
-            Console.WriteLine("List is empty");
             return null;
         }
 
@@ -94,7 +94,6 @@ public class LinkedList
 
         if (_head == null)
         {
-            Console.WriteLine("List is empty");
             return;
         }
 
