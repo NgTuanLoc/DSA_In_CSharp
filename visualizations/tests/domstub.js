@@ -1,8 +1,9 @@
-// A minimal, hand-rolled DOM stub used only by tests/page.test.js to exercise
-// shared/page.js's boot() under plain Node (no browser, no dependency).
-// It implements only the small surface page.js/render.js/renderers/array.js
+// A minimal, hand-rolled DOM stub used only by tests/page.test.js and
+// tests/renderers.test.js to exercise shared/page.js's boot() and the
+// renderers under plain Node (no browser, no dependency).
+// It implements only the small surface page.js/render.js/renderers/*.js
 // actually touch: element creation, className/classList, textContent,
-// append/prepend/replaceChildren, disabled/hidden flags, and event
+// dataset, append/prepend/replaceChildren, disabled/hidden flags, and event
 // registration + manual firing. Nothing here is loaded by a browser.
 
 class FakeClassList {
@@ -38,6 +39,7 @@ class FakeNode {
     this._listeners = new Map();
     this.disabled = false;
     this.hidden = false;
+    this.dataset = {};
   }
   get className() {
     return this.classList.toString();
@@ -78,7 +80,7 @@ class FakeNode {
     const list = this._listeners.get(type) ?? [];
     for (const handler of [...list]) handler(event);
   }
-  /** Selector support: simple class selectors (e.g., ".viz-collection__item") and complex selectors. */
+  /** Selector support: only a leading-class selector (e.g., ".viz-collection__item"); anything else returns []. */
   querySelectorAll(selector) {
     const results = [];
     const walk = (node) => {

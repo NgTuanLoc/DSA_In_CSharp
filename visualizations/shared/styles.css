@@ -444,6 +444,74 @@ body {
   font-style: italic;
 }
 
+/* ---------- linked list renderer ---------- */
+
+.viz-list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.viz-list__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.viz-list__ptr {
+  min-height: 1rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.viz-list__node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--surface);
+  color: var(--fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1rem;
+}
+
+.viz-list__node.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.viz-list__node.is-pass {
+  border-color: var(--pass);
+  background: var(--pass-soft);
+  color: var(--pass);
+}
+
+.viz-list__node.is-fail {
+  border-color: var(--fail);
+  background: var(--fail-soft);
+  color: var(--fail);
+}
+
+.viz-list__arrow {
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+.viz-list__cycle {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  white-space: nowrap;
+}
+
 /* ---------- responsive: collapse to one column ---------- */
 
 @media (max-width: 900px) {

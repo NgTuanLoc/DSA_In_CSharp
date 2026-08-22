@@ -46,6 +46,20 @@
       },
       check: (el) => el.querySelectorAll(".viz-collection__item").length === 2,
     },
+    {
+      name: "linked list renders one node per value",
+      view: {
+        kind: "linkedList",
+        nodes: [
+          { id: "n0", value: 1 },
+          { id: "n1", value: 2 },
+          { id: "n2", value: 3 },
+        ],
+        next: { n0: "n1", n1: "n2", n2: null },
+        pointers: {},
+      },
+      check: (el) => el.querySelectorAll(".viz-list__node").length === 3,
+    },
   ];
 
   function row(cells, pass) {
