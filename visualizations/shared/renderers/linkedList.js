@@ -60,7 +60,20 @@ export function renderLinkedList(view, el) {
   const lastNode = nodes[nodes.length - 1];
   const predecessor = nodes.length >= 2 ? nodes[nodes.length - 2] : null;
   const nextOfLast = view.next?.[lastNode.id];
-  const pointsAtPredecessor = predecessor !== null && nextOfLast === predecessor.id;
+  // A back-edge onto the immediate predecessor is ambiguous on its own: it is
+  // the shape produced mid-reversal, but it is also exactly what a genuine
+  // cycle looks like when its back-edge happens to land one node back. The
+  // discriminator is whether the forward chain is still intact: in a real
+  // cycle the predecessor still points FORWARD at the last node at the same
+  // time the last node points back — that can never happen mid-reversal,
+  // because by the time the last node's `next` is rewired backward, the
+  // predecessor's own `next` has already been rewired away from the last
+  // node (or, if the predecessor hasn't been touched yet, the last node's
+  // `next` hasn't been rewired backward either).
+  const predecessorPointsForward =
+    predecessor !== null && view.next?.[predecessor.id] === lastNode.id;
+  const pointsAtPredecessor =
+    predecessor !== null && nextOfLast === predecessor.id && !predecessorPointsForward;
   if (nextOfLast !== null && nextOfLast !== undefined && !pointsAtPredecessor) {
     const target = nodes.find((n) => n.id === nextOfLast);
     const cycle = document.createElement("div");

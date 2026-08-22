@@ -6,6 +6,8 @@ import { renderTree } from "../shared/renderers/tree.js";
 import { renderGraph } from "../shared/renderers/graph.js";
 import { renderGrid } from "../shared/renderers/grid.js";
 import { installDomStub } from "./domstub.js";
+import { collectFrames } from "../shared/engine.js";
+import fastSlowPointers from "../patterns/fast-slow-pointers.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -380,7 +382,7 @@ test("linkedList: cycle marker renders when the last node's next targets a non-a
   });
 });
 
-test("linkedList: cycle marker is suppressed when the last node's next targets its immediate predecessor", () => {
+test("linkedList: cycle marker is suppressed when the last node's next targets its immediate predecessor, and the predecessor no longer points forward at it (the real mid-reversal shape)", () => {
   withDom((stub) => {
     const el = stub.document.createElement("div");
     const view = {
@@ -390,9 +392,13 @@ test("linkedList: cycle marker is suppressed when the last node's next targets i
         { id: "n1", value: 2 },
       ],
       // n1 (the last node) points back to n0, which is also the node
-      // immediately before it in view.nodes order — the same shape produced
-      // mid-reversal, where it is not a genuine extra cycle edge.
-      next: { n0: "n1", n1: "n0" },
+      // immediately before it in view.nodes order. Crucially, n0's own next
+      // has ALREADY been rewired away from n1 (to null here) — this is the
+      // shape reversal actually produces: by the time n1 is processed and
+      // rewired backward, n0 (processed earlier, since traversal walks the
+      // list forward) no longer points forward at n1. That is what makes
+      // this a reversal artifact rather than a genuine cycle.
+      next: { n0: null, n1: "n0" },
       pointers: {},
     };
 
@@ -400,6 +406,55 @@ test("linkedList: cycle marker is suppressed when the last node's next targets i
 
     const cycle = el.querySelectorAll(".viz-list__cycle");
     assert.equal(cycle.length, 0, "did not expect a cycle marker for an adjacent-predecessor target");
+  });
+});
+
+test("linkedList: cycle marker still renders for a genuine cycle whose back-edge targets the immediate predecessor", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 1 },
+        { id: "n1", value: 2 },
+        { id: "n2", value: 3 },
+      ],
+      // n2 (the last node) points back to n1, its immediate predecessor —
+      // the same shape a reversal artifact has. But here n1 STILL points
+      // forward at n2 (next.n1 === "n2") at the same time, which a
+      // mid-reversal state can never produce (see the test above): this is
+      // what distinguishes a genuine cycle whose back-edge happens to land
+      // on the immediate predecessor from a reversal-in-progress artifact.
+      next: { n0: "n1", n1: "n2", n2: "n1" },
+      pointers: {},
+    };
+
+    renderLinkedList(view, el);
+
+    const cycle = el.querySelectorAll(".viz-list__cycle");
+    assert.equal(cycle.length, 1, "expected the cycle marker for a genuine cycle, even onto the immediate predecessor");
+    assert.equal(cycle[0].textContent, "↩ back to 2");
+  });
+});
+
+test("linkedList: fast-slow-pointers' cycle inputs still render the cycle marker on every frame (regression)", () => {
+  withDom((stub) => {
+    const cases = [
+      { label: "4-node cycle back to index 1", data: { values: [3, 2, 0, -4], cycleTo: 1 }, expectedTarget: "2" },
+      { label: "single-node self-cycle", data: { values: [1], cycleTo: 0 }, expectedTarget: "1" },
+    ];
+
+    for (const { label, data, expectedTarget } of cases) {
+      const { frames } = collectFrames(fastSlowPointers, data);
+      assert.ok(frames.length > 0, `${label}: expected at least one frame`);
+      frames.forEach((frame, i) => {
+        const el = stub.document.createElement("div");
+        renderLinkedList(frame.view, el);
+        const cycle = el.querySelectorAll(".viz-list__cycle");
+        assert.equal(cycle.length, 1, `${label}, frame ${i}: expected the cycle marker to render`);
+        assert.equal(cycle[0].textContent, `↩ back to ${expectedTarget}`, `${label}, frame ${i}: wrong cycle target`);
+      });
+    }
   });
 });
 
