@@ -1,8 +1,10 @@
 import { renderArray } from "./renderers/array.js";
+import { renderCollection } from "./renderers/collection.js";
 
 // Each renderer task adds one import above and one entry here.
 const RENDERERS = {
   array: renderArray,
+  collection: renderCollection,
 };
 
 export function errorBanner(message) {

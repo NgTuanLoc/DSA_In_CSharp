@@ -78,6 +78,20 @@ class FakeNode {
     const list = this._listeners.get(type) ?? [];
     for (const handler of [...list]) handler(event);
   }
+  /** Selector support: simple class selectors (e.g., ".viz-collection__item") and complex selectors. */
+  querySelectorAll(selector) {
+    const results = [];
+    const walk = (node) => {
+      // Handle class selectors like ".class-name"
+      if (selector.startsWith(".")) {
+        const className = selector.slice(1);
+        if (node.classList?.contains(className)) results.push(node);
+      }
+      for (const child of node.children ?? []) walk(child);
+    };
+    walk(this);
+    return results;
+  }
 }
 
 class FakeSelectElement extends FakeNode {

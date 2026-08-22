@@ -377,6 +377,73 @@ body {
   background: var(--window-soft);
 }
 
+/* ---------- collection renderer ---------- */
+
+.viz-collection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.viz-collection--vertical {
+  align-items: center;
+}
+
+.viz-collection--vertical .viz-collection__items {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+}
+
+.viz-collection--horizontal .viz-collection__items {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.viz-collection__label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.viz-collection__items {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.viz-collection__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--surface);
+  color: var(--fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1rem;
+}
+
+.viz-collection__item.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.viz-collection__empty {
+  padding: 0.75rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 /* ---------- responsive: collapse to one column ---------- */
 
 @media (max-width: 900px) {

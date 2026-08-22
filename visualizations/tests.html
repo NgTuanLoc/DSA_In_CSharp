@@ -35,6 +35,17 @@
       view: { kind: "hologram" },
       check: (el) => el.querySelectorAll(".viz-error").length === 1,
     },
+    {
+      name: "collection renders one box per item",
+      view: {
+        kind: "collection",
+        label: "stack",
+        items: [{ value: "(" }, { value: "[" }],
+        orientation: "vertical",
+        highlight: [1],
+      },
+      check: (el) => el.querySelectorAll(".viz-collection__item").length === 2,
+    },
   ];
 
   function row(cells, pass) {
