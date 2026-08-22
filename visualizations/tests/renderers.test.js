@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { renderCollection } from "../shared/renderers/collection.js";
 import { renderLinkedList } from "../shared/renderers/linkedList.js";
 import { renderTree } from "../shared/renderers/tree.js";
+import { renderGraph } from "../shared/renderers/graph.js";
 import { installDomStub } from "./domstub.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -428,5 +429,205 @@ test("tree: an empty nodes array renders no nodes or edges and does not throw", 
     assert.doesNotThrow(() => renderTree(view, el));
     assert.equal(el.querySelectorAll(".viz-tree__node").length, 0);
     assert.equal(el.querySelectorAll(".viz-tree__edge").length, 0);
+  });
+});
+
+test("tree: the svg root declares viewBox and preserveAspectRatio", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderTree(fiveNodeTree(), el);
+
+    const svg = el.children[0];
+    assert.equal(svg.getAttribute("viewBox"), "0 0 100 100");
+    assert.equal(svg.getAttribute("preserveAspectRatio"), "xMidYMid meet");
+  });
+});
+
+function sevenNodeGraph(extra = {}) {
+  return {
+    kind: "graph",
+    nodes: [
+      { id: 0, label: "0", x: 0.1, y: 0.5 },
+      { id: 1, label: "1", x: 0.32, y: 0.2 },
+      { id: 2, label: "2", x: 0.32, y: 0.8 },
+      { id: 3, label: "3", x: 0.55, y: 0.5 },
+      { id: 4, label: "4", x: 0.78, y: 0.3 },
+      { id: 5, label: "5", x: 0.95, y: 0.6 },
+      { id: 6, label: "6", x: 0.78, y: 0.9 },
+    ],
+    edges: [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [4, 5]],
+    current: null,
+    visited: [],
+    activeEdge: null,
+    distances: {},
+    ...extra,
+  };
+}
+
+test("graph: renders one node circle and one edge line per input", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGraph(sevenNodeGraph(), el);
+
+    assert.equal(el.querySelectorAll(".viz-graph__node").length, 7, "expected seven nodes");
+    assert.equal(el.querySelectorAll(".viz-graph__edge").length, 6, "expected six edges");
+  });
+});
+
+test("graph: builds every SVG element with createElementNS and the SVG namespace", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGraph(sevenNodeGraph(), el);
+
+    const svg = el.children[0];
+    assert.equal(svg.tagName, "SVG");
+    assert.equal(svg.namespaceURI, SVG_NS, "svg root must carry the SVG namespace");
+
+    const [edge] = el.querySelectorAll(".viz-graph__edge");
+    const [node] = el.querySelectorAll(".viz-graph__node");
+    assert.equal(edge.namespaceURI, SVG_NS, "edges must be created with createElementNS");
+    assert.equal(node.namespaceURI, SVG_NS, "nodes must be created with createElementNS");
+  });
+});
+
+test("graph: the svg root declares viewBox and preserveAspectRatio", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGraph(sevenNodeGraph(), el);
+
+    const svg = el.children[0];
+    assert.equal(svg.getAttribute("viewBox"), "0 0 100 100");
+    assert.equal(svg.getAttribute("preserveAspectRatio"), "xMidYMid meet");
+  });
+});
+
+test("graph: edges are painted before nodes so nodes stack on top", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGraph(sevenNodeGraph(), el);
+
+    const svg = el.children[0];
+    const tagsInOrder = svg.children.map((child) => child.tagName);
+    const firstNonLineIndex = tagsInOrder.findIndex((tag) => tag !== "LINE");
+
+    assert.equal(firstNonLineIndex, 6, "all six edge lines must precede any node element");
+    assert.ok(
+      tagsInOrder.slice(0, 6).every((tag) => tag === "LINE"),
+      "the first six children must be the edge lines",
+    );
+    assert.equal(tagsInOrder[6], "CIRCLE", "the first node element after the edges must be a circle");
+  });
+});
+
+test("graph: current/visited ids each receive their matching state class", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = sevenNodeGraph({ current: 0, visited: [1, 2] });
+
+    renderGraph(view, el);
+
+    // renderGraph emits node circles in view.nodes document order: 0..6.
+    const nodeCircles = el.querySelectorAll(".viz-graph__node");
+
+    assert.equal(nodeCircles[0].classList.contains("is-current"), true);
+    assert.equal(nodeCircles[1].classList.contains("is-visited"), true);
+    assert.equal(nodeCircles[2].classList.contains("is-visited"), true);
+    assert.equal(nodeCircles[3].classList.contains("is-current"), false);
+    assert.equal(nodeCircles[3].classList.contains("is-visited"), false);
+  });
+});
+
+test("graph: is-current wins when a node is in both current and visited", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = sevenNodeGraph({ current: 0, visited: [0] });
+
+    renderGraph(view, el);
+
+    const [node0] = el.querySelectorAll(".viz-graph__node");
+    assert.equal(node0.classList.contains("is-current"), true);
+    assert.equal(node0.classList.contains("is-visited"), false);
+  });
+});
+
+test("graph: activeEdge [a, b] marks the matching edge is-active", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = sevenNodeGraph({ activeEdge: [0, 1] });
+
+    renderGraph(view, el);
+
+    const edges = el.querySelectorAll(".viz-graph__edge");
+    // edges[0] corresponds to [0, 1] in EDGES document order.
+    assert.equal(edges[0].classList.contains("is-active"), true);
+    assert.equal(edges[1].classList.contains("is-active"), false);
+  });
+});
+
+test("graph: activeEdge [b, a] (reversed order) still marks the matching edge is-active", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = sevenNodeGraph({ activeEdge: [1, 0] });
+
+    renderGraph(view, el);
+
+    const edges = el.querySelectorAll(".viz-graph__edge");
+    assert.equal(edges[0].classList.contains("is-active"), true);
+    assert.equal(edges[1].classList.contains("is-active"), false);
+  });
+});
+
+test("graph: no activeEdge marks no edge is-active", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGraph(sevenNodeGraph({ activeEdge: null }), el);
+
+    const edges = el.querySelectorAll(".viz-graph__edge");
+    assert.ok(edges.every((edge) => edge.classList.contains("is-active") === false));
+  });
+});
+
+test("graph: nodes present in view.distances render a d=<n> label", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = sevenNodeGraph({ distances: { 0: 0, 1: 1, 2: 1 } });
+
+    renderGraph(view, el);
+
+    const distLabels = el.querySelectorAll(".viz-graph__dist");
+    assert.equal(distLabels.length, 3, "expected exactly three distance labels");
+    assert.deepEqual(
+      distLabels.map((n) => n.textContent),
+      ["d=0", "d=1", "d=1"],
+    );
+  });
+});
+
+test("graph: a node with no distances entry renders plainly, with no d= label", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    // Node 6 (the isolated node in the sample graph) never appears in distances.
+    const view = sevenNodeGraph({ distances: { 0: 0 } });
+
+    renderGraph(view, el);
+
+    const distLabels = el.querySelectorAll(".viz-graph__dist");
+    assert.equal(distLabels.length, 1, "only node 0 should carry a distance label");
+    assert.equal(distLabels[0].textContent, "d=0");
+
+    const labels = el.querySelectorAll(".viz-graph__label");
+    assert.equal(labels.length, 7, "every node, including undiscovered ones, still renders its label");
+    assert.equal(labels[6].textContent, "6");
+  });
+});
+
+test("graph: an empty nodes array renders no nodes or edges and does not throw", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = { kind: "graph", nodes: [], edges: [], current: null, visited: [], activeEdge: null, distances: {} };
+
+    assert.doesNotThrow(() => renderGraph(view, el));
+    assert.equal(el.querySelectorAll(".viz-graph__node").length, 0);
+    assert.equal(el.querySelectorAll(".viz-graph__edge").length, 0);
   });
 });

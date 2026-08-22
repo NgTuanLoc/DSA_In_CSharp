@@ -558,6 +558,54 @@ body {
   font-size: 4px;
 }
 
+/* ---------- graph renderer ---------- */
+
+.viz-graph {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: 16rem;
+}
+
+.viz-graph__edge {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.viz-graph__edge.is-active {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.viz-graph__node {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.viz-graph__node.is-visited {
+  fill: var(--pass-soft);
+  stroke: var(--pass);
+}
+
+.viz-graph__node.is-current {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+}
+
+.viz-graph__label {
+  fill: var(--fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 5px;
+  pointer-events: none;
+}
+
+.viz-graph__dist {
+  fill: var(--muted);
+  font-size: 4px;
+  pointer-events: none;
+}
+
 /* ---------- responsive: collapse to one column ---------- */
 
 @media (max-width: 900px) {
