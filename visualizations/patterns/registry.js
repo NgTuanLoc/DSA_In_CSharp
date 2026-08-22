@@ -10,6 +10,9 @@ import slidingWindow from "./sliding-window.js";
 import prefixSum from "./prefix-sum.js";
 import binarySearch from "./binary-search.js";
 import monotonicStack from "./monotonic-stack.js";
+import queues from "./queues.js";
+import counting from "./counting.js";
+import checkExistence from "./check-existence.js";
 
 export const specs = [
   twoPointers,
@@ -22,4 +25,7 @@ export const specs = [
   prefixSum,
   binarySearch,
   monotonicStack,
+  queues,
+  counting,
+  checkExistence,
 ];
