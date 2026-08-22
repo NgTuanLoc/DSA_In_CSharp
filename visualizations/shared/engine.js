@@ -43,3 +43,78 @@ export function validateFrames(spec, frames) {
 
   return problems;
 }
+
+/** Owns the current frame index and playback timing. Knows nothing about the DOM. */
+export class Player {
+  #index = 0;
+  #count;
+  #timer = null;
+  #onChange;
+  #intervalMs;
+  #schedule;
+  #cancel;
+
+  constructor(count, options = {}) {
+    const {
+      onChange = () => {},
+      intervalMs = 700,
+      schedule = setInterval,
+      cancel = clearInterval,
+    } = options;
+    this.#count = Math.max(0, count);
+    this.#onChange = onChange;
+    this.#intervalMs = intervalMs;
+    this.#schedule = schedule;
+    this.#cancel = cancel;
+  }
+
+  get index() { return this.#index; }
+  get count() { return this.#count; }
+  get isPlaying() { return this.#timer !== null; }
+  get atEnd() { return this.#index >= this.#count - 1; }
+
+  seek(target) {
+    const last = Math.max(0, this.#count - 1);
+    const next = Math.min(last, Math.max(0, target));
+    if (next === this.#index) return;
+    this.#index = next;
+    this.#onChange(this.#index);
+  }
+
+  next() { this.seek(this.#index + 1); }
+  prev() { this.seek(this.#index - 1); }
+  first() { this.seek(0); }
+  last() { this.seek(this.#count - 1); }
+
+  play() {
+    if (this.isPlaying || this.#count === 0) return;
+    if (this.atEnd) this.first();
+    this.#timer = this.#schedule(() => {
+      this.next();
+      if (this.atEnd) this.pause();
+    }, this.#intervalMs);
+    this.#onChange(this.#index);
+  }
+
+  pause() {
+    if (!this.isPlaying) return;
+    this.#cancel(this.#timer);
+    this.#timer = null;
+    this.#onChange(this.#index);
+  }
+
+  toggle() { this.isPlaying ? this.pause() : this.play(); }
+
+  reset() {
+    this.pause();
+    this.first();
+  }
+
+  setSpeed(intervalMs) {
+    this.#intervalMs = intervalMs;
+    if (this.isPlaying) {
+      this.pause();
+      this.play();
+    }
+  }
+}

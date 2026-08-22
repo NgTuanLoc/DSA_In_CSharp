@@ -62,3 +62,92 @@ test("validateFrames catches a blank note and an unknown kind", () => {
   assert.match(problems[1], /unknown view kind/);
   assert.match(problems[2], /unknown view2 kind/);
 });
+
+import { Player } from "../shared/engine.js";
+
+function fakeClock() {
+  let callback = null;
+  return {
+    schedule: (fn) => {
+      callback = fn;
+      return 1;
+    },
+    cancel: () => {
+      callback = null;
+    },
+    tick: () => callback && callback(),
+    get running() {
+      return callback !== null;
+    },
+  };
+}
+
+test("Player starts at frame 0", () => {
+  const p = new Player(5);
+  assert.equal(p.index, 0);
+  assert.equal(p.count, 5);
+  assert.equal(p.isPlaying, false);
+});
+
+test("Player.seek clamps to both ends", () => {
+  const p = new Player(5);
+  p.seek(99);
+  assert.equal(p.index, 4);
+  p.seek(-3);
+  assert.equal(p.index, 0);
+});
+
+test("Player.next stops at the last frame, prev stops at 0", () => {
+  const p = new Player(3);
+  p.next(); p.next(); p.next(); p.next();
+  assert.equal(p.index, 2);
+  assert.equal(p.atEnd, true);
+  p.prev(); p.prev(); p.prev();
+  assert.equal(p.index, 0);
+});
+
+test("Player.play advances one frame per tick", () => {
+  const clock = fakeClock();
+  const p = new Player(5, { schedule: clock.schedule, cancel: clock.cancel });
+  p.play();
+  assert.equal(p.isPlaying, true);
+  clock.tick();
+  clock.tick();
+  assert.equal(p.index, 2);
+});
+
+test("Player.play auto-pauses at the end", () => {
+  const clock = fakeClock();
+  const p = new Player(3, { schedule: clock.schedule, cancel: clock.cancel });
+  p.play();
+  clock.tick(); clock.tick(); clock.tick();
+  assert.equal(p.index, 2);
+  assert.equal(p.isPlaying, false);
+  assert.equal(clock.running, false);
+});
+
+test("Player.onChange fires on every index change", () => {
+  const seen = [];
+  const p = new Player(4, { onChange: (i) => seen.push(i) });
+  p.next();
+  p.next();
+  p.first();
+  assert.deepEqual(seen, [1, 2, 0]);
+});
+
+test("Player.reset stops playback and returns to 0", () => {
+  const clock = fakeClock();
+  const p = new Player(4, { schedule: clock.schedule, cancel: clock.cancel });
+  p.play();
+  clock.tick();
+  p.reset();
+  assert.equal(p.index, 0);
+  assert.equal(p.isPlaying, false);
+});
+
+test("Player handles an empty frame list without throwing", () => {
+  const p = new Player(0);
+  p.next();
+  p.seek(3);
+  assert.equal(p.index, 0);
+});
