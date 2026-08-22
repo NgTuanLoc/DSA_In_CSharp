@@ -143,6 +143,7 @@ export function boot(spec, root) {
   }
 
   function showError(message) {
+    player?.pause();
     frames = [];
     viz.replaceChildren(errorBanner(message));
     viz2.hidden = true;
@@ -179,11 +180,24 @@ export function boot(spec, root) {
     showFrame(0);
   }
 
-  controls.buttons.first.addEventListener("click", () => player.first());
-  controls.buttons.prev.addEventListener("click", () => player.prev());
-  controls.buttons.next.addEventListener("click", () => player.next());
-  controls.buttons.last.addEventListener("click", () => player.last());
+  controls.buttons.first.addEventListener("click", () => {
+    if (!player) return;
+    player.first();
+  });
+  controls.buttons.prev.addEventListener("click", () => {
+    if (!player) return;
+    player.prev();
+  });
+  controls.buttons.next.addEventListener("click", () => {
+    if (!player) return;
+    player.next();
+  });
+  controls.buttons.last.addEventListener("click", () => {
+    if (!player) return;
+    player.last();
+  });
   controls.buttons.toggle.addEventListener("click", () => {
+    if (!player) return;
     player.toggle();
     showFrame(player.index);
   });
@@ -193,6 +207,7 @@ export function boot(spec, root) {
 
   document.addEventListener("keydown", (event) => {
     if (event.target instanceof HTMLSelectElement || event.target instanceof HTMLInputElement) return;
+    if (!player) return;
     const actions = {
       " ": () => { player.toggle(); showFrame(player.index); },
       ArrowRight: () => player.next(),
