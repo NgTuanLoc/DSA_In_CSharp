@@ -60,16 +60,18 @@ test("gallery derivation: every card href resolves to a file on disk", () => {
   }
 });
 
-test("gallery derivation: grouping yields 20 cards across 9 folder groups", () => {
+test("gallery derivation: grouping yields 9 distinct folder groups", () => {
   const byFolder = new Map();
   for (const spec of specs) {
     if (!byFolder.has(spec.folder)) byFolder.set(spec.folder, []);
     byFolder.get(spec.folder).push(spec);
   }
 
+  // Card and spec counts are already covered by "all 20 patterns are
+  // registered" — every spec lands in exactly one group by construction, so
+  // summing group sizes would only ever re-derive specs.length. The one
+  // fact worth asserting here is the group count itself.
   assert.equal(byFolder.size, 9, "expected 9 distinct folder groups");
-  const totalCards = [...byFolder.values()].reduce((sum, group) => sum + group.length, 0);
-  assert.equal(totalCards, 20, "expected 20 cards total across all groups");
 });
 
 test("gallery derivation: folder groups are sorted the way index.html sorts them", () => {
@@ -82,8 +84,23 @@ test("gallery derivation: folder groups are sorted the way index.html sorts them
   const sortedFolders = [...byFolder]
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([folder]) => folder);
-  const expected = [...new Set(sortedFolders)].slice().sort((a, b) => a.localeCompare(b));
-  assert.deepEqual(sortedFolders, expected, "folder groups are not in localeCompare order");
+
+  // Independent oracle, not a re-sort of sortedFolders itself: if the
+  // derivation's sort/grouping were broken (wrong comparator, wrong field,
+  // duplicate/missing group), this hardcoded list would catch it. Re-sorting
+  // sortedFolders with the same comparator it was built with can never fail.
+  const expected = [
+    "ArrayAndString",
+    "Backtracking",
+    "BinarySearch",
+    "DynamicProgramming",
+    "Hashing",
+    "Heap",
+    "LinkedList",
+    "StackAndQueue",
+    "TreesAndGraphs",
+  ];
+  assert.deepEqual(sortedFolders, expected, "folder groups are not in the expected order");
 });
 
 for (const row of runAllChecks(specs)) {

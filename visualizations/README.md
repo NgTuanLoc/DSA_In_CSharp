@@ -8,11 +8,16 @@ HTML, CSS, and ES modules.
 
 ## Quick start
 
+From the repository root:
+
 ```
 cd visualizations && python -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Then open `http://localhost:8000`. This leaves your shell's working directory
+at `visualizations/` for the rest of this page — the command blocks below say
+explicitly which directory each one expects, since `cd`ing here changes what
+a bare relative path resolves to.
 
 ## Why a server, and not just double-clicking `index.html`
 
@@ -26,24 +31,41 @@ back to this command.
 
 ## Running the tests
 
-Two independent test harnesses cover this folder, and both should be run:
+Two independent test harnesses cover this folder, and both should be run.
+Mind the working directory for each — the glob path only resolves from the
+repository root, and the other two only resolve from inside `visualizations/`:
+
+**From the repository root** (one level above this folder):
 
 ```
 node --test "visualizations/tests/*.test.js"
 ```
 
 Node's built-in test runner, covering the shared renderers, the shared
-engine, and every pattern spec's structure and frame-by-frame behavior.
+engine, and every pattern spec's structure and frame-by-frame behavior. Run
+from inside `visualizations/` instead, this glob matches zero files and
+prints `tests 0 / pass 0 / fail 0` — a silent false green, not an error — so
+double-check you're one level up before trusting a 0/0 result.
+
+**From inside `visualizations/`:**
 
 ```
 tests.html
 ```
 
-Open this file the same way as `index.html` (via the local server) for a
-browser-based run of the same renderer and spec checks, useful when you want
-to see a failure rendered rather than read from a terminal. `tests.node.mjs`
-(run with `node tests.node.mjs`) runs just the spec self-checks and prints a
-pass/fail table — it's what CI or a quick sanity check would use.
+Open this file the same way as `index.html` — as a URL served by the local
+server started above (e.g. `http://localhost:8000/tests.html`), never via
+`file://` — for a browser-based run of the same renderer and spec checks,
+useful when you want to see a failure rendered rather than read from a
+terminal.
+
+```
+node tests.node.mjs
+```
+
+Also run from inside `visualizations/` (it imports `./patterns/registry.js`
+relatively). Runs just the spec self-checks and prints a pass/fail table —
+it's what CI or a quick sanity check would use.
 
 ## Adding a new pattern
 
