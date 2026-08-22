@@ -2,9 +2,11 @@
 // tests/renderers.test.js to exercise shared/page.js's boot() and the
 // renderers under plain Node (no browser, no dependency).
 // It implements only the small surface page.js/render.js/renderers/*.js
-// actually touch: element creation, className/classList, textContent,
-// dataset, append/prepend/replaceChildren, disabled/hidden flags, and event
-// registration + manual firing. Nothing here is loaded by a browser.
+// actually touch: element creation (including namespaced SVG elements via
+// createElementNS), className/classList, textContent, dataset,
+// setAttribute/getAttribute/removeAttribute, append/prepend/replaceChildren,
+// disabled/hidden flags, and event registration + manual firing. Nothing
+// here is loaded by a browser.
 
 class FakeClassList {
   constructor() {
@@ -40,6 +42,20 @@ class FakeNode {
     this.disabled = false;
     this.hidden = false;
     this.dataset = {};
+    this.namespaceURI = null;
+    this._attrs = new Map();
+  }
+  // Minimal generic attribute storage — needed by the SVG renderer (cx, cy,
+  // r, x1/y1/x2/y2, viewBox, text-anchor, ...). Does not model any real
+  // attribute semantics (no reflected properties, no validation).
+  setAttribute(name, value) {
+    this._attrs.set(name, String(value));
+  }
+  getAttribute(name) {
+    return this._attrs.has(name) ? this._attrs.get(name) : null;
+  }
+  removeAttribute(name) {
+    this._attrs.delete(name);
   }
   get className() {
     return this.classList.toString();
@@ -132,6 +148,13 @@ export function installDomStub() {
     if (tag === "select") return new FakeSelectElement(tag);
     if (tag === "input") return new FakeInputElement(tag);
     return new FakeNode(tag);
+  };
+  // Records the namespace on the node (e.g. for the SVG renderer's
+  // createElementNS(SVG_NS, tag) calls) — no other SVG semantics modeled.
+  fakeDocument.createElementNS = (ns, tag) => {
+    const node = new FakeNode(tag);
+    node.namespaceURI = ns;
+    return node;
   };
 
   globalThis.document = fakeDocument;

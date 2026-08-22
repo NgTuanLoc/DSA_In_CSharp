@@ -60,6 +60,31 @@
       },
       check: (el) => el.querySelectorAll(".viz-list__node").length === 3,
     },
+    {
+      name: "tree renders five nodes and four edges for a five-node tree",
+      view: {
+        kind: "tree",
+        nodes: [
+          { id: "a", value: 3, x: 0.5, y: 0.1 },
+          { id: "b", value: 9, x: 0.25, y: 0.5 },
+          { id: "c", value: 20, x: 0.75, y: 0.5 },
+          { id: "d", value: 15, x: 0.6, y: 0.9 },
+          { id: "e", value: 7, x: 0.9, y: 0.9 },
+        ],
+        edges: [
+          ["a", "b"],
+          ["a", "c"],
+          ["c", "d"],
+          ["c", "e"],
+        ],
+        current: null,
+        visited: [],
+        frontier: [],
+      },
+      check: (el) =>
+        el.querySelectorAll(".viz-tree__node").length === 5 &&
+        el.querySelectorAll(".viz-tree__edge").length === 4,
+    },
   ];
 
   function row(cells, pass) {

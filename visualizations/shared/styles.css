@@ -512,6 +512,52 @@ body {
   white-space: nowrap;
 }
 
+/* ---------- tree renderer ---------- */
+
+.viz-tree {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: 16rem;
+}
+
+.viz-tree__edge {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.viz-tree__node {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.viz-tree__node.is-frontier {
+  fill: var(--window-soft);
+  stroke: var(--window);
+}
+
+.viz-tree__node.is-visited {
+  fill: var(--pass-soft);
+  stroke: var(--pass);
+}
+
+.viz-tree__node.is-current {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+}
+
+.viz-tree__value {
+  fill: var(--fg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 6px;
+}
+
+.viz-tree__label {
+  fill: var(--muted);
+  font-size: 4px;
+}
+
 /* ---------- responsive: collapse to one column ---------- */
 
 @media (max-width: 900px) {
