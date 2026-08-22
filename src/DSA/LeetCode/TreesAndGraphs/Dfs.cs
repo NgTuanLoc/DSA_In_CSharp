@@ -239,4 +239,24 @@ public class BinaryTreeDeptFirstSearch
 
         return Math.Max(leftPath, rightPath) + 1;
     }
+
+    public static bool IsBalance(TreeNode? root)
+    {
+        // https://leetcode.com/problems/balanced-binary-tree/description/
+        return GetMaxHeight(root) != -1;
+    }
+
+    private static int GetMaxHeight(TreeNode? node)
+    {
+        if (node is null) return 0;
+
+        var left = GetMaxHeight(node.Left);
+        var right = GetMaxHeight(node.Right);
+
+        if (left == -1 || right == -1) return -1;
+
+        if (Math.Abs(left - right) > 1) return -1;
+
+        return 1 + Math.Max(left, right);
+    }
 }

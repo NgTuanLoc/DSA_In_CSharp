@@ -16,25 +16,26 @@ public static class Bfs
 
     public static IList<int> RightSideView(TreeNode? root)
     {
+        // https://leetcode.com/problems/binary-tree-right-side-view/description/
+        if (root is null) return [];
+
         IList<int> result = [];
-
-        if (root == null) return result;
-
         Queue<TreeNode> queue = [];
         queue.Enqueue(root);
 
         while (queue.Count != 0)
         {
-            var prev = 0;
-            var size = queue.Count;
-            for (var i = 0; i < size; i++)
+            int n = queue.Count;
+
+            for (int i = 0; i < n; i++)
             {
-                var currNode = queue.Dequeue();
-                prev = currNode.Val;
-                if (currNode.Left != null) queue.Enqueue(currNode.Left);
-                if (currNode.Right != null) queue.Enqueue(currNode.Right);
+                var node = queue.Dequeue();
+
+                if (node.Left != null) queue.Enqueue(node.Left);
+                if (node.Right != null) queue.Enqueue(node.Right);
+
+                if (i == n - 1) result.Add(node.Val);
             }
-            result.Add(prev);
         }
 
         return result;
@@ -129,12 +130,40 @@ public static class Bfs
 
                 level.Add(currNode.Val);
             }
-            if (isReverse) level = level.Reverse<int>().ToList();
+            if (isReverse) level = [.. level.Reverse<int>()];
 
             result.Add(level);
             isReverse = !isReverse;
         }
 
         return result;
+    }
+
+    public static int WidthOfBinaryTree(TreeNode? root)
+    {
+        // https://leetcode.com/problems/maximum-width-of-binary-tree/description/
+        if (root is null) return 0;
+
+        Queue<(int, TreeNode)> queue = [];
+        queue.Enqueue((0, root));
+        int max = 1;
+
+        while (queue.Count != 0)
+        {
+            var n = queue.Count;
+            for (int i = 0; i < n; i++)
+            {
+                var (index, node) = queue.Dequeue();
+                if (node.Left != null) queue.Enqueue((index * 2, node.Left));
+                if (node.Right != null) queue.Enqueue((index * 2 + 1, node.Right));
+            }
+
+            if (queue.Count <= 1) continue;
+            var (firstIndex, _) = queue.Peek();
+            var (lastIndex, _) = queue.Last();
+            max = Math.Max(max, lastIndex - firstIndex + 1);
+        }
+
+        return max;
     }
 }

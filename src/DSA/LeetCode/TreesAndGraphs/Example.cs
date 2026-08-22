@@ -170,6 +170,11 @@ public class TreesAndGraphsExample
         // {
         //     return GoodNodeDfs(node, int.MinValue);
         // }
+
+        //!Is Balanced Tree
+        // Console.WriteLine(BinaryTreeDeptFirstSearch.IsBalance(Utils.BuildBinaryTree([3, 9, 20, null, null, 15, 7])));
+        // Console.WriteLine(BinaryTreeDeptFirstSearch.IsBalance(Utils.BuildBinaryTree([1, 2, 2, 3, 3, null, null, 4, 4])));
+        // Console.WriteLine(BinaryTreeDeptFirstSearch.IsBalance(Utils.BuildBinaryTree([])));
     }
 
     public static void Run_BFS()
@@ -200,12 +205,11 @@ public class TreesAndGraphsExample
 
         // BFS.PrintAllNodes(root);
 
-        // !Binary Tree Right Side View
-        // var result = BFS.RightSideView(root);
-        // foreach (var item in result)
-        // {
-        //     Console.Write($"{item}  ");
-        // }
+        // !Binary Tree Right Side view
+        // Utils.Print(Bfs.RightSideView(Utils.BuildBinaryTree([1, 2, 3, null, 5, null, 4])).ToList());
+        // Utils.Print(Bfs.RightSideView(Utils.BuildBinaryTree([1, 2, 3, 4, null, null, null, 5])).ToList());
+        // Utils.Print(Bfs.RightSideView(Utils.BuildBinaryTree([1, null, 3])).ToList());
+        // Utils.Print(Bfs.RightSideView(Utils.BuildBinaryTree([])).ToList());
 
         // !Find Largest Value in Each Tree Row
         // var result = BFS.LargestValues(root);
@@ -229,6 +233,11 @@ public class TreesAndGraphsExample
         //     }
         //     Console.WriteLine();
         // }
+
+        // !Maximum Width Of Binary Tree
+        Console.WriteLine(Bfs.WidthOfBinaryTree(Utils.BuildBinaryTree([1, 3, 2, 5, 3, null, 9])));
+        Console.WriteLine(Bfs.WidthOfBinaryTree(Utils.BuildBinaryTree([1, 3, 2, 5, null, null, 9, 6, null, 7])));
+        Console.WriteLine(Bfs.WidthOfBinaryTree(Utils.BuildBinaryTree([1, 3, 2, 5])));
     }
 
     public static void Run_BinarySearchTree()
