@@ -18,6 +18,8 @@ import checkExistence from "./check-existence.js";
 import treeDfs from "./tree-dfs.js";
 import bst from "./bst.js";
 import heapOperations from "./heap-operations.js";
+import backtrackingGeneration from "./backtracking-generation.js";
+import topK from "./top-k.js";
 
 export const specs = [
   twoPointers,
@@ -38,4 +40,6 @@ export const specs = [
   treeDfs,
   bst,
   heapOperations,
+  backtrackingGeneration,
+  topK,
 ];

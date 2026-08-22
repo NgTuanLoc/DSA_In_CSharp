@@ -7,6 +7,8 @@ import dp1d from "../patterns/dp-1d.js";
 import monotonicStack from "../patterns/monotonic-stack.js";
 import queues from "../patterns/queues.js";
 import heapOperations from "../patterns/heap-operations.js";
+import backtrackingGeneration from "../patterns/backtracking-generation.js";
+import topK from "../patterns/top-k.js";
 
 test("registry exports at least one spec", () => {
   assert.ok(specs.length > 0, "patterns/registry.js exports no specs");
@@ -179,5 +181,118 @@ test("Heap Operations: the tree view and the collection view agree at every fram
       expectedFinalHeap,
       `${JSON.stringify(data)}: final collection frame does not match run()'s returned heap`,
     );
+  }
+});
+
+test("Backtracking: emitted collection frames are snapshots, not aliases of the live path array", () => {
+  const { frames, result } = collectFrames(backtrackingGeneration, [1, 2, 3]);
+
+  // Right after choosing 2 (still inside backtrack(1)'s first iteration), the
+  // path is [1,2] — it has not yet grown to [1,2,3], nor shrunk back to [].
+  const midFrame = frames.find((f) => f.note === "choose 2 — path is now [1,2]");
+  assert.ok(midFrame, "expected a frame emitted right after 2 is pushed onto the path");
+  assert.deepEqual(midFrame.view2.items, [{ value: 1 }, { value: 2 }]);
+
+  // The very last emitted frame is the final undo, back at the empty path.
+  const finalFrame = frames.at(-1);
+  assert.equal(finalFrame.note, "remove 3 and try the next branch");
+  assert.deepEqual(finalFrame.view2.items, []);
+
+  // If the collection view aliased the live `path` array instead of copying it,
+  // the mid-loop frame captured above would show the final (emptied) path too.
+  assert.notDeepEqual(midFrame.view2.items, finalFrame.view2.items);
+
+  // Pin against run()'s own independently-computed result, per the heap-pop lesson:
+  // two views agreeing with each other is not proof either one is correct.
+  assert.deepEqual(result, [[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]);
+});
+
+test("Backtracking: every tree frame carries edges connecting each node to its parent, and positions are stable across frames", () => {
+  for (const input of backtrackingGeneration.inputs) {
+    const { frames } = collectFrames(backtrackingGeneration, input.data);
+    const nodeCount = frames[0].view.nodes.length;
+
+    frames.forEach((frame, i) => {
+      assert.equal(frame.view.kind, "tree", `frame ${i}: expected a tree view`);
+      assert.ok(Array.isArray(frame.view.edges), `frame ${i}: view.edges must be an array`);
+      assert.equal(
+        frame.view.edges.length,
+        nodeCount - 1,
+        `frame ${i}: a tree of ${nodeCount} nodes must have ${nodeCount - 1} edges`,
+      );
+      for (const edge of frame.view.edges) {
+        const [parentId, childId] = edge;
+        assert.ok(
+          Number.isInteger(parentId) && parentId >= 0 && parentId < nodeCount,
+          `frame ${i}: edge parent id ${parentId} out of range`,
+        );
+        assert.ok(
+          Number.isInteger(childId) && childId >= 0 && childId < nodeCount,
+          `frame ${i}: edge child id ${childId} out of range`,
+        );
+      }
+
+      // Every current-path collection item must be a {value} object, not a raw number.
+      for (const item of frame.view2.items) {
+        assert.equal(typeof item, "object", `frame ${i}: collection item must be an object`);
+        assert.ok("value" in item, `frame ${i}: collection item must have a "value" key`);
+      }
+    });
+
+    // Node positions must be identical across every frame (assigned once, in the dry run).
+    const firstPositions = frames[0].view.nodes.map(({ id, x, y }) => ({ id, x, y }));
+    frames.forEach((frame, i) => {
+      const positions = frame.view.nodes.map(({ id, x, y }) => ({ id, x, y }));
+      assert.deepEqual(positions, firstPositions, `frame ${i}: node positions moved`);
+    });
+  }
+});
+
+test("Top K Elements: emitted collection frames are snapshots, not aliases of the live heap array", () => {
+  const { frames, result } = collectFrames(topK, { nums: [3, 2, 1, 5, 6, 4], k: 2 });
+
+  // Right after dropping 1 (the third push overflows the size-2 heap), the
+  // heap is transiently [2,3] — not yet the final [5,6].
+  const midFrame = frames.find((f) => f.note === "heap exceeded k — drop the smallest, 1");
+  assert.ok(midFrame, "expected a frame emitted right after 1 is evicted");
+  assert.deepEqual(midFrame.view2.items, [{ value: 2 }, { value: 3 }]);
+
+  const finalFrame = frames.at(-1);
+  assert.deepEqual(finalFrame.view2.items, [{ value: 5 }, { value: 6 }]);
+
+  // If the collection view aliased the live `heap` array instead of copying it,
+  // the mid-loop frame captured above would show the final heap too.
+  assert.notDeepEqual(midFrame.view2.items, finalFrame.view2.items);
+
+  // Pin against run()'s own independently-computed result.
+  assert.equal(result, 5);
+});
+
+test("Top K Elements: every array frame's pointer is in range, and collection highlight indices are valid", () => {
+  for (const input of topK.inputs) {
+    const { frames } = collectFrames(topK, input.data);
+
+    frames.forEach((frame, i) => {
+      assert.equal(frame.view.kind, "array", `frame ${i}: expected an array view`);
+      const pointerIndex = frame.view.pointers.i;
+      assert.ok(
+        Number.isInteger(pointerIndex) &&
+          pointerIndex >= 0 &&
+          pointerIndex < frame.view.cells.length,
+        `frame ${i}: pointer i=${pointerIndex} out of range for ${frame.view.cells.length} cells`,
+      );
+
+      for (const item of frame.view2.items) {
+        assert.equal(typeof item, "object", `frame ${i}: heap item must be an object`);
+        assert.ok("value" in item, `frame ${i}: heap item must have a "value" key`);
+      }
+
+      for (const idx of frame.view2.highlight ?? []) {
+        assert.ok(
+          Number.isInteger(idx) && idx >= 0 && idx < frame.view2.items.length,
+          `frame ${i}: highlight index ${idx} out of range for ${frame.view2.items.length} heap items`,
+        );
+      }
+    });
   }
 });
