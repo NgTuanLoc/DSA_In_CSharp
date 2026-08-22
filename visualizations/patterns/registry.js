@@ -13,6 +13,9 @@ import monotonicStack from "./monotonic-stack.js";
 import queues from "./queues.js";
 import counting from "./counting.js";
 import checkExistence from "./check-existence.js";
+import treeDfs from "./tree-dfs.js";
+import bst from "./bst.js";
+import heapOperations from "./heap-operations.js";
 
 export const specs = [
   twoPointers,
@@ -28,4 +31,7 @@ export const specs = [
   queues,
   counting,
   checkExistence,
+  treeDfs,
+  bst,
+  heapOperations,
 ];

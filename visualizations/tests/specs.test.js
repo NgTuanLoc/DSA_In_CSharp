@@ -6,6 +6,7 @@ import { collectFrames } from "../shared/engine.js";
 import dp1d from "../patterns/dp-1d.js";
 import monotonicStack from "../patterns/monotonic-stack.js";
 import queues from "../patterns/queues.js";
+import heapOperations from "../patterns/heap-operations.js";
 
 test("registry exports at least one spec", () => {
   assert.ok(specs.length > 0, "patterns/registry.js exports no specs");
@@ -94,4 +95,66 @@ test("Queues: emitted collection frames are snapshots, not aliases of the live q
   // copying it, the mid-loop frame captured above would show the final (shrunk)
   // queue too, since the front expiry (t=1) happens later in the same tick.
   assert.notDeepEqual(midFrame.view.items, finalFrame.view.items);
+});
+
+test("Heap Operations: emitted tree/collection frames are snapshots, not aliases of the live heap array", () => {
+  const { frames } = collectFrames(heapOperations, { op: "push", values: [5, 3, 8, 1] });
+
+  // Right after pushing 1, it sifts past 5 first, landing transiently at [3,1,8,5]
+  // (it has not yet sifted past 3 to reach the final [1,3,8,5]).
+  const midFrame = frames.find(
+    (f) => f.note === "1 < 5 — swap heap[3] and heap[1]; i becomes 1",
+  );
+  assert.ok(midFrame, "expected a frame emitted right after index 3 sifts past index 1");
+  assert.deepEqual(midFrame.view2.items, [
+    { value: 3 },
+    { value: 1 },
+    { value: 8 },
+    { value: 5 },
+  ]);
+  assert.deepEqual(
+    midFrame.view.nodes.map((n) => n.value),
+    [3, 1, 8, 5],
+  );
+
+  const finalFrame = frames.at(-1);
+  assert.deepEqual(finalFrame.view2.items, [
+    { value: 1 },
+    { value: 3 },
+    { value: 8 },
+    { value: 5 },
+  ]);
+
+  // If the renderer's views aliased the live `heap` array instead of copying it,
+  // the mid-loop frame captured above would show the final heap too, since one
+  // more swap (index 1 past index 0) happens later in the same push.
+  assert.notDeepEqual(midFrame.view2.items, finalFrame.view2.items);
+  assert.notDeepEqual(
+    midFrame.view.nodes.map((n) => n.value),
+    finalFrame.view.nodes.map((n) => n.value),
+  );
+});
+
+test("Heap Operations: the tree view and the collection view agree at every frame", () => {
+  const cases = [
+    { op: "push", values: [5, 3, 8, 1] },
+    { op: "pop", heap: [1, 3, 8, 5] },
+  ];
+
+  for (const data of cases) {
+    const { frames } = collectFrames(heapOperations, data);
+    frames.forEach((frame, i) => {
+      // Tree nodes are id-ordered by construction (id === heap index), so reading
+      // node values in id order reproduces heap-array order.
+      const treeValues = [...frame.view.nodes]
+        .sort((a, b) => a.id - b.id)
+        .map((n) => n.value);
+      const collectionValues = frame.view2.items.map((item) => item.value);
+      assert.deepEqual(
+        treeValues,
+        collectionValues,
+        `frame ${i} (${JSON.stringify(data)}): tree/collection disagree`,
+      );
+    });
+  }
 });
