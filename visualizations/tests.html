@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tests — DSA Pattern Visualizations</title>
+<link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+<main class="page">
+  <h1>Test harness</h1>
+  <section>
+    <h2>Renderers</h2>
+    <table id="renderer-results"></table>
+  </section>
+  <section>
+    <h2>Pattern specs</h2>
+    <table id="spec-results"></table>
+  </section>
+</main>
+<script type="module">
+  import { specs } from "./patterns/registry.js";
+  import { runAllChecks } from "./shared/selftest.js";
+  import { paint } from "./shared/render.js";
+
+  // Each renderer task appends one case here.
+  const rendererCases = [
+    {
+      name: "array renders one cell per entry",
+      view: { kind: "array", cells: [1, 2, 3, 4, 5], pointers: { L: 0, R: 4 } },
+      check: (el) => el.querySelectorAll(".viz-array__cell").length === 5,
+    },
+    {
+      name: "array reports an unknown kind instead of blanking",
+      view: { kind: "hologram" },
+      check: (el) => el.querySelectorAll(".viz-error").length === 1,
+    },
+  ];
+
+  function row(cells, pass) {
+    const tr = document.createElement("tr");
+    tr.className = pass ? "is-pass" : "is-fail";
+    for (const text of cells) {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.append(td);
+    }
+    return tr;
+  }
+
+  const rendererTable = document.getElementById("renderer-results");
+  const sandbox = document.createElement("div");
+  for (const testCase of rendererCases) {
+    let pass = false;
+    let detail = "";
+    try {
+      paint(testCase.view, sandbox);
+      pass = testCase.check(sandbox) === true;
+    } catch (err) {
+      detail = err.message;
+    }
+    rendererTable.append(row([pass ? "PASS" : "FAIL", testCase.name, detail], pass));
+  }
+
+  const specTable = document.getElementById("spec-results");
+  if (specs.length === 0) {
+    specTable.append(row(["—", "no pattern specs registered yet", ""], true));
+  } else {
+    for (const result of runAllChecks(specs)) {
+      specTable.append(
+        row(
+          [
+            result.pass ? "PASS" : "FAIL",
+            `${result.pattern} — ${result.input}`,
+            result.pass ? `${result.frames} frames` : result.problems.join("; "),
+          ],
+          result.pass,
+        ),
+      );
+    }
+  }
+</script>
+</body>
+</html>
