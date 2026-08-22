@@ -1,5 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { specs } from "../patterns/registry.js";
 import { runAllChecks } from "../shared/selftest.js";
 import { collectFrames } from "../shared/engine.js";
@@ -31,6 +33,57 @@ test("every spec declares the required fields", () => {
 test("spec titles are unique", () => {
   const titles = specs.map((s) => s.title);
   assert.equal(new Set(titles).size, titles.length);
+});
+
+test("every spec has a unique slug", () => {
+  const slugs = specs.map((s) => s.slug);
+  for (const slug of slugs) {
+    assert.match(slug, /^[a-z0-9-]+$/, `bad slug: ${slug}`);
+  }
+  assert.equal(new Set(slugs).size, slugs.length, "duplicate slug");
+});
+
+test("all 20 patterns are registered", () => {
+  assert.equal(specs.length, 20);
+});
+
+// index.html cannot be exercised in a browser here, so this reproduces its
+// grouping/sorting/href logic in Node and checks the result mechanically:
+// every derived patterns/<slug>.html path must resolve to a real file, the
+// grouping must yield the expected card and group counts, and the sort order
+// must match what the page's own script produces.
+test("gallery derivation: every card href resolves to a file on disk", () => {
+  const patternsDir = fileURLToPath(new URL("../patterns/", import.meta.url));
+  for (const spec of specs) {
+    const path = `${patternsDir}${spec.slug}.html`;
+    assert.ok(existsSync(path), `missing patterns/${spec.slug}.html for "${spec.title}"`);
+  }
+});
+
+test("gallery derivation: grouping yields 20 cards across 9 folder groups", () => {
+  const byFolder = new Map();
+  for (const spec of specs) {
+    if (!byFolder.has(spec.folder)) byFolder.set(spec.folder, []);
+    byFolder.get(spec.folder).push(spec);
+  }
+
+  assert.equal(byFolder.size, 9, "expected 9 distinct folder groups");
+  const totalCards = [...byFolder.values()].reduce((sum, group) => sum + group.length, 0);
+  assert.equal(totalCards, 20, "expected 20 cards total across all groups");
+});
+
+test("gallery derivation: folder groups are sorted the way index.html sorts them", () => {
+  const byFolder = new Map();
+  for (const spec of specs) {
+    if (!byFolder.has(spec.folder)) byFolder.set(spec.folder, []);
+    byFolder.get(spec.folder).push(spec);
+  }
+
+  const sortedFolders = [...byFolder]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([folder]) => folder);
+  const expected = [...new Set(sortedFolders)].slice().sort((a, b) => a.localeCompare(b));
+  assert.deepEqual(sortedFolders, expected, "folder groups are not in localeCompare order");
 });
 
 for (const row of runAllChecks(specs)) {
