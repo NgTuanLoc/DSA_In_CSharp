@@ -4,6 +4,7 @@ import { specs } from "../patterns/registry.js";
 import { runAllChecks } from "../shared/selftest.js";
 import { collectFrames } from "../shared/engine.js";
 import dp1d from "../patterns/dp-1d.js";
+import monotonicStack from "../patterns/monotonic-stack.js";
 
 test("registry exports at least one spec", () => {
   assert.ok(specs.length > 0, "patterns/registry.js exports no specs");
@@ -47,4 +48,22 @@ test("1D Dynamic Programming: emitted grid frames are snapshots, not aliases of 
   // If the renderer's grid view aliased the live `dp` array instead of copying it,
   // the mid-loop frame captured above would show the final filled row too.
   assert.notDeepEqual(midFrame.view2.rows[0], finalFrame.view2.rows[0]);
+});
+
+test("Monotonic Stack: emitted collection frames are snapshots, not aliases of the live stack array", () => {
+  const { frames } = collectFrames(monotonicStack, [73, 74, 75, 71, 69, 72, 76, 73]);
+
+  const midFrame = frames.find((f) => f.note === "answer[0] = 1 - 0 = 1");
+  assert.ok(midFrame, "expected a frame emitted right after index 0 is resolved");
+  assert.deepEqual(midFrame.view2.items, []);
+
+  const finalFrame = frames.at(-1);
+  assert.deepEqual(finalFrame.view2.items, [
+    { key: 6, value: 76 },
+    { key: 7, value: 73 },
+  ]);
+
+  // If the renderer's collection view aliased the live `stack` array instead of
+  // copying it, the mid-loop frame captured above would show the final stack too.
+  assert.notDeepEqual(midFrame.view2.items, finalFrame.view2.items);
 });

@@ -6,5 +6,20 @@ import fastSlowPointers from "./fast-slow-pointers.js";
 import treeBfs from "./tree-bfs.js";
 import graphBfs from "./graph-bfs.js";
 import dp1d from "./dp-1d.js";
+import slidingWindow from "./sliding-window.js";
+import prefixSum from "./prefix-sum.js";
+import binarySearch from "./binary-search.js";
+import monotonicStack from "./monotonic-stack.js";
 
-export const specs = [twoPointers, stacks, fastSlowPointers, treeBfs, graphBfs, dp1d];
+export const specs = [
+  twoPointers,
+  stacks,
+  fastSlowPointers,
+  treeBfs,
+  graphBfs,
+  dp1d,
+  slidingWindow,
+  prefixSum,
+  binarySearch,
+  monotonicStack,
+];
