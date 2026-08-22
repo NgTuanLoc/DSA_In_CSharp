@@ -135,14 +135,14 @@ test("Heap Operations: emitted tree/collection frames are snapshots, not aliases
   );
 });
 
-test("Heap Operations: the tree view and the collection view agree at every frame", () => {
+test("Heap Operations: the tree view and the collection view agree at every frame, and the final frame matches the returned result", () => {
   const cases = [
     { op: "push", values: [5, 3, 8, 1] },
     { op: "pop", heap: [1, 3, 8, 5] },
   ];
 
   for (const data of cases) {
-    const { frames } = collectFrames(heapOperations, data);
+    const { frames, result } = collectFrames(heapOperations, data);
     frames.forEach((frame, i) => {
       // Tree nodes are id-ordered by construction (id === heap index), so reading
       // node values in id order reproduces heap-array order.
@@ -156,5 +156,28 @@ test("Heap Operations: the tree view and the collection view agree at every fram
         `frame ${i} (${JSON.stringify(data)}): tree/collection disagree`,
       );
     });
+
+    // The two views agreeing with each other is not enough — they could agree
+    // while both are stale. Pin the last frame's heap state against what run()
+    // actually returned, so a swap emitted before it happens (leaving the final
+    // frame one step behind the real array) fails loudly instead of passing
+    // because both views independently show the same wrong thing.
+    const expectedFinalHeap = data.op === "pop" ? result.heap : result;
+    const finalFrame = frames.at(-1);
+    const finalTreeValues = [...finalFrame.view.nodes]
+      .sort((a, b) => a.id - b.id)
+      .map((n) => n.value);
+    const finalCollectionValues = finalFrame.view2.items.map((item) => item.value);
+
+    assert.deepEqual(
+      finalTreeValues,
+      expectedFinalHeap,
+      `${JSON.stringify(data)}: final tree frame does not match run()'s returned heap`,
+    );
+    assert.deepEqual(
+      finalCollectionValues,
+      expectedFinalHeap,
+      `${JSON.stringify(data)}: final collection frame does not match run()'s returned heap`,
+    );
   }
 });

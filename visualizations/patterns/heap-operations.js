@@ -110,12 +110,12 @@ function popOne(heap, emit) {
 
     const parentVal = heap[i];
     const childVal = heap[smaller];
+    [heap[i], heap[smaller]] = [heap[smaller], heap[i]];
     emit({
       line: 5,
       note: `heap[${i}]=${parentVal} > heap[${smaller}]=${childVal} — swap; i becomes ${smaller}`,
-      ...views(heap, i, [i, smaller]),
+      ...views(heap, smaller, [i, smaller]),
     });
-    [heap[i], heap[smaller]] = [heap[smaller], heap[i]];
     i = smaller;
   }
 
