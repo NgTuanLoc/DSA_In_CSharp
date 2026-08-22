@@ -189,3 +189,77 @@ test("boot(): showError() pauses an already-playing player instead of leaving it
     stub.uninstall();
   }
 });
+
+function lineSyncSpec() {
+  return {
+    title: "Line Sync Spec (test double)",
+    folder: "Test",
+    complexity: { time: "O(1)", space: "O(1)" },
+    whenToUse: "exercises the happy-path line-highlight sync, counter, and secondary-view visibility",
+    problems: ["test problem"],
+    pseudocode: ["line zero", "line one", "line two"],
+    inputs: [{ label: "only", data: "x", expect: true }],
+    run(data, emit) {
+      emit({
+        line: 0,
+        note: "frame one — no view2",
+        view: { kind: "array", cells: ["a"], pointers: {}, colors: {} },
+      });
+      emit({
+        line: 2,
+        note: "frame two — has view2",
+        view: { kind: "array", cells: ["a"], pointers: {}, colors: {} },
+        view2: { kind: "array", cells: ["b"], pointers: {}, colors: {} },
+      });
+      emit({
+        line: 1,
+        note: "frame three — no view2 again",
+        view: { kind: "array", cells: ["a"], pointers: {}, colors: {} },
+      });
+      return true;
+    },
+  };
+}
+
+test("boot(): showFrame marks exactly the active frame's pseudocode line active, updates the counter, and toggles the secondary view", () => {
+  const stub = installDomStub();
+  try {
+    const root = stub.document.createElement("main");
+    boot(lineSyncSpec(), root);
+
+    const codeLines = findByClass(root, "code__line");
+    assert.equal(codeLines.length, 3, "expected one <li> per pseudocode line");
+
+    const [, , , nextButton] = findByClass(root, "controls__btn"); // first, prev, toggle, next, last
+    const [counter] = findByClass(root, "controls__counter");
+    const [viz2] = findByClass(root, "stage__viz--secondary");
+
+    // Frame 0: line 0 active, no other line active; view2 absent -> hidden.
+    assert.deepEqual(
+      codeLines.map((l) => l.classList.contains("is-active")),
+      [true, false, false],
+    );
+    assert.equal(counter.textContent, "1 / 3");
+    assert.equal(viz2.hidden, true, "view2 must be hidden when frame.view2 is absent");
+
+    // Advance to frame 1: line 2 active, and ONLY line 2; view2 present -> shown.
+    nextButton.fire("click", {});
+    assert.deepEqual(
+      codeLines.map((l) => l.classList.contains("is-active")),
+      [false, false, true],
+    );
+    assert.equal(counter.textContent, "2 / 3");
+    assert.equal(viz2.hidden, false, "view2 must be shown when frame.view2 is present");
+
+    // Advance to frame 2: line 1 active, and ONLY line 1; view2 absent again -> hidden again.
+    nextButton.fire("click", {});
+    assert.deepEqual(
+      codeLines.map((l) => l.classList.contains("is-active")),
+      [false, true, false],
+    );
+    assert.equal(counter.textContent, "3 / 3");
+    assert.equal(viz2.hidden, true, "view2 must go back to hidden once frame.view2 is absent again");
+  } finally {
+    stub.uninstall();
+  }
+});

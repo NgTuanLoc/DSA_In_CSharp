@@ -357,6 +357,56 @@ test("linkedList: neither node pointing at the other renders the neutral connect
   });
 });
 
+test("linkedList: a view with no next map at all falls back to '→' for every pair (does not render every arrow as the neutral connector)", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 1 },
+        { id: "n1", value: 2 },
+        { id: "n2", value: 3 },
+      ],
+      pointers: {},
+      // no `next` field at all
+    };
+
+    renderLinkedList(view, el);
+
+    const arrows = el.querySelectorAll(".viz-list__arrow");
+    assert.deepEqual(
+      arrows.map((a) => a.textContent),
+      ["→", "→"],
+    );
+  });
+});
+
+test("linkedList: a next map that is explicitly supplied but simply lacks a pair still renders the neutral connector for that pair", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 1 },
+        { id: "n1", value: 2 },
+      ],
+      // next IS supplied (not absent) — it just has no entry linking n0/n1
+      // either way. This must keep today's neutral-connector behavior,
+      // not the absent-map fallback.
+      next: {},
+      pointers: {},
+    };
+
+    renderLinkedList(view, el);
+
+    const arrows = el.querySelectorAll(".viz-list__arrow");
+    assert.deepEqual(
+      arrows.map((a) => a.textContent),
+      ["–"],
+    );
+  });
+});
+
 test("linkedList: cycle marker renders when the last node's next targets a non-adjacent node", () => {
   withDom((stub) => {
     const el = stub.document.createElement("div");
@@ -583,6 +633,66 @@ test("tree: is-current wins when a node is in more than one set", () => {
   });
 });
 
+test("tree: pruned ids receive the is-pruned state class, distinct from is-frontier", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = { ...fiveNodeTree(), pruned: ["d", "e"] };
+
+    renderTree(view, el);
+
+    const [a, b, c, d, e] = el.querySelectorAll(".viz-tree__node");
+    assert.equal(d.classList.contains("is-pruned"), true);
+    assert.equal(e.classList.contains("is-pruned"), true);
+    assert.equal(d.classList.contains("is-frontier"), false);
+    assert.equal(e.classList.contains("is-frontier"), false);
+
+    assert.equal(a.classList.contains("is-pruned"), false);
+    assert.equal(b.classList.contains("is-pruned"), false);
+    assert.equal(c.classList.contains("is-pruned"), false);
+  });
+});
+
+test("tree: frontier and pruned can be set independently on the same view without colliding", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = { ...fiveNodeTree(), frontier: ["b"], pruned: ["d"] };
+
+    renderTree(view, el);
+
+    const [, b, , d] = el.querySelectorAll(".viz-tree__node");
+    assert.equal(b.classList.contains("is-frontier"), true);
+    assert.equal(b.classList.contains("is-pruned"), false);
+    assert.equal(d.classList.contains("is-pruned"), true);
+    assert.equal(d.classList.contains("is-frontier"), false);
+  });
+});
+
+test("tree: is-visited wins over is-pruned when a node is in both sets", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = { ...fiveNodeTree(), visited: ["b"], pruned: ["b"] };
+
+    renderTree(view, el);
+
+    const [, b] = el.querySelectorAll(".viz-tree__node");
+    assert.equal(b.classList.contains("is-visited"), true);
+    assert.equal(b.classList.contains("is-pruned"), false);
+  });
+});
+
+test("tree: a view with no pruned field renders no is-pruned nodes (default empty)", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderTree(fiveNodeTree(), el);
+
+    const nodes = el.querySelectorAll(".viz-tree__node");
+    assert.ok(
+      nodes.every((n) => !n.classList.contains("is-pruned")),
+      "no node should carry is-pruned when view.pruned is absent",
+    );
+  });
+});
+
 test("tree: view.labels renders an optional label only for ids present in the map", () => {
   withDom((stub) => {
     const el = stub.document.createElement("div");
@@ -639,7 +749,7 @@ function sevenNodeGraph(extra = {}) {
   };
 }
 
-test("graph: renders one node circle and one edge line per input", () => {
+test("graph: renders one node circle per node and one edge line per edge", () => {
   withDom((stub) => {
     const el = stub.document.createElement("div");
     renderGraph(sevenNodeGraph(), el);

@@ -4,11 +4,12 @@ function svgEl(tag) {
   return document.createElementNS(SVG_NS, tag);
 }
 
-/** Returns the single state class for a node, or null. Precedence: current > visited > frontier. */
-function stateClass(id, current, visited, frontier) {
+/** Returns the single state class for a node, or null. Precedence: current > visited > frontier > pruned. */
+function stateClass(id, current, visited, frontier, pruned) {
   if (current === id) return "is-current";
   if (visited.has(id)) return "is-visited";
   if (frontier.has(id)) return "is-frontier";
+  if (pruned.has(id)) return "is-pruned";
   return null;
 }
 
@@ -23,6 +24,7 @@ export function renderTree(view, el) {
   const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
   const visited = new Set(view.visited ?? []);
   const frontier = new Set(view.frontier ?? []);
+  const pruned = new Set(view.pruned ?? []);
 
   // Edges paint first so nodes stack on top of them.
   for (const [fromId, toId] of edges) {
@@ -48,7 +50,7 @@ export function renderTree(view, el) {
     circle.setAttribute("cx", cx);
     circle.setAttribute("cy", cy);
     circle.setAttribute("r", 7);
-    const state = stateClass(node.id, view.current, visited, frontier);
+    const state = stateClass(node.id, view.current, visited, frontier, pruned);
     if (state) circle.classList.add(state);
     svg.append(circle);
 

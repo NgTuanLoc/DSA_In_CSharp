@@ -66,7 +66,14 @@ function pushOne(heap, v, emit) {
       ...views(heap, i, [i, p]),
     });
 
-    if (childVal >= parentVal) break;
+    if (childVal >= parentVal) {
+      emit({
+        line: 4,
+        note: `heap[${i}]=${childVal} >= heap[${p}]=${parentVal} — heap property holds; push done`,
+        ...views(heap, i, [i]),
+      });
+      return;
+    }
 
     [heap[i], heap[p]] = [heap[p], heap[i]];
     emit({
@@ -76,6 +83,12 @@ function pushOne(heap, v, emit) {
     });
     i = p;
   }
+
+  emit({
+    line: 4,
+    note: `i is 0 — ${v} settles at the root; push done`,
+    ...views(heap, i, [i]),
+  });
 }
 
 function popOne(heap, emit) {
@@ -84,7 +97,7 @@ function popOne(heap, emit) {
   if (heap.length > 0) heap[0] = last;
 
   emit({
-    line: 4,
+    line: 5,
     note: `save heap[0]=${min} as the min; move last item ${last} to index 0`,
     ...views(heap, heap.length > 0 ? 0 : null, heap.length > 0 ? [0] : []),
   });
@@ -93,7 +106,18 @@ function popOne(heap, emit) {
   while (true) {
     const left = 2 * i + 1;
     const right = 2 * i + 2;
-    if (left >= heap.length) break; // no children at all — the loop stops silently
+    if (left >= heap.length) {
+      const note =
+        heap.length === 0
+          ? "heap is now empty — sift-down complete"
+          : `heap[${i}]=${heap[i]} has no children — sift-down complete`;
+      emit({
+        line: 7,
+        note,
+        ...views(heap, heap.length > 0 ? i : null, heap.length > 0 ? [i] : []),
+      });
+      break;
+    }
 
     let smaller = i;
     if (heap[left] < heap[smaller]) smaller = left;
@@ -101,7 +125,7 @@ function popOne(heap, emit) {
 
     if (smaller === i) {
       emit({
-        line: 5,
+        line: 7,
         note: `heap[${i}]=${heap[i]} is already smaller than its children — stop`,
         ...views(heap, i, [i, left, right].filter((idx) => idx < heap.length)),
       });
@@ -112,7 +136,7 @@ function popOne(heap, emit) {
     const childVal = heap[smaller];
     [heap[i], heap[smaller]] = [heap[smaller], heap[i]];
     emit({
-      line: 5,
+      line: 6,
       note: `heap[${i}]=${parentVal} > heap[${smaller}]=${childVal} — swap; i becomes ${smaller}`,
       ...views(heap, smaller, [i, smaller]),
     });
@@ -140,8 +164,10 @@ export default {
     "  i = last index",
     "  while i > 0 and heap[i] < heap[parent(i)]:",
     "    swap(i, parent(i)); i = parent(i)",
+    "  heap property holds; push done",
     "pop(): save heap[0], move the last item to index 0",
     "  sift down while a child is smaller than the node",
+    "  heap property holds; pop done",
   ],
   inputs: [
     { label: "push 5, 3, 8, 1", data: { op: "push", values: [5, 3, 8, 1] }, expect: [1, 3, 8, 5] },

@@ -81,6 +81,12 @@ export default {
       });
 
       prev = curr;
+      emit({
+        line: 4,
+        note: `prev becomes ${valueOf(nodes, prev)}`,
+        view: view(nodes, next, prev, curr, nextNode, colors),
+      });
+
       curr = nextNode;
       emit({
         line: 5,

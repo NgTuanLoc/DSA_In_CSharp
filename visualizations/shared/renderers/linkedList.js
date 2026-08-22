@@ -43,14 +43,20 @@ export function renderLinkedList(view, el) {
       // Direction-aware: read view.next to show which way this pair is
       // actually wired right now, rather than assuming forward order —
       // reversal (and any other in-place rewiring) needs the arrow to flip.
-      if (view.next?.[node.id] === next.id) {
+      if (view.next === undefined || view.next === null) {
+        // No next map supplied at all — fall back to the forward-order
+        // assumption every page had before direction-awareness existed,
+        // rather than silently rendering every arrow as the neutral "–".
         arrow.textContent = "→";
-      } else if (view.next?.[next.id] === node.id) {
+      } else if (view.next[node.id] === next.id) {
+        arrow.textContent = "→";
+      } else if (view.next[next.id] === node.id) {
         arrow.textContent = "←";
       } else {
-        // Neither node points at the other in this frame (e.g. mid-rewire,
-        // where the left node's next has already been redirected elsewhere).
-        // "–" (en dash) is the quiet, non-directional connector.
+        // A next map WAS supplied but this pair isn't wired either way
+        // (e.g. mid-rewire, where the left node's next has already been
+        // redirected elsewhere). "–" (en dash) is the quiet, non-directional
+        // connector.
         arrow.textContent = "–";
       }
       wrap.append(arrow);

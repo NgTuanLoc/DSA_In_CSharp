@@ -537,6 +537,12 @@ body {
   stroke: var(--window);
 }
 
+.viz-tree__node.is-pruned {
+  fill: var(--surface);
+  stroke: var(--line);
+  opacity: 0.4;
+}
+
 .viz-tree__node.is-visited {
   fill: var(--pass-soft);
   stroke: var(--pass);

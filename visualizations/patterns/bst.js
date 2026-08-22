@@ -60,7 +60,7 @@ export default {
     const edges = edgesOf(tree);
     const baseNodes = tree.nodes.map(({ id, value, x, y }) => ({ id, value, x, y }));
     const visited = [];
-    const frontier = [];
+    const pruned = [];
 
     function views(current) {
       const view = {
@@ -68,7 +68,7 @@ export default {
         nodes: baseNodes.map((n) => ({ ...n })),
         edges: edges.map((e) => [...e]),
         visited: [...visited],
-        frontier: [...frontier],
+        pruned: [...pruned],
       };
       if (current !== null && current !== undefined) view.current = current;
       return { view };
@@ -102,7 +102,7 @@ export default {
       });
 
       if (target < node.value) {
-        frontier.push(...subtreeIds(byId, node.right));
+        pruned.push(...subtreeIds(byId, node.right));
         emit({
           line: 3,
           note: `target < ${node.value}, so everything right of ${node.value} is out`,
@@ -110,7 +110,7 @@ export default {
         });
         nodeId = node.left;
       } else {
-        frontier.push(...subtreeIds(byId, node.left));
+        pruned.push(...subtreeIds(byId, node.left));
         emit({
           line: 4,
           note: `target > ${node.value}, so everything left of ${node.value} is out`,

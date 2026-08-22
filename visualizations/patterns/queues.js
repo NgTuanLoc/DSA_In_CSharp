@@ -71,9 +71,10 @@ export default {
 
       while (queue[0] < t - 3000) {
         const expired = queue[0];
+        const threshold = t - 3000;
         emit({
           line: 4,
-          note: `t=${expired} falls outside the window (< ${t} - 3000) — pop it from the front`,
+          note: `t=${expired} falls outside the window (< ${threshold}) — pop it from the front`,
           ...views(queue, counts, { highlight: [0] }),
         });
         queue.shift();
