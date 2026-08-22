@@ -4,6 +4,7 @@ import { renderCollection } from "../shared/renderers/collection.js";
 import { renderLinkedList } from "../shared/renderers/linkedList.js";
 import { renderTree } from "../shared/renderers/tree.js";
 import { renderGraph } from "../shared/renderers/graph.js";
+import { renderGrid } from "../shared/renderers/grid.js";
 import { installDomStub } from "./domstub.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -629,5 +630,122 @@ test("graph: an empty nodes array renders no nodes or edges and does not throw",
     assert.doesNotThrow(() => renderGraph(view, el));
     assert.equal(el.querySelectorAll(".viz-graph__node").length, 0);
     assert.equal(el.querySelectorAll(".viz-graph__edge").length, 0);
+  });
+});
+
+function threeByTwoGrid(extra = {}) {
+  return {
+    kind: "grid",
+    rows: [
+      [1, 2, 3],
+      [4, 5, 6],
+    ],
+    ...extra,
+  };
+}
+
+test("grid: renders one cell per entry for a 2x3 grid", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGrid(threeByTwoGrid(), el);
+
+    const cells = el.querySelectorAll(".viz-grid__cell");
+    assert.equal(cells.length, 6, "expected six cells");
+  });
+});
+
+test("grid: every cell carries matching data-r and data-c", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGrid(threeByTwoGrid(), el);
+
+    const cells = el.querySelectorAll(".viz-grid__cell");
+    const coords = cells.map((cell) => `${cell.dataset.r},${cell.dataset.c}`).sort();
+    assert.deepEqual(coords, ["0,0", "0,1", "0,2", "1,0", "1,1", "1,2"]);
+  });
+});
+
+test("grid: row labels render when view.rowLabels is present", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGrid(threeByTwoGrid({ rowLabels: ["a", "b"] }), el);
+
+    const labels = el.querySelectorAll(".viz-grid__row-label");
+    assert.equal(labels.length, 2, "expected one row label per row");
+    assert.deepEqual(labels.map((l) => l.textContent), ["a", "b"]);
+  });
+});
+
+test("grid: row labels are absent when view.rowLabels is not present", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGrid(threeByTwoGrid(), el);
+
+    const labels = el.querySelectorAll(".viz-grid__row-label");
+    assert.equal(labels.length, 0, "did not expect any row labels");
+  });
+});
+
+test("grid: col labels render across the top when view.colLabels is present", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGrid(threeByTwoGrid({ colLabels: [0, 1, 2] }), el);
+
+    const labels = el.querySelectorAll(".viz-grid__col-label");
+    assert.equal(labels.length, 3, "expected one col label per column");
+    assert.deepEqual(labels.map((l) => l.textContent), ["0", "1", "2"]);
+  });
+});
+
+test("grid: col labels are absent when view.colLabels is not present", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    renderGrid(threeByTwoGrid(), el);
+
+    const labels = el.querySelectorAll(".viz-grid__col-label");
+    assert.equal(labels.length, 0, "did not expect any col labels");
+  });
+});
+
+test("grid: view.colors['r,c'] adds is-<state> to exactly that cell", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = threeByTwoGrid({ colors: { "0,1": "dim" } });
+
+    renderGrid(view, el);
+
+    const cells = el.querySelectorAll(".viz-grid__cell");
+    const dimmed = cells.filter((c) => c.classList.contains("is-dim"));
+    assert.equal(dimmed.length, 1, "expected exactly one dimmed cell");
+    assert.equal(dimmed[0].dataset.r, "0");
+    assert.equal(dimmed[0].dataset.c, "1");
+  });
+});
+
+test("grid: view.current adds is-current to exactly that cell", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = threeByTwoGrid({ current: { r: 1, c: 2 } });
+
+    renderGrid(view, el);
+
+    const cells = el.querySelectorAll(".viz-grid__cell");
+    const current = cells.filter((c) => c.classList.contains("is-current"));
+    assert.equal(current.length, 1, "expected exactly one current cell");
+    assert.equal(current[0].dataset.r, "1");
+    assert.equal(current[0].dataset.c, "2");
+  });
+});
+
+test("grid: a cell holding the falsy value 0 renders '0', not an empty cell", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = { kind: "grid", rows: [[0, 1]] };
+
+    renderGrid(view, el);
+
+    const cells = el.querySelectorAll(".viz-grid__cell");
+    assert.equal(cells[0].textContent, "0");
+    assert.equal(cells[1].textContent, "1");
   });
 });

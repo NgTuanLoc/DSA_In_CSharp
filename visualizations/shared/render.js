@@ -3,6 +3,7 @@ import { renderCollection } from "./renderers/collection.js";
 import { renderLinkedList } from "./renderers/linkedList.js";
 import { renderTree } from "./renderers/tree.js";
 import { renderGraph } from "./renderers/graph.js";
+import { renderGrid } from "./renderers/grid.js";
 
 // Each renderer task adds one import above and one entry here.
 const RENDERERS = {
@@ -11,6 +12,7 @@ const RENDERERS = {
   linkedList: renderLinkedList,
   tree: renderTree,
   graph: renderGraph,
+  grid: renderGrid,
 };
 
 export function errorBanner(message) {

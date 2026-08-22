@@ -108,6 +108,20 @@
         el.querySelectorAll(".viz-graph__node").length === 7 &&
         el.querySelectorAll(".viz-graph__edge").length === 6,
     },
+    {
+      name: "grid renders six cells for a 2x3 grid",
+      view: {
+        kind: "grid",
+        rows: [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+        rowLabels: ["a", "b"],
+        colLabels: [0, 1, 2],
+        current: { r: 0, c: 1 },
+      },
+      check: (el) => el.querySelectorAll(".viz-grid__cell").length === 6,
+    },
   ];
 
   function row(cells, pass) {
