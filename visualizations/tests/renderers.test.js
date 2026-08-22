@@ -263,7 +263,22 @@ test("linkedList: colors add is-<state> class to the matching node", () => {
   });
 });
 
-test("linkedList: cycle marker appears when the last node's next is not null", () => {
+test("linkedList: a forward-linked list renders '→' between every adjacent pair", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = threeNodeList(); // next: n0 -> n1 -> n2 -> null
+
+    renderLinkedList(view, el);
+
+    const arrows = el.querySelectorAll(".viz-list__arrow");
+    assert.deepEqual(
+      arrows.map((a) => a.textContent),
+      ["→", "→"],
+    );
+  });
+});
+
+test("linkedList: a fully reversed list renders '←' between every adjacent pair", () => {
   withDom((stub) => {
     const el = stub.document.createElement("div");
     const view = {
@@ -271,8 +286,89 @@ test("linkedList: cycle marker appears when the last node's next is not null", (
       nodes: [
         { id: "n0", value: 3 },
         { id: "n1", value: 2 },
+        { id: "n2", value: 0 },
       ],
-      next: { n0: "n1", n1: "n0" },
+      // view.nodes keeps its original document order while next now points
+      // backward at every step, as a fully reversed list would mid-render.
+      next: { n2: "n1", n1: "n0", n0: null },
+      pointers: {},
+    };
+
+    renderLinkedList(view, el);
+
+    const arrows = el.querySelectorAll(".viz-list__arrow");
+    assert.deepEqual(
+      arrows.map((a) => a.textContent),
+      ["←", "←"],
+    );
+  });
+});
+
+test("linkedList: a mid-rewire list renders a mix of '←', the neutral connector, and '→'", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 1 },
+        { id: "n1", value: 2 },
+        { id: "n2", value: 3 },
+        { id: "n3", value: 4 },
+      ],
+      // n0 and n1 have already been rewired (n1 -> n0); n2 -> n3 has not
+      // been reached yet and is still forward; the n1/n2 pair no longer
+      // points either way, since n1 now points backward at n0.
+      next: { n0: null, n1: "n0", n2: "n3", n3: null },
+      pointers: {},
+    };
+
+    renderLinkedList(view, el);
+
+    const arrows = el.querySelectorAll(".viz-list__arrow");
+    assert.deepEqual(
+      arrows.map((a) => a.textContent),
+      ["←", "–", "→"],
+    );
+  });
+});
+
+test("linkedList: neither node pointing at the other renders the neutral connector", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 1 },
+        { id: "n1", value: 2 },
+      ],
+      next: { n0: null, n1: null },
+      pointers: {},
+    };
+
+    renderLinkedList(view, el);
+
+    const arrows = el.querySelectorAll(".viz-list__arrow");
+    assert.deepEqual(
+      arrows.map((a) => a.textContent),
+      ["–"],
+    );
+  });
+});
+
+test("linkedList: cycle marker renders when the last node's next targets a non-adjacent node", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 3 },
+        { id: "n1", value: 2 },
+        { id: "n2", value: 0 },
+      ],
+      // n2 (the last node) points back to n0 — its predecessor's predecessor,
+      // not the node immediately before it (n1) — so this is a genuine cycle,
+      // not a reversal-in-progress artifact.
+      next: { n0: "n1", n1: "n2", n2: "n0" },
       pointers: {},
     };
 
@@ -281,6 +377,29 @@ test("linkedList: cycle marker appears when the last node's next is not null", (
     const cycle = el.querySelectorAll(".viz-list__cycle");
     assert.equal(cycle.length, 1, "expected the cycle marker");
     assert.equal(cycle[0].textContent, "↩ back to 3");
+  });
+});
+
+test("linkedList: cycle marker is suppressed when the last node's next targets its immediate predecessor", () => {
+  withDom((stub) => {
+    const el = stub.document.createElement("div");
+    const view = {
+      kind: "linkedList",
+      nodes: [
+        { id: "n0", value: 3 },
+        { id: "n1", value: 2 },
+      ],
+      // n1 (the last node) points back to n0, which is also the node
+      // immediately before it in view.nodes order — the same shape produced
+      // mid-reversal, where it is not a genuine extra cycle edge.
+      next: { n0: "n1", n1: "n0" },
+      pointers: {},
+    };
+
+    renderLinkedList(view, el);
+
+    const cycle = el.querySelectorAll(".viz-list__cycle");
+    assert.equal(cycle.length, 0, "did not expect a cycle marker for an adjacent-predecessor target");
   });
 });
 

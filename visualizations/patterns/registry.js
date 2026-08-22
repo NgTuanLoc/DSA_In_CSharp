@@ -3,8 +3,10 @@
 import twoPointers from "./two-pointers.js";
 import stacks from "./stacks.js";
 import fastSlowPointers from "./fast-slow-pointers.js";
+import reversingLinkedList from "./reversing-linked-list.js";
 import treeBfs from "./tree-bfs.js";
 import graphBfs from "./graph-bfs.js";
+import graphDfs from "./graph-dfs.js";
 import dp1d from "./dp-1d.js";
 import slidingWindow from "./sliding-window.js";
 import prefixSum from "./prefix-sum.js";
@@ -21,8 +23,10 @@ export const specs = [
   twoPointers,
   stacks,
   fastSlowPointers,
+  reversingLinkedList,
   treeBfs,
   graphBfs,
+  graphDfs,
   dp1d,
   slidingWindow,
   prefixSum,

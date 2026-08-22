@@ -37,16 +37,31 @@ export function renderLinkedList(view, el) {
     wrap.append(col);
 
     if (i < nodes.length - 1) {
+      const next = nodes[i + 1];
       const arrow = document.createElement("div");
       arrow.className = "viz-list__arrow";
-      arrow.textContent = "→";
+      // Direction-aware: read view.next to show which way this pair is
+      // actually wired right now, rather than assuming forward order —
+      // reversal (and any other in-place rewiring) needs the arrow to flip.
+      if (view.next?.[node.id] === next.id) {
+        arrow.textContent = "→";
+      } else if (view.next?.[next.id] === node.id) {
+        arrow.textContent = "←";
+      } else {
+        // Neither node points at the other in this frame (e.g. mid-rewire,
+        // where the left node's next has already been redirected elsewhere).
+        // "–" (en dash) is the quiet, non-directional connector.
+        arrow.textContent = "–";
+      }
       wrap.append(arrow);
     }
   });
 
   const lastNode = nodes[nodes.length - 1];
+  const predecessor = nodes.length >= 2 ? nodes[nodes.length - 2] : null;
   const nextOfLast = view.next?.[lastNode.id];
-  if (nextOfLast !== null && nextOfLast !== undefined) {
+  const pointsAtPredecessor = predecessor !== null && nextOfLast === predecessor.id;
+  if (nextOfLast !== null && nextOfLast !== undefined && !pointsAtPredecessor) {
     const target = nodes.find((n) => n.id === nextOfLast);
     const cycle = document.createElement("div");
     cycle.className = "viz-list__cycle";
