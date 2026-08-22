@@ -201,8 +201,14 @@ export function boot(spec, root) {
     player.toggle();
     showFrame(player.index);
   });
-  controls.scrub.addEventListener("input", () => player.seek(Number(controls.scrub.value)));
-  controls.speed.addEventListener("change", () => player.setSpeed(Number(controls.speed.value)));
+  controls.scrub.addEventListener("input", () => {
+    if (!player) return;
+    player.seek(Number(controls.scrub.value));
+  });
+  controls.speed.addEventListener("change", () => {
+    if (!player) return;
+    player.setSpeed(Number(controls.speed.value));
+  });
   picker.addEventListener("change", () => load(Number(picker.value)));
 
   document.addEventListener("keydown", (event) => {

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { boot } from "../shared/page.js";
 import { Player } from "../shared/engine.js";
-import { installDomStub } from "./domstub.mjs";
+import { installDomStub } from "./domstub.js";
 
 // Covers the review finding on shared/page.js: `player` starts out `null`
 // and is only assigned once `load()` succeeds. Before the fix, a spec whose
@@ -10,7 +10,7 @@ import { installDomStub } from "./domstub.mjs";
 // the keydown handler and the five transport buttons threw instead of
 // no-op'ing, and a later load() failure never stopped an in-flight
 // setInterval. These tests exercise the real boot() (not a re-implementation
-// of it) against a hand-rolled DOM stub — see domstub.mjs — since page.js
+// of it) against a hand-rolled DOM stub — see domstub.js — since page.js
 // needs `document` and none is available under plain Node.
 
 function findByClass(node, className) {
@@ -91,6 +91,49 @@ test("boot(): clicking a transport button after a failed first load does not thr
     // solely on the disabled attribute. Before the fix this threw
     // "Cannot read properties of null (reading 'first')".
     firstButton.fire("click", {});
+  } finally {
+    stub.uninstall();
+  }
+});
+
+test("boot(): moving the scrub input after a failed first load does not throw, even while disabled", () => {
+  const stub = installDomStub();
+  try {
+    const root = stub.document.createElement("main");
+    boot(brokenSpec(), root);
+
+    const [scrub] = findByClass(root, "controls__scrub");
+    assert.equal(scrub.disabled, true);
+    scrub.value = "0";
+    // Fires the handler directly rather than relying on `disabled` to stop
+    // it, same as the transport-button case above. Before this round's fix
+    // this threw "Cannot read properties of null (reading 'seek')".
+    scrub.fire("input", {});
+
+    const [note] = findByClass(root, "note");
+    assert.equal(note.textContent, "boom", "the error state must be untouched by the no-op input event");
+  } finally {
+    stub.uninstall();
+  }
+});
+
+test("boot(): changing the speed select after a failed first load does not throw, even while disabled", () => {
+  const stub = installDomStub();
+  try {
+    const root = stub.document.createElement("main");
+    boot(brokenSpec(), root);
+
+    const [speed] = findByClass(root, "controls__speed");
+    // Unlike the transport buttons and scrub, showError() does not disable
+    // the speed select (pre-existing, out of scope here) — so this handler
+    // has no "second line of defence" at all; the guard is the only thing
+    // standing between this event and a null-player crash. Before this
+    // round's fix this threw "Cannot read properties of null (reading
+    // 'setSpeed')".
+    speed.fire("change", {});
+
+    const [note] = findByClass(root, "note");
+    assert.equal(note.textContent, "boom", "the error state must be untouched by the no-op change event");
   } finally {
     stub.uninstall();
   }
