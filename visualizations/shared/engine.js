@@ -89,7 +89,11 @@ export class Player {
   play() {
     if (this.isPlaying || this.#count === 0) return;
     if (this.atEnd) this.first();
-    this.#timer = this.#schedule(() => {
+    // Called through a local binding, never as this.#schedule(...): the browser's
+    // setInterval is a WebIDL operation on the global and throws "Illegal
+    // invocation" when handed any other receiver.
+    const schedule = this.#schedule;
+    this.#timer = schedule(() => {
       this.next();
       if (this.atEnd) this.pause();
     }, this.#intervalMs);
@@ -98,7 +102,8 @@ export class Player {
 
   pause() {
     if (!this.isPlaying) return;
-    this.#cancel(this.#timer);
+    const cancel = this.#cancel; // local binding, see play()
+    cancel(this.#timer);
     this.#timer = null;
     this.#onChange(this.#index);
   }

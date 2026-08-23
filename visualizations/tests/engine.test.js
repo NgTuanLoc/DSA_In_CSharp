@@ -151,3 +151,38 @@ test("Player handles an empty frame list without throwing", () => {
   p.seek(3);
   assert.equal(p.index, 0);
 });
+
+// The browser's setInterval/clearInterval are WebIDL operations on the global:
+// invoking them with any receiver other than the global object throws
+// "TypeError: Illegal invocation". This clock models that brand check, so the
+// node suite catches a call that would only fail in a real browser.
+function brandCheckedClock() {
+  let callback = null;
+  function schedule(fn) {
+    if (this !== undefined && this !== globalThis) throw new TypeError("Illegal invocation");
+    callback = fn;
+    return 1;
+  }
+  function cancel() {
+    if (this !== undefined && this !== globalThis) throw new TypeError("Illegal invocation");
+    callback = null;
+  }
+  return { schedule, cancel, tick: () => callback && callback(), get running() { return callback !== null; } };
+}
+
+test("Player.play invokes the scheduler without an object receiver", () => {
+  const clock = brandCheckedClock();
+  const p = new Player(5, { schedule: clock.schedule, cancel: clock.cancel });
+  p.play();
+  assert.equal(p.isPlaying, true);
+  assert.equal(clock.running, true);
+});
+
+test("Player.pause invokes the canceller without an object receiver", () => {
+  const clock = brandCheckedClock();
+  const p = new Player(5, { schedule: clock.schedule, cancel: clock.cancel });
+  p.play();
+  p.pause();
+  assert.equal(p.isPlaying, false);
+  assert.equal(clock.running, false);
+});
