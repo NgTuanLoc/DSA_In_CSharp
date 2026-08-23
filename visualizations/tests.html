@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tests — DSA Pattern Visualizations</title>
+<link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+<main class="page">
+  <h1>Test harness</h1>
+  <section>
+    <h2>Renderers</h2>
+    <table id="renderer-results"></table>
+  </section>
+  <section>
+    <h2>Pattern specs</h2>
+    <table id="spec-results"></table>
+  </section>
+</main>
+<script type="module">
+  import { specs } from "./patterns/registry.js";
+  import { runAllChecks } from "./shared/selftest.js";
+  import { paint } from "./shared/render.js";
+
+  // Each renderer task appends one case here.
+  const rendererCases = [
+    {
+      name: "array renders one cell per entry",
+      view: { kind: "array", cells: [1, 2, 3, 4, 5], pointers: { L: 0, R: 4 } },
+      check: (el) => el.querySelectorAll(".viz-array__cell").length === 5,
+    },
+    {
+      name: "array reports an unknown kind instead of blanking",
+      view: { kind: "hologram" },
+      check: (el) => el.querySelectorAll(".viz-error").length === 1,
+    },
+    {
+      name: "collection renders one box per item",
+      view: {
+        kind: "collection",
+        label: "stack",
+        items: [{ value: "(" }, { value: "[" }],
+        orientation: "vertical",
+        highlight: [1],
+      },
+      check: (el) => el.querySelectorAll(".viz-collection__item").length === 2,
+    },
+    {
+      name: "linked list renders one node per value",
+      view: {
+        kind: "linkedList",
+        nodes: [
+          { id: "n0", value: 1 },
+          { id: "n1", value: 2 },
+          { id: "n2", value: 3 },
+        ],
+        next: { n0: "n1", n1: "n2", n2: null },
+        pointers: {},
+      },
+      check: (el) => el.querySelectorAll(".viz-list__node").length === 3,
+    },
+    {
+      name: "tree renders five nodes and four edges for a five-node tree",
+      view: {
+        kind: "tree",
+        nodes: [
+          { id: "a", value: 3, x: 0.5, y: 0.1 },
+          { id: "b", value: 9, x: 0.25, y: 0.5 },
+          { id: "c", value: 20, x: 0.75, y: 0.5 },
+          { id: "d", value: 15, x: 0.6, y: 0.9 },
+          { id: "e", value: 7, x: 0.9, y: 0.9 },
+        ],
+        edges: [
+          ["a", "b"],
+          ["a", "c"],
+          ["c", "d"],
+          ["c", "e"],
+        ],
+        current: null,
+        visited: [],
+        frontier: [],
+      },
+      check: (el) =>
+        el.querySelectorAll(".viz-tree__node").length === 5 &&
+        el.querySelectorAll(".viz-tree__edge").length === 4,
+    },
+    {
+      name: "graph renders seven nodes and six edges for a seven-node graph",
+      view: {
+        kind: "graph",
+        nodes: [
+          { id: 0, label: "0", x: 0.1, y: 0.5 },
+          { id: 1, label: "1", x: 0.32, y: 0.2 },
+          { id: 2, label: "2", x: 0.32, y: 0.8 },
+          { id: 3, label: "3", x: 0.55, y: 0.5 },
+          { id: 4, label: "4", x: 0.78, y: 0.3 },
+          { id: 5, label: "5", x: 0.95, y: 0.6 },
+          { id: 6, label: "6", x: 0.78, y: 0.9 },
+        ],
+        edges: [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [4, 5]],
+        current: null,
+        visited: [],
+        activeEdge: null,
+        distances: { 0: 0 },
+      },
+      check: (el) =>
+        el.querySelectorAll(".viz-graph__node").length === 7 &&
+        el.querySelectorAll(".viz-graph__edge").length === 6,
+    },
+    {
+      name: "grid renders six cells for a 2x3 grid",
+      view: {
+        kind: "grid",
+        rows: [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+        rowLabels: ["a", "b"],
+        colLabels: [0, 1, 2],
+        current: { r: 0, c: 1 },
+      },
+      check: (el) => el.querySelectorAll(".viz-grid__cell").length === 6,
+    },
+  ];
+
+  function row(cells, pass) {
+    const tr = document.createElement("tr");
+    tr.className = pass ? "is-pass" : "is-fail";
+    for (const text of cells) {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.append(td);
+    }
+    return tr;
+  }
+
+  const rendererTable = document.getElementById("renderer-results");
+  const sandbox = document.createElement("div");
+  for (const testCase of rendererCases) {
+    let pass = false;
+    let detail = "";
+    try {
+      paint(testCase.view, sandbox);
+      pass = testCase.check(sandbox) === true;
+    } catch (err) {
+      detail = err.message;
+    }
+    rendererTable.append(row([pass ? "PASS" : "FAIL", testCase.name, detail], pass));
+  }
+
+  const specTable = document.getElementById("spec-results");
+  if (specs.length === 0) {
+    specTable.append(row(["—", "no pattern specs registered yet", ""], true));
+  } else {
+    for (const result of runAllChecks(specs)) {
+      specTable.append(
+        row(
+          [
+            result.pass ? "PASS" : "FAIL",
+            `${result.pattern} — ${result.input}`,
+            result.pass ? `${result.frames} frames` : result.problems.join("; "),
+          ],
+          result.pass,
+        ),
+      );
+    }
+  }
+</script>
+</body>
+</html>

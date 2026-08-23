@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSA Pattern Visualizations</title>
+<link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+<main class="page">
+  <h1>Algorithm pattern visualizations</h1>
+  <p class="page__when">
+    Twenty interactive walkthroughs of the patterns implemented in
+    <code>src/DSA/LeetCode/</code>. Pick one, press Play, and step through it.
+  </p>
+  <div id="file-warning" hidden class="viz-error">
+    This page was opened from the filesystem, so ES modules cannot load.
+    Run <code>python -m http.server 8000</code> inside <code>visualizations/</code>
+    and open <code>http://localhost:8000</code> instead.
+  </div>
+  <div id="gallery"></div>
+</main>
+<script>
+  if (location.protocol === "file:") {
+    document.getElementById("file-warning").hidden = false;
+  }
+</script>
+<script type="module">
+  import { specs } from "./patterns/registry.js";
+
+  const byFolder = new Map();
+  for (const spec of specs) {
+    if (!byFolder.has(spec.folder)) byFolder.set(spec.folder, []);
+    byFolder.get(spec.folder).push(spec);
+  }
+
+  const gallery = document.getElementById("gallery");
+  for (const [folder, group] of [...byFolder].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const section = document.createElement("section");
+    section.className = "gallery__group";
+
+    const heading = document.createElement("h2");
+    heading.textContent = folder;
+    section.append(heading);
+
+    const cards = document.createElement("div");
+    cards.className = "gallery__cards";
+    for (const spec of group) {
+      const card = document.createElement("a");
+      card.className = "card";
+      card.href = `patterns/${spec.slug}.html`;
+
+      const title = document.createElement("h3");
+      title.className = "card__title";
+      title.textContent = spec.title;
+
+      const when = document.createElement("p");
+      when.className = "card__when";
+      when.textContent = spec.whenToUse;
+
+      const meta = document.createElement("p");
+      meta.className = "card__meta";
+      meta.textContent = `${spec.complexity.time} time · ${spec.complexity.space} space`;
+
+      card.append(title, when, meta);
+      cards.append(card);
+    }
+    section.append(cards);
+    gallery.append(section);
+  }
+</script>
+</body>
+</html>
