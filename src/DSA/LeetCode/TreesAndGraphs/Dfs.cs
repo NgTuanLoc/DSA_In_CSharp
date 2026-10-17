@@ -259,4 +259,39 @@ public class BinaryTreeDeptFirstSearch
 
         return 1 + Math.Max(left, right);
     }
+
+    public static TreeNode? BuildTree(int[] preorder, int[] inorder)
+    {
+        // https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+        // Preorder gives the root first; inorder tells where that root splits left/right.
+        Dictionary<int, int> inorderIndexDict = [];
+        int preorderIndex = 0;
+
+        for (int i = 0; i < inorder.Length; i++)
+        {
+            inorderIndexDict.Add(inorder[i], i);
+        }
+
+        return BuildSubTree(0, inorder.Length - 1, preorder, inorderIndexDict, ref preorderIndex);
+    }
+
+    // left/right are bounds into inorder; preorderIndex is shared by ref so it keeps
+    // advancing across the whole recursion instead of resetting on each return.
+    private static TreeNode? BuildSubTree(int left, int right, int[] preorder, Dictionary<int, int> inorderIndexDict, ref int preorderIndex)
+    {
+        if (left > right) return null;
+
+        int val = preorder[preorderIndex];
+        var node = new TreeNode(val);
+
+        preorderIndex++;
+
+        int inorderIndex = inorderIndexDict[val];
+
+        // Left subtree must be built first: preorder visits all of it before the right subtree.
+        node.Left = BuildSubTree(left, inorderIndex - 1, preorder, inorderIndexDict, ref preorderIndex);
+        node.Right = BuildSubTree(inorderIndex + 1, right, preorder, inorderIndexDict, ref preorderIndex);
+
+        return node;
+    }
 }

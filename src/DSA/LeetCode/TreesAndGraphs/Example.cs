@@ -175,6 +175,10 @@ public class TreesAndGraphsExample
         // Console.WriteLine(BinaryTreeDeptFirstSearch.IsBalance(Utils.BuildBinaryTree([3, 9, 20, null, null, 15, 7])));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.IsBalance(Utils.BuildBinaryTree([1, 2, 2, 3, 3, null, null, 4, 4])));
         // Console.WriteLine(BinaryTreeDeptFirstSearch.IsBalance(Utils.BuildBinaryTree([])));
+
+        // !Construct Binary Tree from Preorder and Inorder Traversal
+        Utils.PrintBinaryTree(BinaryTreeDeptFirstSearch.BuildTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]));
+        Utils.PrintBinaryTree(BinaryTreeDeptFirstSearch.BuildTree([-1], [-1]));
     }
 
     public static void Run_BFS()
