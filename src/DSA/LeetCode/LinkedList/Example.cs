@@ -1,6 +1,6 @@
 using DSA;
 
-namespace DSA_In_CSharp.LeetCode.LinkedList;
+namespace DSA.LeetCode.LinkedList;
 
 public static class LinkedListExample
 {
